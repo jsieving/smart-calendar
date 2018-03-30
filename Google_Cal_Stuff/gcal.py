@@ -63,37 +63,24 @@ class GCal:
             print('Storing credentials to ' + credential_path)
         return self.credentials
 
-    def create_event(self, name = "event", location = '', description = '', dateTime = datetime.datetime.utcnow() + datetime.timedelta(days = 1)):
+    def create_event(self, name = "event", location = '', description = '', start = datetime.datetime.utcnow() + datetime.timedelta(days = 1), end = datetime.datetime.utcnow() + datetime.timedelta(days = 2)):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
         """
-        dateTime2 = dateTime.isoformat() + 'Z'
+        start_str = start.isoformat() + 'Z'
+        end_str = end.isoformat() + 'Z'
         event = {
           'summary': name,
           'location': location,
           'description': description,
           'start': {
-            'dateTime': dateTime2,
+            'dateTime': start_str,
             'timeZone': 'America/Los_Angeles',
           },
           'end': {
-            'dateTime': dateTime2,
+            'dateTime': end_str,
             'timeZone': 'America/Los_Angeles',
-          },
-          'recurrence': [
-            'RRULE:FREQ=DAILY;COUNT=2'
-          ],
-          'attendees': [
-            {'email': 'lpage@example.com'},
-            {'email': 'sbrin@example.com'},
-          ],
-          'reminders': {
-            'useDefault': False,
-            'overrides': [
-              {'method': 'email', 'minutes': 24 * 60},
-              {'method': 'popup', 'minutes': 10},
-            ],
           },
         }
 
@@ -101,4 +88,4 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    cal.create_event()
+    cal.create_event(name = "Cool!!")
