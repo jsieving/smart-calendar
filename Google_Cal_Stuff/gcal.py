@@ -17,14 +17,14 @@ except ImportError:
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/calendar-python-quickstart.json
-SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
+SCOPES = 'https://www.googleapis.com/auth/calendar'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
 class GCal:
-    def __init__(mainID = "primary", secondID = "testing"):
-        self.credentials = get_credentials()
+    def __init__(self, mainID = "primary", secondID = "testing"):
+        self.credentials = self.get_credentials()
         self.http = self.credentials.authorize(httplib2.Http())
         self.service = discovery.build('calendar', 'v3', http= self.http)
         self.now = datetime.datetime.utcnow()
@@ -35,7 +35,7 @@ class GCal:
 
 
 
-    def get_credentials():
+    def get_credentials(self):
         """Gets valid user credentials from storage.
 
         If nothing has been stored, or if the stored credentials are invalid,
@@ -63,36 +63,42 @@ class GCal:
             print('Storing credentials to ' + credential_path)
         return self.credentials
 
-    def create_event(name = "event", location = '', description = '', dateTime =self.now + datetime.timedelta(days = 1)):
-
+    def create_event(self, name = "event", location = '', description = '', dateTime = datetime.datetime.utcnow() + datetime.timedelta(days = 1)):
+        """
+        Takes all parameters google can take with easy defaults
+        Time is passed as a datetime object in UTC
+        """
+        dateTime2 = dateTime.isoformat() + 'Z'
         event = {
-      'summary': name,
-      'location': location,
-      'description': description,
-      'start': {
-        'dateTime': dateTime,
-        'timeZone': 'America/Los_Angeles',
-      },
-      'end': {
-        'dateTime': dateTime,
-        'timeZone': 'America/Los_Angeles',
-      },
-      'recurrence': [
-        'RRULE:FREQ=DAILY;COUNT=2'
-      ],
-      'attendees': [
-        {'email': 'lpage@example.com'},
-        {'email': 'sbrin@example.com'},
-      ],
-      'reminders': {
-        'useDefault': False,
-        'overrides': [
-          {'method': 'email', 'minutes': 24 * 60},
-          {'method': 'popup', 'minutes': 10},
-        ],
-      },
-    }
-    event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
+          'summary': name,
+          'location': location,
+          'description': description,
+          'start': {
+            'dateTime': dateTime2,
+            'timeZone': 'America/Los_Angeles',
+          },
+          'end': {
+            'dateTime': dateTime2,
+            'timeZone': 'America/Los_Angeles',
+          },
+          'recurrence': [
+            'RRULE:FREQ=DAILY;COUNT=2'
+          ],
+          'attendees': [
+            {'email': 'lpage@example.com'},
+            {'email': 'sbrin@example.com'},
+          ],
+          'reminders': {
+            'useDefault': False,
+            'overrides': [
+              {'method': 'email', 'minutes': 24 * 60},
+              {'method': 'popup', 'minutes': 10},
+            ],
+          },
+        }
 
-    if __name__ == '__main__':
-        print("cool")
+        event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
+
+if __name__ == '__main__':
+    cal = GCal()
+    cal.create_event()
