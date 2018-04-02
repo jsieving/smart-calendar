@@ -63,6 +63,8 @@ def schedule_day(day, todo_list):
     while len(free_times) > 0 and len(todos) > 0: # While there's stuff to do and time to do it...
         time_slot = free_times[0]
         avail_time = time_slot[1]-time_slot[0] # Duration of the first available time slot
+        if avail_time < min_event_time: #If there's not enough free time to do anything, skip the block
+            continue
         fit_tasks = []
         for task in task_list: # Make a list of tasks that could be completed during this time
             if task.duration <= avail_time:
@@ -95,7 +97,9 @@ def schedule_day(day, todo_list):
         day.events.append(next_task) # Since the task fits and is scheduled, add it to the day's events
 
 def partition(task, avail_time):
-    if task.duration / 2 < min_event_time:
+    '''Takes a breakable task and a span of time and returns a portion of the task
+    that will fit in the time.'''
+    if task.duration / 2 < min_event_time: # If it can't be subdivided into 2 tasks, it doesn't fit.
         return None
     elif task.duration - avail_time < min_event_time:
         task.partial_time = task.duration - min_event_time
@@ -122,34 +126,40 @@ effectiveness: describes effectiveness/preference of working on 'task_type' duri
 values from -1:1, init at (0, 1) for (value, n of values). preference updater adds or subtracts a value
 against the scaled running average to change it.
 '''
-effectiveness = {'QEA': [(.5, 1), (0, 1), (-.5, 1)], 'softdes': [(-.5, 1), (0, 1), (.5, 1)], \
-                'eating': [(-.5, 1), (.5, 1), (-.5, 1)], 'nap': [(.5, 1), (0, 1), (.5, 1)]}
 
 parser = pdt.Calendar()
 
 if __name__ == '__main__':
+    eff = open(loc + 'effectiveness_data', 'rb+')
+    effectiveness = load(eff)
+
     cal_name = input("Calendar name:\n>>> ")
 
-    if exists(cal_name):
+    if exists(loc + cal_name): # Check if the calendar already exists and open it for editing
         print("Loading %s..." % cal_name)
         f = open(loc + cal_name, 'rb+')
         calendar = load(f)
-        calendar.print_days()
     else:
-        print("Creating new calendar %s..." % cal_name)
+        print("Creating new calendar %s..." % cal_name) # Create the new calendar and open it for editing
         f = open(loc + cal_name, 'wb+')
         calendar = Calendar(cal_name)
 
     now = datetime.now()
     today = date.today()
-    d = input("Enter day to schedule events (hit Enter for today): ")
+    d = input("Enter day to schedule events (hit Enter for today): ") # This section produces a date object to tag the calendar Day
     if d:
-        day = parser.parseDT(d, now)[0].date()
+        day = parser.parseDT(d, now)[0].date() # Parse the text as a date
     else:
         day = today
-    print(day)
-    curr_day = Day(day)
-    calendar.days[day] = curr_day
+    print(type(day))
+    print(calendar.days.keys())
+    if calendar.days.get(day): # Checks if the chosen day has already been defined
+        curr_day = calendar[day] # If so, retrieves it from the calendar.
+        curr_day.print_events()
+    else:
+        print("You have no schedule for this day.")
+        curr_day = Day(day) # Creates a Day object for the chosen day
+        calendar.days[day] = curr_day
 
     todos = []
 
@@ -177,6 +187,8 @@ if __name__ == '__main__':
         if category == '?':
             print(effectiveness.keys())
             category = input("What category does this item go in? ")
+        if not effectiveness.get(category):
+            effectiveness[category] = [(0, 1), (0, 1), (0, 1)]
 
         item = Item(name, start, end, duration, breakable, importance, category)
 
@@ -207,3 +219,7 @@ if __name__ == '__main__':
     f.seek(0)
     dump(calendar, f)
     f.close()
+
+    eff.seek(0)
+    dump(effectiveness, eff)
+    eff.close()
