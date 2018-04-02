@@ -63,10 +63,37 @@ class GCal:
             print('Storing credentials to ' + credential_path)
         return self.credentials
 
-    def create_event(self, name = "event", location = '', description = '', start = datetime.datetime.utcnow() + datetime.timedelta(days = 1), end = datetime.datetime.utcnow() + datetime.timedelta(days = 2)):
+    def create_event(self, name = "event", location = '', description = '', start = datetime.datetime.utcnow() + datetime.timedelta(days = 1), end = datetime.datetime.utcnow() + datetime.timedelta(days = 2), repeat = '', notification = []):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
+
+        pass in repetition as a string in the following format:
+        RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=10;WKST=SU;BYDAY=TU,TH
+        means every other week for 10 weeks on Tuesday and Thursdays
+        use any rules you want to have represented
+        with list:
+                        ( "FREQ" "=" freq ) (HOURLY,DAILY, WEEKLY, MONTHLY, YEARLY)
+                       / ( "UNTIL" "=" enddate )
+                       / ( "COUNT" "=" 1*DIGIT ) (how many to create)
+                       / ( "INTERVAL" "=" 1*DIGIT ) (ex. 2 would be every other)
+                       / ( "BYSECOND" "=" byseclist )
+                       / ( "BYMINUTE" "=" byminlist )
+                       / ( "BYHOUR" "=" byhrlist )
+                       / ( "BYDAY" "=" bywdaylist )
+                       / ( "BYMONTHDAY" "=" bymodaylist )
+                       / ( "BYYEARDAY" "=" byyrdaylist )
+                       / ( "BYWEEKNO" "=" bywknolist )
+                       / ( "BYMONTH" "=" bymolist )
+                       / ( "BYSETPOS" "=" bysplist )
+                       / ( "WKST" "=" weekday )
+
+        notifications take the form of an array:
+        [{'method': 'email', 'minutes': 24 * 60},
+        {'method': 'popup', 'minutes': 10},
+        ]
+        with possible methods: 'email', 'popup'
+        maximum number of notifications is 5
         """
         start_str = start.isoformat() + 'Z'
         end_str = end.isoformat() + 'Z'
@@ -82,10 +109,30 @@ class GCal:
             'dateTime': end_str,
             'timeZone': 'America/Los_Angeles',
           },
+           'recurrence': [
+           repeat
+           ],
+           'reminders': {
+           'useDefault': False,
+           'overrides': notification,
+           }
+
         }
 
         event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
+    def get_busy(self):
+        body = {
+      "timeMin": self.now.isoformat() + 'Z',
+      "timeMax": (self.now + datetime.timedelta(days = 7)).isoformat() + 'Z',
+      "timeZone": 'US/Central',
+      "items": [{"id": self.mainID}]
+      }
+        eventsResult = self.service.freebusy().query(body = body).execute()
+        return eventsResult
+
 
 if __name__ == '__main__':
     cal = GCal()
-    cal.create_event(name = "Cool!!")
+    #cal.create_event(name = "Cool!!", repeat = "RRULE:FREQ=WEEKLY", notification = [{'method': 'email', 'minutes': 24 * 60},
+    #  {'method': 'popup', 'minutes': 10}])
+    cal.get_busy()
