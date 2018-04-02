@@ -2,50 +2,63 @@
 Schedules the contents of a todo list into a calendar based on user's free time and other preferences. '''
 
 from agenda_gen import *
+from copy import copy
 from datetime import timedelta, datetime, date, time
+from pickle import dump, load
+from os.path import exists
+import parsedatetime as pdt
 
 class Item:
     '''An event created with or without scheduling information.
     name: str
     start, end: datetimes
-    duration: time in minutes
+    duration: timedelta
     breakable: boolean
     due: datetime
     effort, importance: int 1-4
-    category: string '''
+    category: string
+    item_type: str 'todo' or 'event'
+    '''
     def __init__(self, name, start = None, end = None, duration = None,\
-                importance = None, category = None):
+                breakable = False, importance = None, category = None, item_type = 'event'):
         self.name = name
         self.start = start
         self.end = end
         self.duration = duration
-        # self.breakable = breakable
+        self.breakable = breakable
         # self.due = due
         self.importance = importance
         self.category = category # may be replaced with tags?
+        self.item_type = item_type
 
     def __str__(self):
-        return "\t%f | %s from %s to %s" % (self.preference, self.name, self.start.time(), self.end.time())
+        return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
 
 class Calendar:
     def __init__(self, name):
         self.name = name
         self.days = {}
 
+    def print_days(self):
+        for day in self.days.values():
+            day.print_events()
+
 class Day:
     def __init__(self, date):
         self.date = date
         self.events = []
         self.free_times = [(min_to_dt(0), min_to_dt(1439))]
+        self.busy_times = []
 
     def print_events(self):
         print('Today is %s. You have %i events.' % (self.date, len(self.events)))
         for event in self.events:
             print(event)
 
-def schedule_day(day, task_list):
+def schedule_day(day, todo_list):
     '''Given a day and a list of tasks, schedules as many of the events as will fit
     in the free time that day. '''
+    task_list = copy(todo_list) # Isolates task breaking to this scheduling iteration
     free_times = day.free_times # List of available time slots in order of occurence
     while len(free_times) > 0 and len(todos) > 0: # While there's stuff to do and time to do it...
         time_slot = free_times[0]
@@ -54,6 +67,8 @@ def schedule_day(day, task_list):
         for task in task_list: # Make a list of tasks that could be completed during this time
             if task.duration <= avail_time:
                 fit_tasks.append(task)
+            elif task.breakable:
+                fit_tasks.append(partition(task, avail_time))
         if len(fit_tasks) == 0: # If no tasks fit in this block, delete it from the queue and skip it
             del free_times[0]
             continue
@@ -62,32 +77,46 @@ def schedule_day(day, task_list):
             task.preference = task.importance  + effectiveness[task.category][time_area][0]# - hours_til_due/48 or something
         fit_tasks.sort(key=lambda r:r.preference) # sort tasks by preference
         fit_tasks[0].start = time_slot[0] # Assign the most preffered task to start in the current time slot
-        fit_tasks[0].end = time_slot[0] + fit_tasks[0].duration # Assign end time
+        if hasattr(fit_tasks[0], partial_time): # If this is a partial task, split it into two parts
+            next_task = copy(fit_tasks[0])
+            next_task.duration = next_task.partial_time
+            remaining_task = copy(fit_tasks[0])
+            remaining_task.duration -= partial_time
+            task_list.replace(fit_tasks[0], remaining_task) # Shorten the task in the to-do list
+        else:
+            next_task = fit_tasks[0]
+            task_list.remove(fit_tasks[0])
+        next_task.end = next_task.start + next_task.duration # Assign end time
 
-        if fit_tasks[0].duration + min_event_time >= avail_time: # If a task will consume a time block, delete it entirely
+        if next_task.duration + min_event_time >= avail_time: # If a task will consume a time block, delete it entirely
             del free_times[0]
         else:
-            free_times[0] = (fit_tasks[0].end, time_slot[1]) # If there will be some time left over, make that the next time block
-        day.events.append(fit_tasks[0]) # Since the task fits and is scheduled, add it to the day's events
-        task_list.remove(fit_tasks[0]) # Remove it from the list of things to be scheduled
+            free_times[0] = (next_task.end, time_slot[1]) # If there will be some time left over, make that the next time block
+        day.events.append(next_task) # Since the task fits and is scheduled, add it to the day's events
 
-def add_item(name, duration, importance, category):
+def partition(task, avail_time):
+    if task.duration / 2 < min_event_time:
+        return None
+    elif task.duration - avail_time < min_event_time:
+        task.partial_time = task.duration - min_event_time
+        return task
+    else:
+        task.partial_time = avail_time
+        return task
+
+def add_item(todos, name, duration, breakable, importance, category):
     '''Creates a basic unscheduled item and adds it to the todo list'''
-    new_item = Item(name, duration = timedelta(minutes = duration), importance = importance, category = category)
+    new_item = Item(name, duration, breakable, importance, category)
     todos.append(new_item)
 
-calendar = Calendar('My Calendar')
-t = date(2004, 8, 9)
-today = Day(t) # In practice, these would be initialized and stored in the calendar long ahead of time
-calendar.days[t] = today
-
-busy_times = random_timeblocks(8) # In practice, this would come from the events scheduled today
-# print(busy_times)
-today.free_times = busy_to_free(busy_times)
-# print(today.free_times)
+def add_event(day, name, start, end, duration, breakable, importance, category):
+    '''Creates an event and adds it to the events for the given day'''
+    new_item = Item(name, start, end, duration, breakable, importance, category)
+    day.events.append(new_item)
 
 min_event_time = timedelta(minutes = 20) # This would be a user preference
-todos = random_events(20, 120, 4) # Make a random to-do list for testing
+default_duration = timedelta(minutes = 60)
+loc = 'calendars/'
 '''
 effectiveness: describes effectiveness/preference of working on 'task_type' during 'time_area'
 values from -1:1, init at (0, 1) for (value, n of values). preference updater adds or subtracts a value
@@ -96,6 +125,85 @@ against the scaled running average to change it.
 effectiveness = {'QEA': [(.5, 1), (0, 1), (-.5, 1)], 'softdes': [(-.5, 1), (0, 1), (.5, 1)], \
                 'eating': [(-.5, 1), (.5, 1), (-.5, 1)], 'nap': [(.5, 1), (0, 1), (.5, 1)]}
 
+parser = pdt.Calendar()
 
-schedule_day(today, todos) # repeated event needs to be passed as a string composed of params
-today.print_events()
+if __name__ == '__main__':
+    cal_name = input("Calendar name:\n>>> ")
+
+    if exists(cal_name):
+        print("Loading %s..." % cal_name)
+        f = open(loc + cal_name, 'rb+')
+        calendar = load(f)
+        calendar.print_days()
+    else:
+        print("Creating new calendar %s..." % cal_name)
+        f = open(loc + cal_name, 'wb+')
+        calendar = Calendar(cal_name)
+
+    now = datetime.now()
+    today = date.today()
+    d = input("Enter day to schedule events (hit Enter for today): ")
+    if d:
+        day = parser.parseDT(d, now)[0].date()
+    else:
+        day = today
+    print(day)
+    curr_day = Day(day)
+    calendar.days[day] = curr_day
+
+    todos = []
+
+    while True:
+        response = input("Add new items to this calendar? (y/n)\n>>> ")
+        if response[0].lower() == 'y':
+            pass
+        elif response[0].lower() == 'n':
+            break
+        name = input("Item name: ")
+        st = input("Start time (if known): ")
+        start = parser.parseDT(st, now)[0]
+        end = input("End time (if known): ")
+        end = parser.parseDT(end, now)[0]
+        dur = input("Duration (if known): ")
+        dur = parser.parseDT(dur, now)[0]
+        duration = dur - datetime.combine(today, time.min)
+        brk = input("Can this item be broken into shorter tasks? (y/n) ")
+        if response[0].lower() == 'y':
+            breakable = True
+        elif response[0].lower() == 'n':
+            breakable = False
+        importance = int(input("On a scale of 1-4, how important is this? "))
+        category = input("What category does this item go in? Enter '?' to list existing categories.\n>>> ")
+        if category == '?':
+            print(effectiveness.keys())
+            category = input("What category does this item go in? ")
+
+        item = Item(name, start, end, duration, breakable, importance, category)
+
+        if start and end:
+            item.duration = end - start
+        elif start and duration:
+            item.end = start + duration
+        elif start:
+            item.duration = default_duration
+            item.end = start + duration
+        else:
+            item.item_type = 'todo'
+
+        if item.item_type == 'todo':
+            todos.append(item)
+        else:
+            curr_day.events.append(item)
+            curr_day.busy_times.append((item.start, item.end))
+            curr_day.free_times = busy_to_free(curr_day.busy_times)
+
+    response2 = input("Would you like me to schedule your tasks for you? (y/n)\n>>> ")
+    if response2[0].lower() == 'y':
+        schedule_day(curr_day, todos)
+        curr_day.print_events()
+    elif response2[0].lower() == 'n':
+        pass
+
+    f.seek(0)
+    dump(calendar, f)
+    f.close()
