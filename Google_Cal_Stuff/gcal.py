@@ -120,10 +120,10 @@ class GCal:
         }
 
         event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
-    def get_busy(self):
+    def get_busy(self, time_min, time_max):
         body = {
-      "timeMin": self.now.isoformat() + 'Z',
-      "timeMax": (self.now + datetime.timedelta(days = 7)).isoformat() + 'Z',
+      "timeMin": time_min.isoformat() + 'Z', # self.now.isoformat() + 'Z',
+      "timeMax": time_max.isoformat() + 'Z', # (self.now + datetime.timedelta(days = 7)).isoformat() + 'Z',
       "timeZone": 'US/Central',
       "items": [{"id": self.mainID}]
       }
@@ -135,4 +135,4 @@ if __name__ == '__main__':
     cal = GCal()
     #cal.create_event(name = "Cool!!", repeat = "RRULE:FREQ=WEEKLY", notification = [{'method': 'email', 'minutes': 24 * 60},
     #  {'method': 'popup', 'minutes': 10}])
-    cal.get_busy()
+    print(cal.get_busy())

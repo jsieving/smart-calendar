@@ -6,7 +6,10 @@ from copy import copy
 from datetime import timedelta, datetime, date, time
 from pickle import dump, load
 from os.path import exists
+from sys import path
 import parsedatetime as pdt
+path.append('/home/jane/SmartCalendar/Google_Cal_Stuff')
+from gcal import GCal
 
 class Item:
     '''An event created with or without scheduling information.
@@ -49,6 +52,23 @@ class Day:
         self.events = []
         self.free_times = [(min_to_dt(0), min_to_dt(1439))]
         self.busy_times = []
+
+    def update_freebusy(self, source):
+        self.busy_times = []
+        time_min = datetime(date = date, time = time(0, 0, 0))
+        time_max = datetime(date = date, time = time(23, 59, 0))
+        response = gcal.get_busy(time_min, time_max)
+        gcal_busy = response['calendars']['primary']['busy']
+        for block in gcal_busy:
+            start = block['start'][0:-6]
+            starttime = strptime(start, '%Y-%m-%dT%H:%M:%S')
+            end = block['end'] # [0:-6]
+            endtime = strptime(end, '%Y-%m-%dT%H:%M:%S')
+            self.busy_times.append((starttime, endtime))
+        for block in events:
+            self.busy_times.append((block.start, block.end))
+        self.busy_times.sort()
+        self.free_times = busy_to_free(self.busy_times)
 
     def print_events(self):
         print('Today is %s. You have %i events.' % (self.date, len(self.events)))
@@ -118,6 +138,9 @@ def add_event(day, name, start, end, duration, breakable, importance, category):
     new_item = Item(name, start, end, duration, breakable, importance, category)
     day.events.append(new_item)
 
+def event_to_gcal(gcal, name, start, end):
+    gcal.create_event(name = name, start = start, end = end)
+
 min_event_time = timedelta(minutes = 20) # This would be a user preference
 default_duration = timedelta(minutes = 60)
 loc = 'calendars/'
@@ -130,6 +153,8 @@ against the scaled running average to change it.
 parser = pdt.Calendar()
 
 if __name__ == '__main__':
+    gcal = GCal()
+
     eff = open(loc + 'effectiveness_data', 'rb+')
     effectiveness = load(eff)
 
@@ -206,12 +231,13 @@ if __name__ == '__main__':
             todos.append(item)
         else:
             curr_day.events.append(item)
-            curr_day.busy_times.append((item.start, item.end))
-            curr_day.free_times = busy_to_free(curr_day.busy_times)
+            curr_day.update_freebusy(gcal)
+            event_to_gcal(gcal, name, start, end)
 
     response2 = input("Would you like me to schedule your tasks for you? (y/n)\n>>> ")
     if response2[0].lower() == 'y':
         schedule_day(curr_day, todos)
+        curr_day.update_freebusy(gcal)
         curr_day.print_events()
     elif response2[0].lower() == 'n':
         pass
