@@ -11,7 +11,15 @@ def index():
 def event():
     error = None
     if request.method == 'POST':
-        name, startTime, endTime = request.form['name'], request.form['startTime'], request.form['endTime']
+        print('works_0')
+        if request.form['breakable'] == '':
+            breakable = True
+        else:
+            print('works_1')
+            breakable = False
+        if len(request.form['name'] < 1) or request.form['startTime'] < 1:
+            return redirect(url_for('index'))
+        name, startTime, endTime, breakable = request.form['name'], request.form['startTime'],request.form['endTime'], request.form['breakable']
         return redirect(url_for('index'))
     return render_template('event.html', error=error)
 
