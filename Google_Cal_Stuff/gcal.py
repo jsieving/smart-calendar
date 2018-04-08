@@ -120,7 +120,11 @@ class GCal:
         }
 
         event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
-    def get_busy(self, time_min, time_max):
+    def get_busy(self, time_min =  datetime.datetime.utcnow(), time_max = ( datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
+        """
+        returns an array of dateTime tuples that give start and end of busy blocks
+        time_min is the start of the search, and time_max is the end
+        """
         body = {
       "timeMin": time_min.isoformat() + 'Z', # self.now.isoformat() + 'Z',
       "timeMax": time_max.isoformat() + 'Z', # (self.now + datetime.timedelta(days = 7)).isoformat() + 'Z',
@@ -130,9 +134,23 @@ class GCal:
         eventsResult = self.service.freebusy().query(body = body).execute()
         return eventsResult
 
+    def get_events(self):
+        """
+        returns a list of event items
+        """
+        events = self.service.events().list(calendarId=self.mainID, pageToken=None).execute()
+        return events
+
+    def delete_event(self, event):
+        """
+        takes an event object and deletes it from google calendar
+        """
+        self.service.events().delete(calendarId='primary', eventId= event['id']).execute()
+
 
 if __name__ == '__main__':
     cal = GCal()
-    #cal.create_event(name = "Cool!!", repeat = "RRULE:FREQ=WEEKLY", notification = [{'method': 'email', 'minutes': 24 * 60},
-    #  {'method': 'popup', 'minutes': 10}])
+    cal.create_event(name = "Cool!!", repeat = "RRULE:FREQ=DAILY;UNTIL=20001212", notification = [{'method': 'email', 'minutes': 24 * 60},
+      {'method': 'popup', 'minutes': 10}])
     print(cal.get_busy())
+    cal.get_events()
