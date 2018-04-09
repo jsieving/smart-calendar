@@ -1,0 +1,96 @@
+Time,04/09/18,04/10/18,04/11/18,04/12/18,04/13/18,04/14/18,04/15/18
+0,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+15,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+45,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+60,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+75,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+90,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+105,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+120,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+135,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+150,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+165,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+180,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+195,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+210,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+225,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+240,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+255,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+270,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+285,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+300,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+315,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+330,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+345,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+360,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+375,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+390,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+405,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+420,sleep,sleep,sleep,sleep,sleep,sleep,sleep
+435,morning routine,sleep,sleep,sleep,sleep,sleep,sleep
+450,morning routine,sleep,morning routine,morning routine,sleep,sleep,sleep
+465,breakfast,sleep,getting ready,getting ready,Laundry,sleep,morning routine
+480,breakfast,morning routine,breakfast,breakfast,morning routine,sleep,morning routine
+495,breakfast,getting ready,personal time,getting ready,morning routine,break,morning routine
+510,p&m,breakfast,getting ready,break,breakfast,morning routine ,morning routine
+525,office work,breakfast,getting ready,softDes,breakfast,morning routine ,formula
+540,transition,breakfast,transition,transition,transition,transition ,formula
+555,mechanics,reddit,mechanics,mechanics,softDes,breakfast ,formula
+570,mechanics,reddit,mechanics,mechanics,softDes,formula,formula
+585,mechanics,office work,mechanics,mechanics,softDes,formula,formula
+600,mechanics,transition,mechanics,mechanics,softDes,formula,formula
+615,mechanics,office work,mechanics,mechanics,softDes,breakfast,formula
+630,mechanics,office work,mechanics,mechanics,softDes,breakfast,formula
+645,break,transition,lin,lin,softDes,breakfast,formula
+660,lin,softDes,lin,lin,softDes,breakfast,formula
+675,lin,softDes,lin,lin,softDes,formula,formula
+690,lin,softDes,lin,lin,softDes,formula,formula
+705,lin,softDes,lin,lin,softDes,formula,breakfast
+720,lin,softDes ,lin,lin,personal time,formula,breakfast
+735,lin,lunch,lin,lin,Pool,formula,Pool
+750,lin,lunch,lin,lin,Pool,formula,Pool
+765,pool,Pool,lunch,lunch,lunch,formula,formula
+780,lunch,break,lunch,lunch,lunch,formula,break
+795,lunch,break,break,transition,personal time,break,break
+810,lunch,break,break,softDes,transition,break ,p&m
+825,p&m,softDes,p&m,p&m,softDes,lunch ,p&m
+840,p&m,softDes,p&m,p&m,softDes,break ,maple syrup
+855,p&m,softDes,p&m,p&m,softDes,break,p&m
+870,p&m,softDes,p&m,p&m,softDes,break,p&m
+885,p&m,softDes,p&m,p&m,softDes,break,break
+900,p&m,softDes,p&m,p&m,softDes,break,p&m
+915,p&m,Pool,p&m,p&m,break,break,p&m
+930,p&m,Pool,p&m,p&m,break,break,p&m
+945,p&m,Pool,p&m,p&m,break,formula ,frisbee
+960,p&m,break,p&m,p&m,break,formula ,frisbee
+975,p&m,break,p&m,p&m,break,formula ,frisbee
+990,p&m,break ,transition,transition,break,formula ,break
+1005,p&m,break ,break,break,break,formula ,mechanics 2
+1020,break,break ,break,softDes,break,transition,mechanics 2
+1035,dinner,studio 1,office work,softDes,break,break,mechanics 2
+1050,dinner,studio 1,dinner,dinner,break,break,mechanics 2
+1065,break,studio 1,transition,dinner,break,break,mechanics 2
+1080,p&m,studio 1,mechanics 1,dinner,break,break,mechanics 2
+1095,break,maple syrup,mechanics 1,Pool,break,break,mechanics 2
+1110,softDes,maple syrup,mechanics 1,Pool,break,sleep,mechanics 2
+1125,softDes,dinner,mechanics 1,Pool,break,dinner,dinner
+1140,transition,transition,mechanics 1,softDes ,break,dinner,dinner
+1155,formula,mechanics,mechanics 1,softDes,break,break,break
+1170,formula,mechanics ,mechanics 1,softDes,break,mechanics 2,mechanics 2
+1185,formula,mechanics ,mechanics 1,break,break,formula,formula
+1200,formula,mechanics ,mechanics 1,transition,break,formula,formula
+1215,formula,mechanics ,break,formula,break,Ava,formula
+1230,formula,mechanics ,break,formula,break,Ava,formula
+1245,formula,mechanics ,break,formula,break,Ava,formula
+1260,formula,mechanics ,break,formula,break,Ava,formula
+1275,office work,p&m,break,formula,break,formula,break
+1290,break,studio 1,break,formula,break,formula,break
+1305,softDes,studio 1,break,formula,break,formula,break
+1320,softDes,studio 1,break,formula,break,break,break
+1335,break,studio 1,break,break,break,formula,break
+1350,break,studio 1,break,break,break,office work,break
+1365,break,studio 1,break,break,break,office work,break
+1380,break,studio 1,p&m,break ,break,mechanics 2,break
+1395,break,studio 1,p&m,break,break,mechanics 2,studio 2
+1410,break,studio 1,p&m,softDes,break,mechanics 2,studio 2
+1425,sleep,studio 1,break,softDes,break,studio 2,studio 2
