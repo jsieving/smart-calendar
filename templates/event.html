@@ -1,0 +1,36 @@
+<!-- Name, duration, importance, category-->
+<html>
+  <head>
+    <title>Smart Calendar- Event Input</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link href="static/bootstrap.min.css" rel="stylesheet" media="screen"> -->
+  </head>
+  <body>
+    <div class="container">
+      <h1>Please Enter Event Data</h1>
+      <form action="" method="post">
+        <br>
+        <h3>Event Name</h3>
+        <input type="text" placeholder="Event Name" name="name" value="{{
+          request.form.name }}">
+        <h3>Date</h3>
+        <input type="date" placeholder="Date" name="date" value="{{
+          request.form.date }}">
+        <h3>Event Start Time</h3>
+        <input type="number" placeholder="Start Time" name="startTime" value="{{
+          request.form.startTime }}">
+        <h3>Event End Time</h3>
+        <input type="number" placeholder="End Time" name="endTime" value="{{
+          request.form.endTime}}">
+        <h3>Breakable</h3>
+        <input type="checkbox" placeholder="Breakable" name="breakable" value="{{
+          request.form.breakable}}">
+        <h3>Submit</h3>
+        <input class="btn btn-default" type="submit" value="submit">
+      </form>
+      <!-- {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+      {% endif %} -->
+    </div>
+  </body>
+</html>

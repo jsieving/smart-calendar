@@ -1,7 +1,8 @@
 
 from flask import Flask, render_template, redirect, url_for, request
 from eventClass import Event
-from gcal import GCal
+#import to_do.py
+# from gcal import GCal
 app = Flask(__name__)
 
 
@@ -33,7 +34,9 @@ def event():
         #Defines Variables
         name, date, startTime, endTime = (request.form['name'], request.form['date'],
                                                     request.form['startTime'],request.form['endTime'])
-        generateEvent(name, date, startTime, endTime, breakable)
+        # event = generateEvent(name, date, startTime, endTime, breakable)
+        # event_to_list(event)
+
         return redirect(url_for('index'))
     #Defines what html page runs when page is opened
     return render_template('event.html')
