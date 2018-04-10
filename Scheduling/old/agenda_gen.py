@@ -1,5 +1,6 @@
 ''' Created by Jane Sieving (jsieving) on 3/29/18.
-Provides helper functions for the scheduling algorithm, particularly to provide dummy data. '''
+Provides helper functions for the scheduling algorithm, particularly to provide dummy data.
+THIS IS OUTDATED, IMPORT SCHEDULE_HELPERS INSTEAD'''
 
 from random import sample, randint, choice
 from datetime import timedelta, datetime, date, time
