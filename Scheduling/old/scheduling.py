@@ -9,7 +9,7 @@ from os.path import exists
 from sys import path
 import parsedatetime as pdt
 path.append('/home/jane/SmartCalendar/Google_Cal_Stuff')
-from gcal import GCal
+# from gcal import GCal
 
 class Item:
     '''An event created with or without scheduling information.
