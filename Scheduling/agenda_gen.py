@@ -3,33 +3,13 @@ Provides helper functions for the scheduling algorithm, particularly to provide 
 
 from random import sample, randint, choice
 from datetime import timedelta, datetime, date, time
-
-class Item:
-    '''An event created with or without scheduling information.
-    name: str
-    start, end: datetimes
-    duration: time in minutes
-    breakable: boolean
-    due: datetime
-    effort, importance: int 1-4
-    category: string '''
-    def __init__(self, name, start = None, end = None, duration = None,\
-                importance = None, category = None):
-        self.name = name
-        self.start = start
-        self.end = end
-        self.duration = duration
-        # self.breakable = breakable
-        # self.due = due
-        self.importance = importance
-        self.category = category # may be replaced with tags?
-
-    def __str__(self):
-        return "\t%f | %s from %s to %s" % (self.preference, self.name, self.start.time(), self.end.time())
+# from scheduling import Item
 
 categories = ['QEA', 'softdes', 'eating', 'nap']
 
 def min_to_dt(minutes, d = date(1, 1, 1)):
+    if minutes == 1440:
+        minutes -= 1
     hours, minutes = divmod(minutes, 60)
     t = time(hours, minutes)
     dt = datetime.combine(d, t)
@@ -42,20 +22,20 @@ def min_to_timedelta(minutes):
 def min_from_dt(dt):
     return dt.hour * 60 + dt.minute
 
-def random_events(minimum, maximum, n):
-    '''Returns a list of n randomly created events with duration between the min and max,
-    no set time, a random importance and a random category. '''
-    agenda = []
-    for i in range(n):
-        start = None
-        end = None
-        duration = min_to_timedelta(randint(minimum, maximum))
-        importance = randint(1, 5)
-        category = choice(categories)
-        name = category + ' ' + str(randint(0, 10))
-        item = Item(name, start, end, duration, importance, category)
-        agenda.append(item)
-    return agenda
+# def random_events(minimum, maximum, n):
+#     '''Returns a list of n randomly created events with duration between the min and max,
+#     no set time, a random importance and a random category. '''
+#     agenda = []
+#     for i in range(n):
+#         start = None
+#         end = None
+#         duration = min_to_timedelta(randint(minimum, maximum))
+#         importance = randint(1, 5)
+#         category = choice(categories)
+#         name = category + ' ' + str(randint(0, 10))
+#         item = Item(name, start, end, duration, importance, category)
+#         agenda.append(item)
+#     return agenda
 
 def random_timeblocks(n, blocklength = 15):
     '''Returns a list of n non-overlapping timeblocks, which are (start, end) tuples
