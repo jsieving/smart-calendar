@@ -63,7 +63,9 @@ class GCal:
             print('Storing credentials to ' + credential_path)
         return self.credentials
 
-    def create_event(self, name = "event", location = '', description = '', start = datetime.datetime.utcnow() + datetime.timedelta(days = 1), end = datetime.datetime.utcnow() + datetime.timedelta(days = 2), repeat = '', notification = []):
+    def create_event(self, name ="event", location ='', description ='',
+                    start=datetime.datetime.utcnow() + datetime.timedelta(days = 1),
+                     end=datetime.datetime.utcnow() + datetime.timedelta(days=2), repeat='', notification=[]):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
@@ -120,7 +122,8 @@ class GCal:
         }
 
         event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
-    def get_busy(self, time_min =  datetime.datetime.utcnow(), time_max = ( datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
+    def get_busy(self, time_min =  datetime.datetime.utcnow(),
+                time_max = ( datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
         """
         returns an array of dateTime tuples that give start and end of busy blocks
         time_min is the start of the search, and time_max is the end
