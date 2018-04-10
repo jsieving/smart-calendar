@@ -9,6 +9,7 @@ from oauth2client.file import Storage
 
 import datetime
 
+from Event import Event
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -23,14 +24,14 @@ APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
 class GCal:
-    def __init__(self, mainID = "primary", secondID = "testing"):
+    def __init__(self, mainID = "primary", secondID = "testing", timeZone = 'America/New_York'):
         self.credentials = self.get_credentials()
         self.http = self.credentials.authorize(httplib2.Http())
         self.service = discovery.build('calendar', 'v3', http= self.http)
         self.now = datetime.datetime.utcnow()
         self.mainID = mainID
         self.secondID = secondID
-
+        self.timeZone = timeZone
 
 
 
@@ -103,11 +104,11 @@ class GCal:
           'description': description,
           'start': {
             'dateTime': start_str,
-            'timeZone': 'America/Los_Angeles',
+            'timeZone': timeZone,
           },
           'end': {
             'dateTime': end_str,
-            'timeZone': 'America/Los_Angeles',
+            'timeZone': timeZone,
           },
            'recurrence': [
            repeat
@@ -120,10 +121,10 @@ class GCal:
         }
 
         event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
-    def get_busy(self, time_min =  datetime.datetime.utcnow(), time_max = ( datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
+    def get_busy(self, time_min =  datetime.datetime.utcnow(), time_max = (datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
         """
         returns an array of dateTime tuples that give start and end of busy blocks
-        time_min is the start of the search, and time_max is the end
+        time_min is the start of the search, and time_max is the end (as datetime objects)
         """
         body = {
       "timeMin": time_min.isoformat() + 'Z', # self.now.isoformat() + 'Z',
@@ -138,9 +139,16 @@ class GCal:
         """
         returns a list of event items
         """
-        events = self.service.events().list(calendarId=self.mainID, pageToken=None).execute()
+        time1 = datetime.datetime.utcnow().isoformat() + 'Z'
+        time2 = (datetime.datetime.utcnow() + datetime.timedelta(days = 7)).isoformat() + 'Z'
+        events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1, timeMax = time2).execute()
         return events
 
+    def make_event_list(self, events):
+        list = []
+        for event in events["items"]:
+            list.append(Event(name = event['summary'], start = event['start']['dateTime'], end = event['end']['dateTime']))
+        return list
     def delete_event(self, event):
         """
         takes an event object and deletes it from google calendar
@@ -150,7 +158,9 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    cal.create_event(name = "Cool!!", repeat = "RRULE:FREQ=DAILY;UNTIL=20001212", notification = [{'method': 'email', 'minutes': 24 * 60},
-      {'method': 'popup', 'minutes': 10}])
-    print(cal.get_busy())
-    cal.get_events()
+    #cal.create_event(name = "Cool!!", repeat = "RRULE:FREQ=DAILY;UNTIL=20001212", notification = [{'method': 'email', 'minutes': 24 * 60},
+     # {'method': 'popup', 'minutes': 10}])
+    #print(cal.get_busy())
+    events = cal.get_events()
+    events = cal.make_event_list(events)
+    print(events)
