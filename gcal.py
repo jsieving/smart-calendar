@@ -10,6 +10,7 @@ from oauth2client.file import Storage
 import datetime
 
 from Event import Event
+from Scheduling.schedule_helpers import Item
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -150,7 +151,7 @@ class GCal:
     def make_event_list(self, events):
         list = []
         for event in events["items"]:
-            list.append(Event(name = event['summary'], start = event['start']['dateTime'], end = event['end']['dateTime']))
+            list.append(Item(name = event['summary'], start = event['start']['dateTime'], end = event['end']['dateTime']))
         return list
     def delete_event(self, event):
         """

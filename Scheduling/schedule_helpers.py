@@ -5,7 +5,7 @@ from csv import reader, writer
 from pickle import dump, load
 from random import sample, randint, choice
 from datetime import timedelta, datetime, date, time
-import GCal as gc
+#import GCal as gc
 
 class Item:
     '''An event created with or without scheduling information.
