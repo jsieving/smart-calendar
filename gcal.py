@@ -1,3 +1,7 @@
+"""
+GCal is a class that directly handles all API functions with Google Calendar, from authentication to event creation. All items passed out of GCal are in our own Event object format for increased usability for our functions. In essence, this class makes it so other classes do not have to deal with any of the intricacies of the API.
+"""
+
 from __future__ import print_function
 import httplib2
 import os
@@ -10,7 +14,7 @@ from oauth2client.file import Storage
 import datetime
 
 from Event import Event
-from Scheduling.schedule_helpers import Item
+#from Scheduling.schedule_helpers import Item
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -25,13 +29,17 @@ APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
 class GCal:
-    def __init__(self, mainID = "primary", secondID = "testing", timeZone = 'America/New_York'):
+    def __init__(self, mainID = "primary", timeZone = 'America/New_York'):
+        """
+        mainID is the id of the calendar that events are pulled from and created into
+        All users of google calendar have a default calendar with the id of "primary"
+        timeZone is a string that gets passed into the body of some API calls for event creation
+        """
         self.credentials = self.get_credentials()
         self.http = self.credentials.authorize(httplib2.Http())
         self.service = discovery.build('calendar', 'v3', http= self.http)
         self.now = datetime.datetime.utcnow()
         self.mainID = mainID
-        self.secondID = secondID
         self.timeZone = timeZone
 
 
@@ -141,7 +149,7 @@ class GCal:
 
     def get_events(self):
         """
-        returns a list of event items
+        Returns a list of event items, in the form of the Google events object
         """
         time1 = datetime.datetime.utcnow().isoformat() + 'Z'
         time2 = (datetime.datetime.utcnow() + datetime.timedelta(days = 7)).isoformat() + 'Z'
@@ -149,6 +157,9 @@ class GCal:
         return events
 
     def make_event_list(self, events):
+        """
+        Takes a list of Google events and turns it into our (more usable) event type
+        """
         list = []
         for event in events["items"]:
             list.append(Item(name = event['summary'], start = event['start']['dateTime'], end = event['end']['dateTime']))

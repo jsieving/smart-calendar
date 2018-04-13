@@ -1,4 +1,5 @@
-Smart Calendar
+#Smart Calendar
+
 A Google Calendar add-on that automatically schedules to do items based on the user’s schedule.
 
 How to Install
@@ -8,5 +9,5 @@ httplib2
 oauth2client
 apiclient
 
-How to Run
+##How to Run
 In terminal, run the file webinterface.py (under construction)
