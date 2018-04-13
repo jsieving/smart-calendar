@@ -5,13 +5,14 @@ from eventClass import Event
 # from gcal import GCal
 app = Flask(__name__)
 
+# TODO fix how web html is parsed into python
+# send that data to Google calendar
 
-def generateEvent(name, date, startTime, endTime, breakable):
-    submission = Event(name, date, startTime, endTime, breakable)
+def generateEvent(name, startTime, endTime, date, breakable):
+    submission = Event(name, startTime, endTime, date, breakable)
     print(submission)
     cal = GCal()
     cal.create_event(name=name, start=startTime )
-
 
 #Defines what occurs when the webpage is opened
 @app.route('/')
@@ -29,12 +30,13 @@ def event():
         else:
             breakable = True
         #Checks to see if all the boxes are filled
-        if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['endTime'])<1:
+        if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['endTime'])<1 or len(request.form['date'])<1:
             return redirect(url_for('index'))
         #Defines Variables
-        name, startTime, endTime = (request.form['name'], request.form['date'],
-                                                    request.form['startTime'],request.form['endTime'])
-        # event = generateEvent(name, date, startTime, endTime, breakable)
+        name, startTime, endTime, date = (request.form['name'],
+                                                    request.form['startTime'],request.form['endTime'], request.form['date'])
+        event = generateEvent(name, startTime, endTime, date, breakable)
+        print(event)
         # event_to_list(event)
 
         return redirect(url_for('index'))

@@ -1,3 +1,12 @@
-# Smart Calendar
+Smart Calendar
+A Google Calendar add-on that automatically schedules to do items based on the user’s schedule.
 
-This is the base repository for our final SoftDes project.
+How to Install
+Install the following packages:
+datetime
+httplib2
+oauth2client
+apiclient
+
+How to Run
+In terminal, run the file webinterface.py (under construction)
