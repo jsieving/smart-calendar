@@ -24,15 +24,15 @@ def index():
 def event():
     if request.method == 'POST':
         #Finds status of checkbox
-        if len(request.form) < 5:
+        if len(request.form) < 4:
             breakable = False
         else:
             breakable = True
         #Checks to see if all the boxes are filled
-        if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['date'])< 1 or len(request.form['endTime'])<1:
+        if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['endTime'])<1:
             return redirect(url_for('index'))
         #Defines Variables
-        name, date, startTime, endTime = (request.form['name'], request.form['date'],
+        name, startTime, endTime = (request.form['name'], request.form['date'],
                                                     request.form['startTime'],request.form['endTime'])
         # event = generateEvent(name, date, startTime, endTime, breakable)
         # event_to_list(event)
