@@ -28,11 +28,18 @@ def getLongestBlock(itemList):
         if event.duration > longestBlock:
             longestBlock = event.duration
     return longestBlock
+def createItemList(cal):
+    itemList = []
+    for day in cal.days.values():
+        for event in day.events:
+            itemList.append(event)
 
 
 
 if __name__ == "__main__":
     tempFile = open('testData/willslife', 'rb')
     testCal = load(tempFile)
-    testCal.print_days()
+    toDo = 0
+    #testCal.print_days()
+    createItemList(testCal)
     print(getSquareMatrix(9))
