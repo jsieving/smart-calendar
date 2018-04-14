@@ -70,9 +70,14 @@ class GCal:
             print('Storing credentials to ' + credential_path)
         return self.credentials
 
+    def create_RRULE(freq = 'WEEKLY', days = "", interval = 1):
+        rule = "FREQ=" + freq
+        if (days != ""):
+            rule.append("BYDAY=" + days)
+        rule.append("INTERVAL=" + interval)
     def create_event(self, name ="event", location ='', description ='',
                     start=datetime.datetime.utcnow() + datetime.timedelta(days = 1),
-                     end=datetime.datetime.utcnow() + datetime.timedelta(days=2), repeat='RRULE: FREQ=HOURLY;UNTIL=19901212', notification=[]):
+                     end=datetime.datetime.utcnow() + datetime.timedelta(days=2), repeat='FREQ=HOURLY;UNTIL=19901212', notification=[]):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
@@ -118,9 +123,9 @@ class GCal:
             'dateTime': end_str,
             'timeZone': self.timeZone,
           },
-           #'recurrence': [
-           #repeat
-           #],
+           'recurrence': [
+           repeat
+           ],
            'reminders': {
            'useDefault': False,
            'overrides': notification,
