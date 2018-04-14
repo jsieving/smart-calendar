@@ -75,7 +75,7 @@ class GCal:
 
     def create_event(self, name ="event", location ='', description ='',
                     start=datetime.datetime.utcnow() + datetime.timedelta(days = 1),
-                     end=datetime.datetime.utcnow() + datetime.timedelta(days=2), repeat='', notification=[]):
+                     end=datetime.datetime.utcnow() + datetime.timedelta(days=2), repeat='RRULE: FREQ=HOURLY;UNTIL=19901212', notification=[]):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
