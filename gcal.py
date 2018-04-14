@@ -13,8 +13,8 @@ from oauth2client.file import Storage
 
 import datetime
 
-from Event import Event
-#from Scheduling.schedule_helpers import Item
+from item_class import Item
+
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -29,7 +29,7 @@ APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
 class GCal:
-    def __init__(self, mainID = "primary", timeZone = 'America/New_York'):
+    def __init__(self, mainID = "primary", timeZone = 'America/Los_Angeles'):
         """
         mainID is the id of the calendar that events are pulled from and created into
         All users of google calendar have a default calendar with the id of "primary"
@@ -41,9 +41,6 @@ class GCal:
         self.now = datetime.datetime.utcnow()
         self.mainID = mainID
         self.timeZone = timeZone
-
-
-
 
     def get_credentials(self):
         """Gets valid user credentials from storage.
@@ -115,15 +112,15 @@ class GCal:
           'description': description,
           'start': {
             'dateTime': start_str,
-            'timeZone': timeZone,
+            'timeZone': self.timeZone,
           },
           'end': {
             'dateTime': end_str,
-            'timeZone': timeZone,
+            'timeZone': self.timeZone,
           },
-           'recurrence': [
-           repeat
-           ],
+           #'recurrence': [
+           #repeat
+           #],
            'reminders': {
            'useDefault': False,
            'overrides': notification,
@@ -132,6 +129,7 @@ class GCal:
         }
 
         event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
+
     def get_busy(self, time_min =  datetime.datetime.utcnow(),
                 time_max = ( datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
         """
@@ -164,6 +162,7 @@ class GCal:
         for event in events["items"]:
             list.append(Item(name = event['summary'], start = event['start']['dateTime'], end = event['end']['dateTime']))
         return list
+
     def delete_event(self, event):
         """
         takes an event object and deletes it from google calendar
