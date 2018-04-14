@@ -13,8 +13,6 @@ from oauth2client.file import Storage
 
 import datetime
 
-from item_class import Item
-
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -71,9 +69,6 @@ class GCal:
         return self.credentials
 
     def create_RRULE(freq = 'WEEKLY', days = "", interval = 1):
-        """
-        Makes a RRULE to be passed into create_event under repeat. Interval is how often something alternates (2 would be every other, 3 would be every third). Days should be entered as a single string of the format "SU,MO,TH", containing the days to be repeated.
-        """
         rule = "FREQ=" + freq
         if (days != ""):
             rule.append("BYDAY=" + days)
@@ -126,9 +121,9 @@ class GCal:
             'dateTime': end_str,
             'timeZone': self.timeZone,
           },
-           'recurrence': [
-           repeat
-           ],
+           #'recurrence': [
+           #repeat
+          # ],
            'reminders': {
            'useDefault': False,
            'overrides': notification,
@@ -180,9 +175,9 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    #cal.create_event(name = "Cool!!", repeat = "RRULE:FREQ=DAILY;UNTIL=20001212", notification = [{'method': 'email', 'minutes': 24 * 60},
+    cal.create_event(name = "Cool!!"),
      # {'method': 'popup', 'minutes': 10}])
     #print(cal.get_busy())
     events = cal.get_events()
-    events = cal.make_event_list(events)
+    #events = cal.make_event_list(events)
     print(events)

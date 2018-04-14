@@ -2,18 +2,20 @@
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
 #import to_do.py
-# from gcal import GCal
+from gcal import GCal
+import datetime
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
 # send that data to Google calendar
 
 def generateEvent(name, startTime, endTime, date, breakable):
-    submission = Item(name, startTime, endTime, date, breakable)
-    print(submission)
-    cal = GCal()
-    cal.create_event(name=name, start=startTime, end = endTime)
 
+    submission = Item(name, startTime, endTime, date, breakable)
+    #print(submission)
+    print(startTime)
+    cal.create_event(name=name, start= datetime.datetime.strptime(startTime, '%Y-%m-%dT%H:%M'), end = datetime.datetime.strptime(endTime, '%Y-%m-%dT%H:%M'))
+    #cal.create_event(name = name)
 #Defines what occurs when the webpage is opened
 @app.route('/')
 def index():
@@ -44,4 +46,6 @@ def event():
     return render_template('event.html')
 
 if __name__ == '__main__':
+    cal = GCal()
+
     app.run()
