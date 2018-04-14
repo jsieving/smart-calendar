@@ -19,6 +19,10 @@ class Calendar:
     def print_days(self):
         for day in self.days.values():
             day.print_events()
+    def getLongestBlock(self):
+        for day in self.days.values():
+            pass
+        pass
 
 class Day:
     '''A single day containing a list of events, list of free times and list of busy times'''
