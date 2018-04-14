@@ -7,8 +7,34 @@ from datetime import timedelta, datetime, date, time
 # from gcal import *
 from item_class import Item
 
-__all__ = ["Calendar", "Day", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
+__all__ = ["Item", "Calendar", "Day", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
             "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal"]
+
+class Item:
+    '''An event created with or without scheduling information.
+    name: str
+    start, end: datetimes
+    duration: timedelta
+    breakable: boolean
+    due: datetime (TBD)
+    effort, importance: int 1-4
+    category: string
+    item_type: str 'todo' or 'event'
+    '''
+    def __init__(self, name, start = None, end = None, duration = None,\
+                breakable = False, importance = None, category = None, item_type = 'event'):
+        self.name = name
+        self.start = start
+        self.end = end
+        self.duration = duration
+        self.breakable = breakable
+        # self.due = due
+        self.importance = importance
+        self.category = category # may be replaced with tags?
+        self.item_type = item_type
+
+    def __str__(self):
+        return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
 
 class Calendar:
     '''A schedule containing a set of Day objects'''

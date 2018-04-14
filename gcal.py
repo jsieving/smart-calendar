@@ -13,8 +13,6 @@ from oauth2client.file import Storage
 
 import datetime
 
-from item_class import Item
-
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
