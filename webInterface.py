@@ -12,7 +12,7 @@ def generateEvent(name, startTime, endTime, date, breakable):
     submission = Item(name, startTime, endTime, date, breakable)
     print(submission)
     cal = GCal()
-    cal.create_event(name=name, start=startTime )
+    cal.create_event(name=name, start=startTime, end = endTime)
 
 #Defines what occurs when the webpage is opened
 @app.route('/')
