@@ -106,7 +106,8 @@ def busy_to_free(busy_times):
 
 def cal_to_csv(calendar):
     '''Takes a calendar object and creates a csv file of all the events in it'''
-    csvfile = open('%s.csv' % calendar.name, 'w')
+    loc = 'testData/'
+    csvfile = open('%s%s.csv' % (loc, calendar.name), 'w')
     writer_ = writer(csvfile)
     headers = ['date', 'name', 'start', 'end', 'duration', 'breakable']
     writer_.writerow(headers)
@@ -119,7 +120,8 @@ def cal_to_csv(calendar):
 def csv_to_cal(cal_name):
     '''Takes a csv file formatted as a weekly log and creates a calendar object
     from it, then saves the calendar to a file.'''
-    csvfile = open('%s.csv' % cal_name)
+    loc = 'testData/'
+    csvfile = open('%s%s.csv' % (loc, cal_name))
     data = reader(csvfile)
     width = 8
     curr_activity = None
@@ -146,7 +148,6 @@ def csv_to_cal(cal_name):
                     name = row[i]
                     curr_item = Item(name, start, end, duration)
                     day.events.append(curr_item)
-    loc = 'testData/'
     f = open(loc + cal_name, 'wb+')
     f.seek(0)
     dump(cal, f)
