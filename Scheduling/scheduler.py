@@ -3,9 +3,6 @@ Schedules the contents of a todo list into a calendar based on user's free time 
 
 from copy import copy
 from os.path import exists
-from sys import path
-path.append('/home/jane/SmartCalendar/Google_Cal_Stuff')
-from gcal import GCal
 
 def schedule_day(day, todo_list):
     '''Given a day and a list of tasks, schedules as many of the events as will fit

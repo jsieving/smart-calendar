@@ -2,12 +2,15 @@
 Runs an interactive program in the command line to allow the user to schedule events.'''
 
 from os.path import exists
-from sys import path
 import parsedatetime as pdt
-path.append('/home/jane/SmartCalendar/Google_Cal_Stuff')
+from datetime import timedelta, datetime, date, time
+from pickle import dump, load
 from gcal import GCal
 from schedule_helpers import *
+from item_class import Item
+from scheduler import schedule_day
 
+loc = 'calendars/'
 parser = pdt.Calendar()
 
 if __name__ == '__main__':
@@ -37,7 +40,7 @@ if __name__ == '__main__':
     print(type(day))
     print(calendar.days.keys())
     if calendar.days.get(day): # Checks if the chosen day has already been defined
-        curr_day = calendar[day] # If so, retrieves it from the calendar.
+        curr_day = calendar.days[day] # If so, retrieves it from the calendar.
         curr_day.print_events()
     else:
         print("You have no schedule for this day.")
@@ -90,7 +93,7 @@ if __name__ == '__main__':
         else:
             curr_day.events.append(item)
             curr_day.update_freebusy(gcal)
-            event_to_gcal(gcal, name, start, end)
+            # event_to_gcal(gcal, name, start, end)
 
     response2 = input("Would you like me to schedule your tasks for you? (y/n)\n>>> ")
     if response2[0].lower() == 'y':
@@ -99,6 +102,8 @@ if __name__ == '__main__':
         curr_day.print_events()
     elif response2[0].lower() == 'n':
         pass
+
+    cal_to_csv(calendar)
 
     f.seek(0)
     dump(calendar, f)

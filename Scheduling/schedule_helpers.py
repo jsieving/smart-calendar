@@ -3,37 +3,15 @@ Contains class definitions and function definitions used for scheduling.'''
 
 from csv import reader, writer
 from pickle import dump, load
-from random import sample, randint, choice
 from datetime import timedelta, datetime, date, time
-#import GCal as gc
+# from gcal import *
+from item_class import Item
 
-class Item:
-    '''An event created with or without scheduling information.
-    name: str
-    start, end: datetimes
-    duration: timedelta
-    breakable: boolean
-    due: datetime (TBD)
-    effort, importance: int 1-4
-    category: string
-    item_type: str 'todo' or 'event'
-    '''
-    def __init__(self, name, start = None, end = None, duration = None,\
-                breakable = False, importance = None, category = None, item_type = 'event'):
-        self.name = name
-        self.start = start
-        self.end = end
-        self.duration = duration
-        self.breakable = breakable
-        # self.due = due
-        self.importance = importance
-        self.category = category # may be replaced with tags?
-        self.item_type = item_type
-
-    def __str__(self):
-        return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
+__all__ = ["Calendar", "Day", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
+            "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal"]
 
 class Calendar:
+    '''A schedule containing a set of Day objects'''
     def __init__(self, name):
         self.name = name
         self.days = {}
@@ -43,14 +21,17 @@ class Calendar:
             day.print_events()
 
 class Day:
+    '''A single day containing a list of events, list of free times and list of busy times'''
     def __init__(self, date):
         self.date = date
         self.events = []
         self.free_times = [(min_to_dt(0), min_to_dt(1439))]
         self.busy_times = []
 
-    def update_freebusy(self, include_events = True):
-        self.busy_times = busy_from_gcal(self.date, self.date)
+    def update_freebusy(self, gcal, include_events = True):
+        '''Gets a list of busy times from Google calendar and updates the free and
+        busy times accordingly. If include_events is True, accounts for events as busy times.'''
+        self.busy_times = busy_from_gcal(gcal, self.date, self.date)
         if include_events:
             for block in self.events:
                 self.busy_times.append((block.start, block.end))
@@ -58,12 +39,13 @@ class Day:
         self.free_times = busy_to_free(self.busy_times)
 
     def print_events(self):
-        print('Today is %s. You have %i events.' % (self.date, len(self.events)))
+        print('%s: %i events scheduled.' % (self.date, len(self.events)))
         for event in self.events:
             print(event)
 
 def min_to_dt(minutes, d = date(1, 1, 1)):
-    if minutes == 1440:
+    '''Converts a number of minutes and a day to a time in that day, as a datetime object'''
+    if minutes == 1440: # Prevents an issue when events end at midnight
         minutes -= 1
     hours, minutes = divmod(minutes, 60)
     t = time(hours, minutes)
@@ -71,15 +53,18 @@ def min_to_dt(minutes, d = date(1, 1, 1)):
     return dt
 
 def min_to_timedelta(minutes):
+    '''Converts a number of minutes to a timedelta object'''
     hours, minutes = divmod(minutes, 60)
     return timedelta(hours = hours, minutes = minutes)
 
 def min_from_dt(dt):
+    '''Converts a datetime to the number of minutes since the start of the day'''
     return dt.hour * 60 + dt.minute
 
 def busy_to_free(busy_times):
     '''Takes a list of timeblocks in a day and returns the list timeblocks that are not
-    covered, for example given a list of busy times it will return all unused times. '''
+    included, for example given a list of busy times it will return all free times.
+    It will work just as well to convert free to busy times.'''
     day = (min_to_dt(0), min_to_dt(1439))
     free_times = []
     for start, end in busy_times:
@@ -89,15 +74,20 @@ def busy_to_free(busy_times):
     return free_times
 
 def cal_to_csv(calendar):
+    '''Takes a calendar object and creates a csv file of all the events in it'''
     csvfile = open('%s.csv' % calendar.name, 'w')
-    writer = writer(csvfile)
+    writer_ = writer(csvfile)
     headers = ['date', 'name', 'start', 'end', 'duration', 'breakable']
-    writer.writerow(headers)
-    for date, e in calendar.days.items():
-        item = [date, e.name, e.start, e.end, e.duration, e.breakable]
+    writer_.writerow(headers)
+    for date, day in calendar.days.items():  #FIX THIS
+        for e in day.events:
+            item = [date, e.name, e.start, e.end, e.duration, e.breakable]
+            writer_.writerow(item)
     csvfile.close()
 
 def csv_to_cal(cal_name):
+    '''Takes a csv file formatted as a weekly log and creates a calendar object
+    from it, then saves the calendar to a file.'''
     csvfile = open('%s.csv' % cal_name)
     data = reader(csvfile)
     width = 8
@@ -108,9 +98,9 @@ def csv_to_cal(cal_name):
         for r, row in enumerate(data):
             if r == 0:
                 header = row[i].split('/')
-                date = date(int(header[2]), int(header[0]), int(header[1]))
-                day = Day(date)
-                cal.days[date] = day
+                date_ = date(int(header[2]), int(header[0]), int(header[1]))
+                day = Day(date_)
+                cal.days[date_] = day
             else:
                 start = min_to_dt(int(row[0]))
                 end = min_to_dt(int(row[0]) + 15)
@@ -154,18 +144,21 @@ def add_event(day, name, start, end, duration, breakable, importance, category):
     day.events.append(new_item)
 
 def event_to_gcal(gcal, name, start, end):
+    '''Pushes a simple event to Google Calendar'''
     gcal.create_event(name = name, start = start, end = end)
 
-def busy_from_gcal(first_day, last_day):
+def busy_from_gcal(gcal, first_day, last_day):
+    '''Gets all busy times within a range of days from Google Calendar, then
+    returns a list of busy time blocks.'''
     busy_times = []
-    time_min = datetime(date = first_day, time = time(0, 0, 0))
-    time_max = datetime(date = last_day, time = time(23, 59, 0))
-    response = gc.get_busy(time_min, time_max)
+    time_min = datetime.combine(date = first_day, time = time(0, 0, 0))
+    time_max = datetime.combine(date = last_day, time = time(23, 59, 0))
+    response = gcal.get_busy(time_min, time_max)
     gcal_busy = response['calendars']['primary']['busy']
     for block in gcal_busy:
         start = block['start'][0:-6]
-        starttime = strptime(start, '%Y-%m-%dT%H:%M:%S')
-        end = block['end'] # [0:-6]
-        endtime = strptime(end, '%Y-%m-%dT%H:%M:%S')
+        starttime = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
+        end = block['end'][0:-6]
+        endtime = datetime.strptime(end, '%Y-%m-%dT%H:%M:%S')
         busy_times.append((starttime, endtime))
     return busy_times
