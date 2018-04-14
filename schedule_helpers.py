@@ -19,6 +19,10 @@ class Calendar:
     def print_days(self):
         for day in self.days.values():
             day.print_events()
+    def getLongestBlock(self):
+        for day in self.days.values():
+            pass
+        pass
 
 class Day:
     '''A single day containing a list of events, list of free times and list of busy times'''
@@ -79,13 +83,49 @@ def cal_to_csv(calendar):
     writer_ = writer(csvfile)
     headers = ['date', 'name', 'start', 'end', 'duration', 'breakable']
     writer_.writerow(headers)
-    for date, day in calendar.days.items():  #FIX THIS
+    for date, day in calendar.days.items():
         for e in day.events:
             item = [date, e.name, e.start, e.end, e.duration, e.breakable]
             writer_.writerow(item)
     csvfile.close()
 
 def csv_to_cal(cal_name):
+    '''Takes a csv file formatted as a weekly log and creates a calendar object
+    from it, then saves the calendar to a file.'''
+    csvfile = open('%s.csv' % cal_name)
+    data = reader(csvfile)
+    width = 8
+    curr_activity = None
+    downtime = ['sleep', 'transition', 'break']
+    cal = Calendar(cal_name)
+    for i in range(1, width):
+        for r, row in enumerate(data):
+            if r == 0:
+                header = row[i].split('/')
+                date_ = date(int(header[2]), int(header[0]), int(header[1]))
+                day = Day(date_)
+                cal.days[date_] = day
+            else:
+                start = min_to_dt(int(row[0]))
+                end = min_to_dt(int(row[0]) + 15)
+                duration = timedelta(minutes = 15)
+                if row[i] in downtime:
+                    continue
+                if row[i] == curr_activity:
+                    curr_item.end = end
+                    curr_item.duration += duration
+                else:
+                    curr_activity = row[i]
+                    name = row[i]
+                    curr_item = Item(name, start, end, duration)
+                    day.events.append(curr_item)
+    loc = 'calendars/'
+    f = open(loc + cal_name, 'wb+')
+    f.seek(0)
+    dump(cal, f)
+    f.close()
+
+def csv_to_cal_alt(cal_name):
     '''Takes a csv file formatted as a weekly log and creates a calendar object
     from it, then saves the calendar to a file.'''
     csvfile = open('%s.csv' % cal_name)
