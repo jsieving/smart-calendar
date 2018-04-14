@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, redirect, url_for, request
-from item_class import Item
+from scheduleHelpers import Item
 #import to_do.py
 # from gcal import GCal
 app = Flask(__name__)
