@@ -1,5 +1,7 @@
 import numpy
 import random
+from scheduleHelpers import Item, Calendar
+from pickle import load, dump
 
 def getSquareMatrix(numBlocks):
     matrix = []
@@ -9,7 +11,16 @@ def getSquareMatrix(numBlocks):
             matrix[column].append('N/A')
     return matrix
 
-def getLongestBlock():
-    pass
+def getLongestBlock(itemList):
+    longestBlock = 15
+    for event in itemList:
+        if event.duration > longestBlock:
+            longestBlock = event.duration
+    return longestBlock
 
 print(getSquareMatrix(5))
+
+if __name__ == "__main__":
+    tempFile = open('testData/willslife', 'rb')
+    testCal = load(tempFile)
+    testCal.print_days()

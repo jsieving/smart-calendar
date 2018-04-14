@@ -6,7 +6,7 @@ import parsedatetime as pdt
 from datetime import timedelta, datetime, date, time
 from pickle import dump, load
 from gcal import GCal
-from schedule_helpers import *
+from scheduleHelpers import *
 from scheduler import schedule_day
 
 loc = 'testData/'
