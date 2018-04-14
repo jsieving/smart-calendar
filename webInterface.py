@@ -1,6 +1,6 @@
 
 from flask import Flask, render_template, redirect, url_for, request
-from eventClass import Event
+from item_class import Item
 #import to_do.py
 # from gcal import GCal
 app = Flask(__name__)
@@ -9,7 +9,7 @@ app = Flask(__name__)
 # send that data to Google calendar
 
 def generateEvent(name, startTime, endTime, date, breakable):
-    submission = Event(name, startTime, endTime, date, breakable)
+    submission = Item(name, startTime, endTime, date, breakable)
     print(submission)
     cal = GCal()
     cal.create_event(name=name, start=startTime )
