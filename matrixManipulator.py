@@ -3,11 +3,9 @@ import random
 from scheduleHelpers import Item, Calendar
 from pickle import load, dump
 
-def getSquareMatrix(block):
+def getCostMatrix(block):
     matrix = []
-    day = 96
-    if day % block != 0:
-        raise ValueError('Please enter a time that can divide into 96 evenly')
+    day = 86400
     numSegments = int(day/block)
     for column in range(numSegments):
         matrix.append([])
@@ -15,31 +13,53 @@ def getSquareMatrix(block):
             matrix[column].append('N/A')
     return matrix
 
+def getTaskList(timeSlots, itemList):
+    timeBlock = timeSlots[1] - timeSlots[0]
+    itemDuration = []
+    retList = []
+    for i in range(len(itemList)):
+        itemDuration.append(itemList[i].duration.total_seconds())
+    for i in range(len(timeSlots)):
+        if itemDuration[i] != timeBlock:
+            retList.append('break')
+        else:
+            retList.append(itemList[i])
+    return(retList)
+
+
 def getListofTime(block):
-    day = 96
+    day = 86400
     if day % block != 0:
-        raise ValueError('Please enter a time that can divide into 96 evenly')
+        raise ValueError('Please enter a time that can divide into {} evenly'.format(day))
     else:
         return numpy.linspace(0, day-block, day/block)
 
 def getLongestBlock(itemList):
-    longestBlock = 15
+    longestBlock = 900
     for event in itemList:
-        if event.duration > longestBlock:
-            longestBlock = event.duration
+        if event.duration.total_seconds() > longestBlock:
+            longestBlock = event.duration.total_seconds()
     return longestBlock
-def createItemList(cal):
+
+def getItemList(cal):
     itemList = []
     for day in cal.days.values():
         for event in day.events:
             itemList.append(event)
+    return itemList
 
-
+def main(itemList):
+    timeBlock = getLongestBlock(itemList)
+    timeList = getListofTime(timeBlock)
+    taskList = getTaskList(timeList, testList)
+    costMatrix = getCostMatrix(timeBlock)
+    print('list of time slots:', timeList)
+    print('list of events:', taskList)
+    print('cost matrix:', costMatrix)
 
 if __name__ == "__main__":
     tempFile = open('testData/willslife', 'rb')
     testCal = load(tempFile)
-    toDo = 0
-    #testCal.print_days()
-    createItemList(testCal)
-    print(getSquareMatrix(9))
+    testList = getItemList(testCal)
+    del(testList[8])
+    main(testList)
