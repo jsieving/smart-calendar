@@ -29,14 +29,11 @@ def runSorter():
     print('Some input costs are too large and may cause an integer overflow.')
 
 def getResults():
+    '''
+    This function takes the results from runSorter and
+    creates the appropriate google calendar events. 
+    '''
     pass
-def create_data_array():
-    cost = []
-    print(numpy.linspace(0,5,6))
-    for i in numpy.linspace(0,5,6):
-        pass#cost.append([i])
-    print(cost)
-    return cost
 
 
 if __name__ == "__main__":

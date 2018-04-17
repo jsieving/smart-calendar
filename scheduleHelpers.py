@@ -4,10 +4,11 @@ Contains class definitions and function definitions used for scheduling.'''
 from csv import reader, writer
 from pickle import dump, load
 from datetime import timedelta, datetime, date, time
-# from gcal import *
 
 __all__ = ["Item", "Calendar", "Day", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
             "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal"]
+## Determines which functions are imported by 'import *'. If you add or change functions,
+## make sure that is reflected here.
 
 class Item:
     '''An event created with or without scheduling information.
@@ -123,31 +124,30 @@ def csv_to_cal(cal_name):
     loc = 'testData/'
     csvfile = open('%s%s.csv' % (loc, cal_name))
     data = reader(csvfile)
-    width = 8
-    curr_activity = None
-    downtime = ['sleep', 'transition', 'break']
     cal = Calendar(cal_name)
-    for i in range(1, width):
-        for r, row in enumerate(data):
-            if r == 0:
-                header = row[i].split('/')
-                date_ = date(int(header[2]), int(header[0]), int(header[1]))
-                day = Day(date_)
-                cal.days[date_] = day
-            else:
-                start = min_to_dt(int(row[0]))
-                end = min_to_dt(int(row[0]) + 15)
-                duration = timedelta(minutes = 15)
-                if row[i] in downtime:
-                    continue
-                if row[i] == curr_activity:
-                    curr_item.end = end
-                    curr_item.duration += duration
-                else:
-                    curr_activity = row[i]
-                    name = row[i]
-                    curr_item = Item(name, start, end, duration)
-                    day.events.append(curr_item)
+    for r, row in enumerate(data):
+        if r == 0:
+            continue
+        Y, m, d = row[0].split('-')
+        date_ = date(int(Y), int(m), int(d))
+        if cal.days.get(date_): # Existing Day
+            day = cal.days[date_]
+        else: # Create new Day
+            day = Day(date_)
+            cal.days[date_] = day
+        name = row[1]
+        start = datetime.strptime(row[2], '%Y-%m-%d %H:%M:%S')
+        end = datetime.strptime(row[3], '%Y-%m-%d %H:%M:%S')
+        H, M, S = row[4].split(':')
+        duration = timedelta(hours = int(H), minutes = int(M), seconds = int(S))
+        if row[5] == 'True':
+            breakable = True
+        else:
+            breakable = False
+
+        item = Item(name, start, end, duration, breakable)
+        day.events.append(item)
+
     f = open(loc + cal_name, 'wb+')
     f.seek(0)
     dump(cal, f)
