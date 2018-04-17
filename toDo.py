@@ -7,15 +7,7 @@ from scheduleHelpers import Item
 Adds event object to a list and adds list to file
 """
 
-my_event = Item('math')
-# my_list = []
-# my_list.append(my_event)
-# print(my_list)
-
-# my_list = []
-# list_obj = open("testData/listData", "wb")
-# pickle.dump(my_list, list_obj)
-# list_obj.close()
+my_event = Item('hw')
 
 def make_list(item):
     try:
@@ -30,6 +22,7 @@ def make_list(item):
 
     foo.append(item)
     print(foo)
+    f.seek(0)
     dump(foo, f)
     f.close()
     print("added to file")
@@ -39,5 +32,3 @@ def make_list(item):
     f.close()
 
 make_list(my_event)
-list_obj = open("testData/listData", "r")
-print(list_obj)
