@@ -1,9 +1,10 @@
 
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
-#import to_do.py
+from toDo import make_list
 from gcal import GCal
 import datetime
+
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
@@ -39,7 +40,7 @@ def event():
                                                     request.form['startTime'],request.form['endTime'], request.form['date'])
         event = generateEvent(name, startTime, endTime, date, breakable)
         print(event)
-        # event_to_list(event)
+        make_list(event)
 
         return redirect(url_for('index'))
     #Defines what html page runs when page is opened
