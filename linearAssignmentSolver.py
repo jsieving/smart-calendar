@@ -2,9 +2,10 @@
 from __future__ import print_function
 from ortools.graph import pywrapgraph
 import time, numpy
+import matrixManipulator
 
 def runSorter():
-  cost = create_data_array()
+  cost = matrixManipulator.main()
   rows = len(cost)
   cols = len(cost[0])
 
@@ -18,7 +19,7 @@ def runSorter():
     print('Total cost = ', assignment.OptimalCost())
     print()
     for i in range(0, assignment.NumNodes()):
-      print('Worker %d assigned to task %d.  Cost = %d' % (
+      print('Time Slot %d assigned to task %d.  Cost = %d' % (
             i,
             assignment.RightMate(i),
             assignment.AssignmentCost(i)))
@@ -33,13 +34,13 @@ def create_data_array():
     cost = []
     print(numpy.linspace(0,5,6))
     for i in numpy.linspace(0,5,6):
-        #cost.append([i])
+        pass#cost.append([i])
     print(cost)
     return cost
 
 
 if __name__ == "__main__":
-  create_data_array()
+  #create_data_array()
   start_time = time.clock()
   runSorter()
   print()

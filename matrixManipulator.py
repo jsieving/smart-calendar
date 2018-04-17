@@ -17,11 +17,13 @@ def getTaskList(timeSlots, itemList):
     retList = []
     for i in range(len(itemList)):
         itemDuration.append(itemList[i].duration.total_seconds())
-    for i in range(len(timeSlots)):
-        if itemDuration[i] != timeBlock or i > len(itemList):
-            retList.append('break')
-        else:
-            retList.append(itemList[i])
+
+    for x in range(len(itemDuration)):
+        if itemDuration[x] == timeBlock:
+            retList.append(itemList[x])
+
+    while(len(retList) < len(timeSlots)):
+        retList.append('break')
     return(retList)
 
 
@@ -51,13 +53,19 @@ def getItemList(cal):
 def populateMatrix(timeList, taskList, matrix):
     for y in range(len(taskList)):
         for x in range(len(timeList)):
-            if x == y:
-                matrix[x][y] = 1
-            else:
-                matrix[x][y] = 0
+            matrix[x][y] = random.randint(0,20)
     return matrix
 
-def main(itemList):
+def main():#will usually call a variable itemList):
+
+    #Segment of code for debugging purposes only
+    tempFile = open('testData/willslife', 'rb')
+    testCal = load(tempFile)
+    testList = getItemList(testCal)
+    #del(testList[8])
+    itemList = testList
+    #above Segmenet for deugging purposes only
+
     timeBlock = getLongestBlock(itemList)
     timeList = getListofTime(timeBlock)
     taskList = getTaskList(timeList, testList)
@@ -67,12 +75,15 @@ def main(itemList):
     print('list of events:', taskList)
     print('cost matrix:', costMatrix)
 
+    return costMatrix
+
 if __name__ == "__main__":
     tempFile = open('testData/willslife', 'rb')
     testCal = load(tempFile)
     testList = getItemList(testCal)
-    del(testList[8])
+    #del(testList[8])
+    print(testList[8].duration.total_seconds())
     #print(getListofTime(4000))
     # for i in testList:
         # print(i)
-    main(testList)
+    matrix = main()
