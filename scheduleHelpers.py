@@ -153,7 +153,7 @@ def csv_to_cal(cal_name):
     dump(cal, f)
     f.close()
 
-def csv_to_cal_alt(cal_name):
+def csv_to_cal_alt(cal_name): # This is literally only used to convert Will's life
     '''Takes a csv file formatted as a weekly log and creates a calendar object
     from it, then saves the calendar to a file.'''
     csvfile = open('%s.csv' % cal_name)
@@ -210,6 +210,19 @@ def add_event(day, name, start, end, duration, breakable, importance, category):
     '''Creates an event and adds it to the events for the given day'''
     new_item = Item(name, start, end, duration, breakable, importance, category)
     day.events.append(new_item)
+
+def extract_activities(calendar):
+    '''Takes a calendar and returns a dictionary of activities and lists of events
+    which are categorized as each activity'''
+    all_events = []
+    for date, day in calendar.days.items():
+        for event in day.events:
+            events.weekday = date.weekday()
+            all_events.append(item)
+    activities = {}
+    for event in all_events:
+        activity = categorize(event) ### WRITE THIS
+        if activities.get(activity):
 
 def event_to_gcal(gcal, name, start, end):
     '''Pushes a simple event to Google Calendar'''
