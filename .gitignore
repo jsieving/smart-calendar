@@ -1,4 +1,4 @@
 #Files to ignore
 /Google_Cal_Stuff/client_secret.json
 /__pycache__
-/testData
+/testData/listData
