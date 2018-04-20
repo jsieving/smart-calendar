@@ -11,9 +11,9 @@ app = Flask(__name__)
 # TODO fix how web html is parsed into python
 # send that data to Google calendar
 
-def generateEvent(name, startTime, endTime, date, breakable):
+def generateEvent(name, startTime, endTime, breakable):
 
-    submission = Item(name, startTime, endTime, date, breakable)
+    submission = Item(name, startTime, endTime, breakable)
     #print(submission)
     print(startTime)
     start = datetime.datetime.strptime(startTime, '%Y-%m-%dT%H:%M')
@@ -39,12 +39,12 @@ def event():
         else:
             breakable = True
         #Checks to see if all the boxes are filled
-        if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['endTime'])<1 or len(request.form['date'])<1:
+        if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['endTime'])<1:
             return redirect(url_for('index'))
         #Defines Variables
-        name, startTime, endTime, date = (request.form['name'],
-                                                    request.form['startTime'],request.form['endTime'], request.form['date'])
-        event = generateEvent(name, startTime, endTime, date, breakable)
+        name, startTime, endTime= (request.form['name'],
+                                                    request.form['startTime'],request.form['endTime'])
+        event = generateEvent(name, startTime, endTime, breakable)
         print(event)
         make_list(event)
 
