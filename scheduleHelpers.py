@@ -45,12 +45,15 @@ class Calendar:
     def print_days(self):
         for day in self.days.values():
             day.print_events()
+
     def getLongestBlock(self):
-        longestBlock = 15
+        '''Gets the length of the longest event in a calendar.'''
+        longestBlock = timedelta(minutes = 15)
         for day in self.days.values():
-            for event in day:
-                pass
-        pass
+            for event in day.events:
+                if event.duration > longestBlock:
+                    longestBlock = event.duration
+        return longestBlock
 
 class Day:
     '''A single day containing a list of events, list of free times and list of busy times'''
@@ -211,18 +214,35 @@ def add_event(day, name, start, end, duration, breakable, importance, category):
     new_item = Item(name, start, end, duration, breakable, importance, category)
     day.events.append(new_item)
 
+def categorize(event):
+    '''Takes an Item and returns a string of what category it falls into.'''
+    name = event.name.lower()
+    a = "0123456789,.!?/()-'\""
+    for char in a:
+        name.replace(char, '')
+    return name
+
 def extract_activities(calendar):
-    '''Takes a calendar and returns a dictionary of activities and lists of events
-    which are categorized as each activity'''
+    '''Takes a calendar and creates files for each activity. Each file is a pickled
+    list of the events in that activity.'''
     all_events = []
+    loc = 'testData/'
     for date, day in calendar.days.items():
         for event in day.events:
             events.weekday = date.weekday()
             all_events.append(item)
     activities = {}
     for event in all_events:
-        activity = categorize(event) ### WRITE THIS
-        if activities.get(activity):
+        act = categorize(event)
+        if activities.get(act):
+            activities[act].append(event)
+        else
+            activities[act] = [event]
+    for act, events in activities.items():
+        f = open(loc + act, 'wb+')
+        f.seek(0)
+        dump(events, f)
+        f.close()
 
 def event_to_gcal(gcal, name, start, end):
     '''Pushes a simple event to Google Calendar'''
