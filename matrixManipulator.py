@@ -40,7 +40,7 @@ def getTaskList(timeSlots, itemList):
     itemDuration = []
     retList = []
     for i in range(len(itemList)):
-        itemDuration.append(itemList[i].duration.total_seconds())
+        itemDuration.append(itemList[i].duration.total_seconds()/60)
 
     for x in range(len(itemDuration)):
         if itemDuration[x] == timeBlock:
@@ -62,7 +62,7 @@ def getListofTime(block):
     block: length of each time block.
     return: list of time blocks.
     """
-    day = 86400
+    day = 1440
     if day % block != 0:
         divisions = int(day/block)
         return numpy.linspace(0, block*(divisions), divisions+1)
@@ -78,10 +78,10 @@ def getLongestBlock(itemList):
     itemList: list of events that need to be scheduled
     return: integer representing the number of seconds in the longest event
     """
-    longestBlock = 900
+    longestBlock = 15
     for event in itemList:
-        if event.duration.total_seconds() > longestBlock:
-            longestBlock = event.duration.total_seconds()
+        if event.duration.total_seconds()/60 > longestBlock:
+            longestBlock = event.duration.total_seconds()/60
     return longestBlock
 
 #This function is used a temporary placeholder for the to-do list code
@@ -121,7 +121,7 @@ def main(itemList):
     tempFile = open('testData/willslife', 'rb')
     testCal = load(tempFile)
     testList = getItemList(testCal)
-    #del(testList[8])
+    del(testList[8])
     itemList = testList
     #above Segmenet for debugging purposes only
 
@@ -132,7 +132,12 @@ def main(itemList):
     costMatrix = getCostMatrix(len(timeList))
     costMatrix = populateMatrix(timeList, taskList, costMatrix)
     print('list of time slots:', timeList)
-    print('list of events:', taskList)
+    print('list of events:')
+    for i in taskList:
+        if i == 'break':
+            print('break')
+        else:
+            print(i.name)
     print('cost matrix:', costMatrix)
 
     return costMatrix
@@ -142,7 +147,7 @@ if __name__ == "__main__":
     testCal = load(tempFile)
     testList = getItemList(testCal)
     #del(testList[8])
-    print(testList[8].duration.total_seconds())
+    print(testList[8].duration.total_seconds()/60)
     #print(getListofTime(4000))
     # for i in testList:
         # print(i)

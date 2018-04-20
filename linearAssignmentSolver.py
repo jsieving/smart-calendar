@@ -5,7 +5,7 @@ import time, numpy
 import matrixManipulator
 
 def runSorter():
-  cost = matrixManipulator.main()
+  cost = matrixManipulator.main('temp')
   rows = len(cost)
   cols = len(cost[0])
 
@@ -31,8 +31,9 @@ def runSorter():
 def getResults():
     '''
     This function takes the results from runSorter and
-    creates the appropriate google calendar events. 
+    creates the appropriate google calendar events.
     '''
+
     pass
 
 

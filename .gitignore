@@ -1,2 +1,4 @@
 #Files to ignore
 /Google_Cal_Stuff/client_secret.json
+/api
+client_secret.json
