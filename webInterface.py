@@ -11,9 +11,9 @@ app = Flask(__name__)
 # TODO fix how web html is parsed into python
 # send that data to Google calendar
 
-def generateEvent(name, startTime, endTime, breakable):
+def generateEvent(name, startTime, endTime):
 
-    submission = Item(name, startTime, endTime, breakable)
+    submission = Item(name, startTime, endTime)
     #print(submission)
     print(startTime)
     start = datetime.datetime.strptime(startTime, '%Y-%m-%dT%H:%M')
@@ -44,7 +44,7 @@ def event():
         #Defines Variables
         name, startTime, endTime= (request.form['name'],
                                                     request.form['startTime'],request.form['endTime'])
-        event = generateEvent(name, startTime, endTime, breakable)
+        event = generateEvent(name, startTime, endTime)
         print(event)
         make_list(event)
 
