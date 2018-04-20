@@ -1,5 +1,9 @@
 """
-GCal is a class that directly handles all API functions with Google Calendar, from authentication to event creation. All items passed out of GCal are in our own Event object format for increased usability for our functions. In essence, this class makes it so other classes do not have to deal with any of the intricacies of the API.
+GCal is a class that directly handles all API functions with Google Calendar,
+ from authentication to event creation. All items passed out of GCal are in our
+ own Event object format for increased usability for our functions. In essence,
+ this class makes it so other classes do not have to deal with any of the
+ intricacies of the API.
 """
 
 from __future__ import print_function
