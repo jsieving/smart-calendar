@@ -6,7 +6,8 @@ from pickle import dump, load
 from datetime import timedelta, datetime, date, time
 
 __all__ = ["Item", "Calendar", "Day", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
-            "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal"]
+            "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal",
+            "categorize", "extract_activities"]
 ## Determines which functions are imported by 'import *'. If you add or change functions,
 ## make sure that is reflected here.
 
