@@ -1,3 +1,8 @@
 #Files to ignore
 /Google_Cal_Stuff/client_secret.json
+<<<<<<< HEAD
+=======
+/__pycache__
+/testData/listData
+>>>>>>> 20b0d654ec0ef6d332013f7adfa60158c36c8d7f
 client_secret.json

@@ -1,5 +1,9 @@
 """
-GCal is a class that directly handles all API functions with Google Calendar, from authentication to event creation. All items passed out of GCal are in our own Event object format for increased usability for our functions. In essence, this class makes it so other classes do not have to deal with any of the intricacies of the API.
+GCal is a class that directly handles all API functions with Google Calendar,
+ from authentication to event creation. All items passed out of GCal are in our
+ own Event object format for increased usability for our functions. In essence,
+ this class makes it so other classes do not have to deal with any of the
+ intricacies of the API.
 """
 
 from __future__ import print_function
@@ -115,11 +119,9 @@ class GCal:
           'description': description,
           'start': {
             'dateTime': start_str,
-            'timeZone': self.timeZone,
           },
           'end': {
             'dateTime': end_str,
-            'timeZone': self.timeZone,
           },
            #'recurrence': [
            #repeat
@@ -142,7 +144,6 @@ class GCal:
         body = {
       "timeMin": time_min.isoformat() + 'Z', # self.now.isoformat() + 'Z',
       "timeMax": time_max.isoformat() + 'Z', # (self.now + datetime.timedelta(days = 7)).isoformat() + 'Z',
-      "timeZone": 'US/Central',
       "items": [{"id": self.mainID}]
       }
         eventsResult = self.service.freebusy().query(body = body).execute()

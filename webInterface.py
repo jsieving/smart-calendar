@@ -4,6 +4,7 @@ from scheduleHelpers import Item
 from toDo import make_list
 from gcal import GCal
 import datetime
+import time
 
 app = Flask(__name__)
 
@@ -15,7 +16,12 @@ def generateEvent(name, startTime, endTime, date, breakable):
     submission = Item(name, startTime, endTime, date, breakable)
     #print(submission)
     print(startTime)
-    cal.create_event(name=name, start= datetime.datetime.strptime(startTime, '%Y-%m-%dT%H:%M'), end = datetime.datetime.strptime(endTime, '%Y-%m-%dT%H:%M'))
+    start = datetime.datetime.strptime(startTime, '%Y-%m-%dT%H:%M')
+    end = datetime.datetime.strptime(endTime, '%Y-%m-%dT%H:%M')
+    offset = time.gmtime().tm_hour - time.localtime().tm_hour
+    start = start + datetime.timedelta(hours = offset)
+    end = end + datetime.timedelta(hours = offset)
+    cal.create_event(name=name, start= start, end = end)
     #cal.create_event(name = name)
 #Defines what occurs when the webpage is opened
 @app.route('/')
