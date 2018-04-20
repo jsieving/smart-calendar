@@ -7,7 +7,7 @@ from scheduleHelpers import Item
 Adds event object to a list and adds list to file
 """
 
-my_event = Item('hw')
+my_event = Item('college')
 
 def make_list(item):
     try:
