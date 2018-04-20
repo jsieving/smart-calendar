@@ -236,7 +236,7 @@ def extract_activities(calendar):
         act = categorize(event)
         if activities.get(act):
             activities[act].append(event)
-        else
+        else:
             activities[act] = [event]
     for act, events in activities.items():
         f = open(loc + act, 'wb+')
