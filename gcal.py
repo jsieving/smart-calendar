@@ -119,11 +119,9 @@ class GCal:
           'description': description,
           'start': {
             'dateTime': start_str,
-            'timeZone': self.timeZone,
           },
           'end': {
             'dateTime': end_str,
-            'timeZone': self.timeZone,
           },
            #'recurrence': [
            #repeat
@@ -146,7 +144,6 @@ class GCal:
         body = {
       "timeMin": time_min.isoformat() + 'Z', # self.now.isoformat() + 'Z',
       "timeMax": time_max.isoformat() + 'Z', # (self.now + datetime.timedelta(days = 7)).isoformat() + 'Z',
-      "timeZone": 'US/Central',
       "items": [{"id": self.mainID}]
       }
         eventsResult = self.service.freebusy().query(body = body).execute()
