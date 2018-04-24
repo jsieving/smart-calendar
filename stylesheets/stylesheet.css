@@ -57,7 +57,7 @@ a {
   color: #fff;
   text-align: center;
   background-color: #000000;
-  background-image: url("./mario3.png");}
+  background: url("./mario3.png");}
 .page-header-text {
   color: #fff;
   text-align: center;}
