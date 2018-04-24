@@ -26,3 +26,4 @@ In terminal, run the webInterface file (under construction) and follow the instr
 ```
 python webInterface.py
 ```
+Link to project website: https://jsieving.github.io/smart-calendar/
