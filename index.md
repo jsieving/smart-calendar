@@ -6,6 +6,8 @@ This section is a work in progress! At the current moment, the user should run w
 ### Our Tech
 Our frontend is still very much in progress! Please check back for updates.
 
+### Welcome to GitHub Pages.
+
 Our backend is written in python, and relies heavily and matrix assignment algorithms. We have created our own algorithm, based off of SciPy's LinearAssignmentSum, which batches tasks in order of priority, then assigns them a few at a time with room for user feedback between batches. These priorities and costs are derived from a number of subprograms we have written that create cost matrices for different priorities, such as work/break time and preference for repeating routines. 
 
 ### Authors and Contributors
