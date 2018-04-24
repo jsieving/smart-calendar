@@ -13,3 +13,6 @@ Micah Reid
 
 Vienna Scheyer
 ![Alt text](.../vienna_profile.png)
+
+
+[![Corey Cochran-Lepiz](https://avatars2.githubusercontent.com/u/31522468?s=400&v=4)](https://github.com/coreyacl) | [![Alli Busa](https://avatars3.githubusercontent.com/u/31522841?s=400&v=4)](https://github.com/allisonbusa) | [![Junwon Lee](https://avatars1.githubusercontent.com/u/31522211?s=400&v=4)](https://github.com/junwonlee5)
