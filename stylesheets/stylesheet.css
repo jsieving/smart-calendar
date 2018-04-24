@@ -56,8 +56,11 @@ a {
 .page-header {
   color: #fff;
   text-align: center;
-  background-color: #159957;}
-
+  background-color: #159957;
+  background-image: url("./mario3.png");}
+.page-header-text {
+  color: #fff;
+  text-align: center;}
 @media screen and (min-width: 64em) {
   .page-header {
     padding: 5rem 6rem; } }
