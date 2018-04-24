@@ -1,3 +1,9 @@
+---
+title: Home
+layout: template
+filename: index
+--- 
+
 # Smart Calendar-- The calendar of the future
 Smart Calendar interfaces with Google Calendar to automatically schedule to-do items based on availability and user preference. Smart Calendar schedules what you want to do, when you want to do it. Over time it learns your work and rest patterns, for increased accuracy and improved user experience.
 
