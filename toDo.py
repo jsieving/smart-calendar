@@ -7,28 +7,28 @@ from scheduleHelpers import Item
 Adds event object to a list and adds list to file
 """
 
+loc = 'testData/'
+
 my_event = Item('college')
 
-def make_list(item):
-    try:
-        f = open("testData/listData", "rb+")
-        foo = load(f)
-        print(foo)
-        print("opened in reading mode")
-    except (OSError, IOError) as e:
-        foo = item
-        dump(foo, open("testData/listData", "wb"))
-        print("threw exception")
+if exists(loc + list_name):
+    f = open(loc + list_name, 'rb+')
+    todo_list = load(f)
+else:
+    f = open(loc + list_name, 'wb+')
+    calendar = Calendar(cal_name)
 
-    foo.append(item)
-    print(foo)
+def add_to_list(item):
+    if exists(loc + list_name):
+        f = open(loc + list_name, 'rb+')
+        todo_list = load(f)
+    else:
+        f = open(loc + list_name, 'wb+')
+        todo_list = []
+
+    todo_list.append(item)
     f.seek(0)
-    dump(foo, f)
-    f.close()
-    print("added to file")
-    f = open("testData/listData", "rb+")
-    foo2 = load(f)
-    print(foo2)
+    dump(todo_list, f)
     f.close()
 
 make_list(my_event)
