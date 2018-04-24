@@ -13,7 +13,10 @@ The use of third-party code for interactions with Google and SciPy require addit
 pip install datetime httplib2 oauth2client apiclient ortools flask
 ```
 ### Connecting the Program to Google Calendar
-In order to interact with your personal Google Calendar, the program needs an api key from your google account. This [link]()
+In order to interact with your personal Google Calendar, the program needs an api key from your google account. This [link](https://developers.google.com/calendar/quickstart/python) will show you how to download the right file (follow step 1 only).
+
+### Running the Code
+
 
 
 ### <a id="contact_form"></a>Windows Installation
