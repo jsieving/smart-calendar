@@ -9,4 +9,4 @@ Jane Sieving (@jsieving), Micah Reid (@mreid), William Fairman (@fairmanolin), a
 
 Find us on GitHub!
 
- [![Will Fairman](https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin)  [![Micah Reid](https://avatars0.githubusercontent.com/u/7905597?s=200&v=4)](https://github.com/mhreid)  [![Jane Sieving](https://avatars3.githubusercontent.com/u/31548155?s=200&v=4)](https://github.com/jsieving)  [![Vienna Scheyer](https://avatars2.githubusercontent.com/u/18016746?s=200&v=4)](https://github.com/vscheyer)
+ [![Will Fairman](https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin)  [![Micah Reid](https://avatars0.githubusercontent.com/u/7905597?s=400&v=5)](https://github.com/mhreid)  [![Jane Sieving](https://avatars3.githubusercontent.com/u/31548155?s=200&v=4)](https://github.com/jsieving)  [![Vienna Scheyer](https://avatars2.githubusercontent.com/u/18016746?s=200&v=4)](https://github.com/vscheyer)
