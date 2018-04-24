@@ -1,20 +1,13 @@
----
-title: Smart Calendar
-layout: template
-filename: index.md
----
+# Smart Calendar-- The calendar of the future
+Smart Calendar interfaces with Google Calendar to automatically schedule to-do items based on availability and user preference. Smart Calendar schedules what you want to do, when you want to do it. Over time it learns your work and rest patterns, for increased accuracy and improved user experience.
+### How to Use
+This section is a work in progress! At the current moment, the user should run webinterface.py, and follow the in-browser prompts. As features are added and completed, we will shift to a URL that a user can visit. All login and authentication is done through Google, and users should read their privacy and security policies if they have any concerns.
+### Our Tech
+Our frontend is still very much in progress! Please check back for updates.
 
-### Welcome to GitHub Pages.
-This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here [using GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), select a template crafted by a designer, and publish. After your page is generated, you can check out the new `gh-pages` branch locally. If you’re using GitHub Desktop, simply sync your repository and you’ll see the new branch.
-
-### Designer Templates
-We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.
-
-### Creating pages manually
-If you prefer to not use the automatic generator, push a branch named `gh-pages` to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.
+Our backend is written in python, and relies heavily on matrix assignment algorithms. We have created our own algorithm, based off of SciPy's LinearAssignmentSum, which batches tasks in order of priority, then assigns them a few at a time with room for user feedback between batches. These priorities and costs are derived from a number of subprograms we have written that create cost matrices for different priorities, such as work/break time or preference for repeating routines. 
 
 ### Authors and Contributors
-You can @mention a GitHub username to generate a link to their profile. The resulting `<a>` element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (@defunkt), PJ Hyett (@pjhyett), and Tom Preston-Werner (@mojombo) founded GitHub.
-
+This project was created by William Fairman (@wfairmanolin), Jane Sieving (@jsieving), Vienna Scheyer (@vscheyer), and Micah Reid (@mhreid).
 ### Support or Contact
-Having trouble with Pages? Check out our [documentation](https://help.github.com/pages) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Email us at micah.reid@students.olin.edu and we will get back to you!
