@@ -8,5 +8,22 @@ filename: index
 Jane Sieving (@jsieving), Micah Reid (@mreid), William Fairman (@fairmanolin), and Vienna Scheyer (@vscheyer) started creating this scheduling app for their final project in a Software Design class at Olin College of Engineering.
 
 Find us on GitHub!
+<p>
+<a href= "https://github.com/wfairmanolin">
+<img src='https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin' alt="Drawing" style= "width: 100px;"/>
+</p>
 
- [![Will Fairman](https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin)  [![Micah Reid](https://avatars0.githubusercontent.com/u/7905597?s=200&v=4)](https://github.com/mhreid)  [![Jane Sieving](https://avatars3.githubusercontent.com/u/31548155?s=200&v=4)](https://github.com/jsieving)  [![Vienna Scheyer](https://avatars2.githubusercontent.com/u/18016746?s=200&v=4)](https://github.com/vscheyer)
+<p>
+<a href= "https://github.com/mhreid">
+<img src='https://avatars0.githubusercontent.com/u/7905597?s=200&v=4)](https://github.com/mhreid' alt="Drawing" style= "width: 100px;"/>
+</p>
+
+<p>
+<a href= "https://github.com/jsieving">
+<img src='https://avatars3.githubusercontent.com/u/31548155?s=200&v=4)](https://github.com/jsieving' alt="Drawing" style= "width: 100px;"/>
+</p>
+
+<p>
+<a href= "https://github.com/vscheyer">
+<img src='https://avatars2.githubusercontent.com/u/18016746?s=200&v=4)](https://github.com/vscheyer' alt="Drawing" style= "width: 100px;"/>
+</p>
