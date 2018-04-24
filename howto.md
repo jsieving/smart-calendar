@@ -5,4 +5,9 @@ filename: howto
 --- 
 # Running Our Web App
 
-Please show some text. I want to see text. Please show me PLEASEEEEEEE!!!!!!!!!!!!!!!!!!!!!!!!!
+Our application was built to run off the linux terminal. If you are also using the linux terminal follow the steps below. If not skip to the [Windows instructions section].
+
+
+
+
+[Windows instructions section][]
