@@ -5,10 +5,9 @@ This section is a work in progress! At the current moment, the user should run w
 ### Our Tech
 Our frontend is still very much in progress! Please check back for updates.
 
-Our backend is written in python, and relies heavily and matrix assignment algorithms. We have created our own algorithm, based off of SciPy's LinearAssignmentSum, which batches tasks in order of priority, then assigns them a few at a time with room for user feedback between batches. These priorities and costs are derived from a number of subprograms we have written that create cost matrices for different priorities, such as work/break time and preference for repeating routines. 
+Our backend is written in python, and relies heavily on matrix assignment algorithms. We have created our own algorithm, based off of SciPy's LinearAssignmentSum, which batches tasks in order of priority, then assigns them a few at a time with room for user feedback between batches. These priorities and costs are derived from a number of subprograms we have written that create cost matrices for different priorities, such as work/break time or preference for repeating routines. 
 
 ### Authors and Contributors
-You can @mention a GitHub username to generate a link to their profile. The resulting `<a>` element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (@defunkt), PJ Hyett (@pjhyett), and Tom Preston-Werner (@mojombo) founded GitHub.
-
+This project was created by William Fairman (@wfairmanolin), Jane Sieving (@jsieving), Vienna Scheyer (@vscheyer), and Micah Reid (@mhreid). If you would like to contribute, please reach out to us at smartcalendaremailplaceholder@gmail.com
 ### Support or Contact
-Having trouble with Pages? Check out our [documentation](https://help.github.com/pages) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Email us at micah.reid@students.olin.edu and we will get back to you!
