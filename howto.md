@@ -10,6 +10,34 @@ Our application was built to run off the linux terminal. If you are also using t
 
 Take me to [contact](#contact_form)
 
+text
+text
 
+text
+text
+
+text
+text
+
+text
+text
+
+text
+text
+
+text
+text
+
+text
+text
+
+text
+text
+
+text
+text
+
+text
+text
 ### <a id="contact_form"></a>Contact form
 Hey Welcome to the contact
