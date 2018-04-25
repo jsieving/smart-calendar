@@ -26,5 +26,7 @@ Jane Sieving, Micah Reid, William Fairman, and Vienna Scheyer started creating t
 <img align="left" src='https://avatars2.githubusercontent.com/u/18016746?s=200&v=4)](https://github.com/vscheyer' alt="Drawing" style= "width: 150px;" hspace="20"/>
 
 <br>
-Find us on Github!
 <br>
+<br>
+
+ <div style="text-align:left">Find us on Github!</div>
