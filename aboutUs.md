@@ -15,7 +15,7 @@ Find us on GitHub!
 
 
 <a href= "https://github.com/mhreid">
-<img align="left" src='https://avatars0.githubusercontent.com/u/7905597?s=200&v=4)](https://github.com/mhreid' alt="Drawing" style= "width: 100px;" hspace="20"/>
+<img align="left" src='https://avatars0.githubusercontent.com/u/7905597?s=200&v=4)](https://github.com/mhreid' alt="Drawing" style= "width: 150px;" hspace="20"/>
 
 
 
