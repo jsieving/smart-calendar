@@ -10,7 +10,7 @@ Jane Sieving (@jsieving), Micah Reid (@mreid), William Fairman (@fairmanolin), a
 Find us on GitHub!
 
 <a href= "https://github.com/wfairmanolin">
-<img src='https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin' alt="Drawing" style= "width: 100px;"/>
+<img src='https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin' alt="Drawing" style= "width: 100px;" align=left/>
 
 
 
