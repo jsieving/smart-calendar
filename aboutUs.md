@@ -10,19 +10,19 @@ Jane Sieving (@jsieving), Micah Reid (@mreid), William Fairman (@fairmanolin), a
 Find us on GitHub!
 
 <a href= "https://github.com/wfairmanolin">
-<img align="left" src='https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin' alt="Drawing" style= "width: 100px;"/>
+<img align="left" src='https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin' alt="Drawing" style= "width: 150px;" hspace="20"/>
 
 
 
 <a href= "https://github.com/mhreid">
-<img align="left" src='https://avatars0.githubusercontent.com/u/7905597?s=200&v=4)](https://github.com/mhreid' alt="Drawing" style= "width: 100px;"/>
+<img align="left" src='https://avatars0.githubusercontent.com/u/7905597?s=200&v=4)](https://github.com/mhreid' alt="Drawing" style= "width: 100px;" hspace="20"/>
 
 
 
 <a href= "https://github.com/jsieving">
-<img align="left" src='https://avatars3.githubusercontent.com/u/31548155?s=200&v=4)](https://github.com/jsieving' alt="Drawing" style= "width: 100px;"/>
+<img align="left" src='https://avatars3.githubusercontent.com/u/31548155?s=200&v=4)](https://github.com/jsieving' alt="Drawing" style= "width: 150px;" hspace="20"/>
 
 
 
 <a href= "https://github.com/vscheyer">
-<img align="left" src='https://avatars2.githubusercontent.com/u/18016746?s=200&v=4)](https://github.com/vscheyer' alt="Drawing" style= "width: 100px;"/>
+<img align="left" src='https://avatars2.githubusercontent.com/u/18016746?s=200&v=4)](https://github.com/vscheyer' alt="Drawing" style= "width: 150px;" hspace="20"/>
