@@ -4,7 +4,7 @@ layout: template
 filename: howto
 --- 
 # Using Our Web App
-The files for our application can be found on our [github page](https://github.com/jsieving/smart-calendar). If you want to contribute to our project feel free to clone our repo and send in pull requests. If you looking to just run our project, use the download zip button.
+The files for our application can be found on our [github page](https://github.com/jsieving/smart-calendar). If you want to contribute to our project feel free to clone our repo and send in pull requests. If you're just looking to run our project, use the download zip button.
 
 Our application was built to run off the linux terminal. If you are also using the linux terminal follow the steps below. If not skip to the [Windows installation section](#contact_form).
 
