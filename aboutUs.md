@@ -27,6 +27,5 @@ Jane Sieving, Micah Reid, William Fairman, and Vienna Scheyer started creating t
 
 <br>
 <br>
-<br>
 
- <div style="text-align:left">Find us on Github!</div>
+ <div style="text-align:center">Find us on Github!</div>
