@@ -107,29 +107,33 @@ def runSorter():
 
 if __name__ == "__main__":
     tempFile = open('testData/willslife', 'rb')
-    testCal = load(tempFile)
+    testCal  = load(tempFile)
     testList = getItemList(testCal)
-    print(len(testList))
 
-    while(len(testList) > 0):
-        print(len(testList))
-        longestBlock = getLongestBlock(testList)
-        taskList = getTaskList(longestBlock, testList)
-        timeList = getListofTime(longestBlock, 0)
-        print('Task List=', taskList)
-        print('Time List=', timeList)
+    runSorter()
 
-        matrix = getCostMatrix(taskList, timeList)
-        print('matrix=', matrix)
 
-        retList = testList[:]
-        print('length of retList=', len(retList))
-        print('length of testList=', len(testList))import matrixManipulator
-
-        for i in testList:
-            if i.duration.total_seconds()/60 == longestBlock:
-                retList.remove(i)
-        testList = retList[:]
+    # print(len(testList))
+    #
+    # while(len(testList) > 0):
+    #     print(len(testList))
+    #     longestBlock = getLongestBlock(testList)
+    #     taskList = getTaskList(longestBlock, testList)
+    #     timeList = getListofTime(longestBlock, 0)
+    #     print('Task List=', taskList)
+    #     print('Time List=', timeList)
+    #
+    #     matrix = getCostMatrix(taskList, timeList)
+    #     print('matrix=', matrix)
+    #
+    #     retList = testList[:]
+    #     print('length of retList=', len(retList))
+    #     print('length of testList=', len(testList))import matrixManipulator
+    #
+    #     for i in testList:
+    #         if i.duration.total_seconds()/60 == longestBlock:
+    #             retList.remove(i)
+    #     testList = retList[:]
 
     #print(getListofTime(4000))
     # for i in testList:
