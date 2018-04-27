@@ -1,7 +1,7 @@
 from scipy.optimize import linear_sum_assignment
 import time, numpy, random
-import matrixManipulator
-from scheduleHelpers import Item, Calendar
+# import matrixManipulator
+from scheduleHelpers import Item
 from pickle import load, dump
 
 def getCostMatrix(itemList, timeList):
@@ -78,8 +78,8 @@ def getItemList(cal):
     Reads a test calendar and creates a list of events
     """
     itemList = []
-    for day in cal.days.values():
-        for event in day.events:
+    for day in cal.values():
+        for event in day:
             itemList.append(event)
     return itemList
 
