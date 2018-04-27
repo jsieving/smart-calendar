@@ -1,11 +1,11 @@
 
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
-#from toDo import make_list
+from toDo import make_list
 from gcal import GCal
 import datetime
 import time
-
+import saveToCal
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
@@ -38,6 +38,7 @@ def index():
 
 @app.route('/saveToCal')
 def saveToCal():
+    saveToCal.main()
     return render_template('saveToCal.html')
 #Defines what occurs in the createEvent page
 @app.route('/createEvent', methods=['GET', 'POST'])
@@ -58,7 +59,7 @@ def event():
 
         event = generateEvent(name, startTime, endTime)
         print(event)
-        #make_list(event)
+        make_list(event)
         return redirect(url_for('index'))
 
 

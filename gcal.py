@@ -187,7 +187,7 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    #cal.create_event(name = "Cool!!"),
+    cal.get_events()
      # {'method': 'popup', 'minutes': 10}])
     #print(cal.get_busy())
     events = cal.get_events()
