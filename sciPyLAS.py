@@ -1,6 +1,6 @@
 from scipy.optimize import linear_sum_assignment
 import time, numpy, random
-import matrixManipulator
+#import matrixManipulator
 from scheduleHelpers import Item, Calendar
 from pickle import load, dump
 
@@ -100,7 +100,7 @@ def populateMatrix(timeList, taskList, matrix):
     return matrix
 
 def runSorter():
-  cost = [[2,2,5,1,2], [1,5,6,7,8], [5,5,5,5,4,]]
+  cost = [[2,2,5,1,2], [1,5,6,7,8], [5,5,5,5,4]]
   r_ind, c_ind = linear_sum_assignment(cost)
   print(r_ind, c_ind)
 
@@ -124,7 +124,8 @@ if __name__ == "__main__":
 
         retList = testList[:]
         print('length of retList=', len(retList))
-        print('length of testList=', len(testList))
+        print('length of testList=', len(testList))import matrixManipulator
+
         for i in testList:
             if i.duration.total_seconds()/60 == longestBlock:
                 retList.remove(i)
