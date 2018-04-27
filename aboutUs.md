@@ -15,17 +15,16 @@ Find us on GitHub!
 <div class="inline-block">
 <a href= "https://github.com/wfairmanolin">
 <img src='https://avatars0.githubusercontent.com/u/31521968?s=200&v=4)](https://github.com/wfairmanolin' alt="Drawing" style= "width: 120px;"/>
-</div>
+
 
 <div class="inline-block">
 <a href= "https://github.com/mhreid">
 <img src='https://avatars0.githubusercontent.com/u/7905597?s=200&v=4)](https://github.com/mhreid' alt="Drawing" style= "width: 120px;"/>
-</div>
+
 
 <div class="inline-block">
 <a href= "https://github.com/jsieving">
 <img src='https://avatars3.githubusercontent.com/u/31548155?s=200&v=4)](https://github.com/jsieving' alt="Drawing" style= "width: 120px;"/>
-</div>
 
 <div class="inline-block">
 <a href= "https://github.com/vscheyer">
