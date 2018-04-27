@@ -14,8 +14,9 @@ from googleapiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
-
+import time
 import datetime
+import preferenceScoring
 
 try:
     import argparse
@@ -137,15 +138,24 @@ class GCal:
 
     def get_busy(self, time_min =  datetime.datetime.utcnow(),
                 time_max = ( datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
+        offset = time.gmtime().tm_hour - time.localtime().tm_hour
+
+        time1 = datetime.datetime.utcnow()
+        time1 = datetime.datetime(time1.year, time1.month, time1.day, 0, 0, 0) + datetime.timedelta(days= 1, hours = offset)
+        time2 = (time1 + datetime.timedelta(days = 1))
         """
         returns an array of dateTime tuples that give start and end of busy blocks
         time_min is the start of the search, and time_max is the end (as datetime objects)
         """
         body = {
-      "timeMin": time_min.isoformat() + 'Z', # self.now.isoformat() + 'Z',
-      "timeMax": time_max.isoformat() + 'Z', # (self.now + datetime.timedelta(days = 7)).isoformat() + 'Z',
-      "items": [{"id": self.mainID}]
-      }
+      "timeMin": time1.isoformat() + 'Z',
+      "timeMax": time2.isoformat() + 'Z',
+      "items": [
+        {
+          "id": self.mainID
+        }
+      ]
+    }
         eventsResult = self.service.freebusy().query(body = body).execute()
         return eventsResult
 
@@ -153,9 +163,10 @@ class GCal:
         """
         Returns a list of event items, in the form of the Google events object
         """
-        time1 = datetime.datetime.utcnow().isoformat() + 'Z'
-        time2 = (datetime.datetime.utcnow() + datetime.timedelta(days = 7)).isoformat() + 'Z'
-        events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1, timeMax = time2).execute()
+        time1 = datetime.datetime.utcnow()
+        time1 = datetime.datetime(time1.year, time1.month, time1.day, 0, 0, 0)
+        time2 = (time1 + datetime.timedelta(days = 1))
+        events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1.isoformat() + 'Z', timeMax = time2.isoformat() + "Z").execute()
         return events
 
     def make_event_list(self, events):
@@ -176,9 +187,11 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    cal.create_event(name = "Cool!!"),
+    #cal.create_event(name = "Cool!!"),
      # {'method': 'popup', 'minutes': 10}])
     #print(cal.get_busy())
     events = cal.get_events()
-    #events = cal.make_event_list(events)
-    print(events)
+    #events = cal.make_event_list(events
+    busy = cal.get_busy()
+    print(busy)
+    print(preferenceScoring.get_break_prefs(cal))
