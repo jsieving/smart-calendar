@@ -33,7 +33,6 @@ def index():
         except:
             print('works')
             return redirect("saveToCal")
-
     else:
         return render_template('index.html')
 
@@ -46,24 +45,21 @@ def saveToCal():
 def event():
     if request.method == 'POST':
         #Finds status of checkbox
-        if request.form['submit'] == 'submit':
-            if len(request.form) < 4:
-                breakable = False
-            else:
-                breakable = True
-            #Checks to see if all the boxes are filled
-            if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['endTime'])<1:
-                return redirect(url_for('index'))
-            #Defines Variables
-            name, startTime, endTime= (request.form['name'],
-                                        request.form['startTime'],request.form['endTime'])
-
-            event = generateEvent(name, startTime, endTime)
-            print(event)
-            #make_list(event)
-            return redirect(url_for('index'))
+        if len(request.form) < 4:
+            breakable = False
         else:
-            return redirect(url_for('saveToCal'))
+            breakable = True
+        #Checks to see if all the boxes are filled
+        if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['endTime'])<1:
+            return redirect(url_for('index'))
+        #Defines Variables
+        name, startTime, endTime= (request.form['name'],
+                                    request.form['startTime'],request.form['endTime'])
+
+        event = generateEvent(name, startTime, endTime)
+        print(event)
+        #make_list(event)
+        return redirect(url_for('index'))
 
 
     #Defines what html page runs when page is opened
