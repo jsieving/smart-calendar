@@ -16,9 +16,9 @@ def main():
 
     events = cal.get_events()
     listOfItems = events['items']
-
-    print(getListOfEventspr
-    print(listOfItems[0])
+    return(listOfItems)
+    # print(getListOfEventspr)
+    # print(listOfItems[0])
 
 if __name__ == "__main__":
     main()
