@@ -2,33 +2,32 @@ import string
 import pickle
 from pickle import dump, load
 from scheduleHelpers import Item
+import os
+from gcal import GCal
 
 """ Import this .py into another .py, call the event_to_list function
 Adds event object to a list and adds list to file
 """
 
-loc = 'testData/'
+# my_event = Item('hw')
+# foo = []
+# dump(foo, open("testData/listData", "wb"))
+# print("tested")
 
-my_event = Item('college')
-
-if exists(loc + list_name):
-    f = open(loc + list_name, 'rb+')
-    todo_list = load(f)
-else:
-    f = open(loc + list_name, 'wb+')
-    calendar = Calendar(cal_name)
-
-def add_to_list(item):
-    if exists(loc + list_name):
-        f = open(loc + list_name, 'rb+')
+def make_list(item):
+    try:
+        f = open("testData/listData", "rb+")
         todo_list = load(f)
-    else:
-        f = open(loc + list_name, 'wb+')
-        todo_list = []
+        print("opened in reading mode")
+    except (OSError, IOError) as e:
+        foo = item
+        dump(foo, open("testData/listData", "wb"))
+        print("threw exception")
 
     todo_list.append(item)
     f.seek(0)
     dump(todo_list, f)
     f.close()
+    print("added to file")
 
-make_list(my_event)
+    f.close()
