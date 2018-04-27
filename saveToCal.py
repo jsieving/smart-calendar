@@ -1,15 +1,31 @@
 from datetime import datetime
 from gcal import GCal
+from scheduleHelpers import Item
 
 def getListOfEvents(tempList):
     """
     This function returns a list of events that are not repeatable
     """
     retList = []
-    for i in tempDict:
+    for i in tempList:
         if 'recurrence' not in i.keys():
             retList.append(i)
+        else:
+            print('true')
+    print(len(tempList))
     return retList
+
+def getListOfItems(tempList):
+    retList = []
+    for i in tempList:
+        name = i['id']
+        start= datetime.strptime(i['start']['dateTime'])
+        end= datetime.strptime(i['end']['dateTime'])
+        print(name, start, end)
+        i = Item(name=name, start=start, end=end)
+        retList.append(i)
+    return retList
+
 
 def main():
     cal = GCal()
