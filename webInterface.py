@@ -1,7 +1,7 @@
 
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
-#from toDo import make_list
+from toDo import make_list
 from gcal import GCal
 import datetime
 import time
@@ -59,7 +59,7 @@ def event():
 
         event = generateEvent(name, startTime, endTime)
         print(event)
-        #make_list(event)
+        make_list(event)
         return redirect(url_for('index'))
 
 
