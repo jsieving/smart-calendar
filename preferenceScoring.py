@@ -11,8 +11,8 @@ def prefs_from_csv(csv_name):
     f = open('testData/' + csv_name, 'rb+')
     calendar = load(f)
     event_list = []
-    for day in calendar.days.values():
-        for event in day.events:
+    for day in calendar.values():
+        for event in day:
             event_list.append(event)
     prefs = get_time_prefs(event_list)
     return prefs
