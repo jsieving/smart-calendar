@@ -5,7 +5,7 @@ from csv import reader, writer
 from pickle import dump, load
 from datetime import timedelta, datetime, date, time
 
-__all__ = ["Item", "Calendar", "Day", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
+__all__ = ["Item", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
             "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal",
             "categorize", "extract_activities"]
 ## Determines which functions are imported by 'import *'. If you add or change functions,
@@ -37,47 +37,8 @@ class Item:
     def __str__(self):
         return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
 
-class Calendar:
-    '''A schedule containing a set of Day objects'''
-    def __init__(self, name):
-        self.name = name
-        self.days = {}
-
-    def print_days(self):
-        for day in self.days.values():
-            day.print_events()
-
-    def getLongestBlock(self):
-        '''Gets the length of the longest event in a calendar.'''
-        longestBlock = timedelta(minutes = 15)
-        for day in self.days.values():
-            for event in day.events:
-                if event.duration > longestBlock:
-                    longestBlock = event.duration
-        return longestBlock
-
-class Day:
-    '''A single day containing a list of events, list of free times and list of busy times'''
-    def __init__(self, date):
-        self.date = date
-        self.events = []
-        self.free_times = [(min_to_dt(0), min_to_dt(1439))]
-        self.busy_times = []
-
-    def update_freebusy(self, gcal, include_events = True):
-        '''Gets a list of busy times from Google calendar and updates the free and
-        busy times accordingly. If include_events is True, accounts for events as busy times.'''
-        self.busy_times = busy_from_gcal(gcal, self.date, self.date)
-        if include_events:
-            for block in self.events:
-                self.busy_times.append((block.start, block.end))
-        self.busy_times.sort()
-        self.free_times = busy_to_free(self.busy_times)
-
-    def print_events(self):
-        print('%s: %i events scheduled.' % (self.date, len(self.events)))
-        for event in self.events:
-            print(event)
+    def __repr__(self):
+        return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
 
 def min_to_dt(minutes, d = date(1, 1, 1)):
     '''Converts a number of minutes and a day to a time in that day, as a datetime object'''
@@ -128,17 +89,12 @@ def csv_to_cal(cal_name):
     loc = 'testData/'
     csvfile = open('%s%s.csv' % (loc, cal_name))
     data = reader(csvfile)
-    cal = Calendar(cal_name)
+    cal = {}
     for r, row in enumerate(data):
         if r == 0:
             continue
         Y, m, d = row[0].split('-')
         date_ = date(int(Y), int(m), int(d))
-        if cal.days.get(date_): # Existing Day
-            day = cal.days[date_]
-        else: # Create new Day
-            day = Day(date_)
-            cal.days[date_] = day
         name = row[1]
         start = datetime.strptime(row[2], '%Y-%m-%d %H:%M:%S')
         end = datetime.strptime(row[3], '%Y-%m-%d %H:%M:%S')
@@ -148,46 +104,12 @@ def csv_to_cal(cal_name):
             breakable = True
         else:
             breakable = False
-
         item = Item(name, start, end, duration, breakable)
-        day.events.append(item)
+        if cal.get(date_):
+            cal[date_].append(item)
+        else:
+            cal[date_] = [item]
 
-    f = open(loc + cal_name, 'wb+')
-    f.seek(0)
-    dump(cal, f)
-    f.close()
-
-def csv_to_cal_alt(cal_name): # This is literally only used to convert Will's life
-    '''Takes a csv file formatted as a weekly log and creates a calendar object
-    from it, then saves the calendar to a file.'''
-    csvfile = open('%s.csv' % cal_name)
-    data = reader(csvfile)
-    width = 8
-    curr_activity = None
-    downtime = ['sleep', 'transition', 'break']
-    cal = Calendar(cal_name)
-    for i in range(1, width):
-        for r, row in enumerate(data):
-            if r == 0:
-                header = row[i].split('/')
-                date_ = date(int(header[2]), int(header[0]), int(header[1]))
-                day = Day(date_)
-                cal.days[date_] = day
-            else:
-                start = min_to_dt(int(row[0]))
-                end = min_to_dt(int(row[0]) + 15)
-                duration = timedelta(minutes = 15)
-                if row[i] in downtime:
-                    continue
-                if row[i] == curr_activity:
-                    curr_item.end = end
-                    curr_item.duration += duration
-                else:
-                    curr_activity = row[i]
-                    name = row[i]
-                    curr_item = Item(name, start, end, duration)
-                    day.events.append(curr_item)
-    loc = 'testData/'
     f = open(loc + cal_name, 'wb+')
     f.seek(0)
     dump(cal, f)
@@ -210,10 +132,14 @@ def add_item(todos, name, duration, breakable, importance, category):
     new_item = Item(name, duration, breakable, importance, category)
     todos.append(new_item)
 
-def add_event(day, name, start, end, duration, breakable, importance, category):
+def add_event(cal, name, start, end, duration, breakable, importance, category):
     '''Creates an event and adds it to the events for the given day'''
-    new_item = Item(name, start, end, duration, breakable, importance, category)
-    day.events.append(new_item)
+    item = Item(name, start, end, duration, breakable, importance, category)
+    date_ = start.date()
+    if cal.get(date_):
+        cal[date_].append(item)
+    else:
+        cal[date_] = [item]
 
 def categorize(event):
     '''Takes an Item and returns a string of what category it falls into.'''
@@ -228,10 +154,10 @@ def extract_activities(calendar):
     list of the events in that activity.'''
     all_events = []
     loc = 'testData/'
-    for date, day in calendar.days.items():
-        for event in day.events:
-            events.weekday = date.weekday()
-            all_events.append(item)
+    for date, day in calendar.items():
+        for event in day:
+            event.weekday = date.weekday()
+            all_events.append(event)
     activities = {}
     for event in all_events:
         act = categorize(event)
