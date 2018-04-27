@@ -153,8 +153,8 @@ class GCal:
         """
         Returns a list of event items, in the form of the Google events object
         """
-        time1 = datetime.datetime.utcnow().isoformat() + 'Z'
-        time2 = (datetime.datetime.utcnow() + datetime.timedelta(days = 7)).isoformat() + 'Z'
+        time1 = (datetime.datetime.utcnow() - datetime.timedelta(days = 7)).isoformat() + 'Z'
+        time2 = datetime.datetime.utcnow().isoformat() + 'Z'
         events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1, timeMax = time2).execute()
         return events
 
