@@ -69,6 +69,18 @@ class Category:
     def addItem(self, newItem):
         self.items.append(newItem)
 
+    def showStartTimes(self):
+        retList = []
+        for i in self.items:
+            retList.append(i.start)
+        return retList
+
+    def showEndTimes(self):
+        retList = []
+        for i in self.items:
+            retList.append(i.end)
+        return retList
+
 def min_to_dt(minutes, d = date(1, 1, 1)):
     '''Converts a number of minutes and a day to a time in that day, as a datetime object'''
     if minutes == 1440: # Prevents an issue when events end at midnight
