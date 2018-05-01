@@ -16,8 +16,10 @@ from oauth2client import tools
 from oauth2client.file import Storage
 import time
 import datetime
+import pytz
 import preferenceScoring
 import scheduleHelpers
+
 
 try:
     import argparse
@@ -160,15 +162,19 @@ class GCal:
         eventsResult = self.service.freebusy().query(body = body).execute()
         return eventsResult
 
-    def get_events(self):
+    def get_events(self, daysPast, daysFuture):
         """
         Returns a list of event items, in the form of the Google events object
         """
-        time1 = datetime.datetime.utcnow()
-        time1 = datetime.datetime(time1.year, time1.month, time1.day, 0, 0, 0)
-        time2 = (time1 + datetime.timedelta(days = 1))
-        events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1.isoformat() + 'Z', timeMax = time2.isoformat() + "Z").execute()
+        # time1 = datetime.datetime.utcnow()
+        # time1 = datetime.datetime(time1.year, time1.month, time1.day, 0, 0, 0)
+        # time2 = (time1 + datetime.timedelta(days = 1))
+        time1 = (datetime.datetime.now() - datetime.timedelta(days = daysPast)).isoformat() + 'Z'
+        time2 = (datetime.datetime.now() + datetime.timedelta(days = daysFuture)).isoformat() + 'Z'
+        events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1, timeMax = time2).execute()
+        #events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1.isoformat() + 'Z', timeMax = time2.isoformat() + "Z").execute()
         return events
+
 
     def make_event_list(self, events):
         """
@@ -188,10 +194,10 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    cal.get_events()
+    cal.get_events(0,1)
      # {'method': 'popup', 'minutes': 10}])
     #print(cal.get_busy())
-    events = scheduleHelpers.create_dummy_events()
+    events = cal.get_events(0,1)
     #events = cal.make_event_list(events
     busy = cal.get_busy()
     print(preferenceScoring.make_cost_matrix(cal,events))

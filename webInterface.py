@@ -5,7 +5,7 @@ from toDo import make_list
 from gcal import GCal
 import datetime
 import time
-import saveToCal
+from saveToCal import saveToday
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
@@ -38,7 +38,7 @@ def index():
 
 @app.route('/saveToCal')
 def saveToCal():
-    saveToCal.main()
+    saveToday()
     return render_template('saveToCal.html')
 #Defines what occurs in the createEvent page
 @app.route('/createEvent', methods=['GET', 'POST'])
