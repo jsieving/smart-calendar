@@ -72,7 +72,7 @@ def storeListOfItems(itemList):
                     dump(category, f)
                     f.close()
                     break
-        f.close()
+                f.close()
 
         #Creates a new category file if there is no category that matches the
         #category of the new item.
