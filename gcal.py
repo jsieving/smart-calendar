@@ -17,6 +17,7 @@ from oauth2client.file import Storage
 import time
 import datetime
 import preferenceScoring
+import scheduleHelpers
 
 try:
     import argparse
@@ -190,8 +191,7 @@ if __name__ == '__main__':
     cal.get_events()
      # {'method': 'popup', 'minutes': 10}])
     #print(cal.get_busy())
-    events = cal.get_events()
+    events = scheduleHelpers.create_dummy_events()
     #events = cal.make_event_list(events
     busy = cal.get_busy()
-    print(busy)
-    print(preferenceScoring.get_break_prefs(cal))
+    print(preferenceScoring.make_cost_matrix(cal,events))

@@ -40,6 +40,12 @@ class Item:
     def __repr__(self):
         return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
 
+def create_dummy_events():
+    events = []
+    events.append(Item(name = "Party"))
+    events.append(Item(name = "Linearity"))
+    return events
+
 def min_to_dt(minutes, d = date(1, 1, 1)):
     '''Converts a number of minutes and a day to a time in that day, as a datetime object'''
     if minutes == 1440: # Prevents an issue when events end at midnight
