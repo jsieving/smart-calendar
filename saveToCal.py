@@ -89,7 +89,7 @@ def saveToday():
     Saves a list of google events in today's schedule
     """
     cal = GCal()
-    events = cal.get_events(1,1)
+    events = cal.get_events(1,0)
     tempList = events['items']
     tempList = getNonRepeatingEvents(tempList)
     tempList = getListOfItems(tempList)

@@ -19,7 +19,6 @@ import datetime
 import pytz
 import preferenceScoring
 
-TIMEZONE = pytz.timezone('America/New_York')
 
 try:
     import argparse
@@ -169,8 +168,8 @@ class GCal:
         # time1 = datetime.datetime.utcnow()
         # time1 = datetime.datetime(time1.year, time1.month, time1.day, 0, 0, 0)
         # time2 = (time1 + datetime.timedelta(days = 1))
-        time1 = (datetime.datetime.utcnow() - datetime.timedelta(days = daysPast)).isoformat() + 'Z'
-        time2 = (datetime.datetime.utcnow() + datetime.timedelta(days = daysFuture)).isoformat() + 'Z'
+        time1 = (datetime.datetime.now() - datetime.timedelta(days = daysPast)).isoformat() + 'Z'
+        time2 = (datetime.datetime.now() + datetime.timedelta(days = daysFuture)).isoformat() + 'Z'
         events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1, timeMax = time2).execute()
         #events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1.isoformat() + 'Z', timeMax = time2.isoformat() + "Z").execute()
         return events
