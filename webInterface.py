@@ -1,4 +1,4 @@
-
+c
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
 from toDo import make_list
@@ -22,7 +22,10 @@ def generateEvent(name, startTime, endTime):
     start = start + datetime.timedelta(hours = offset)
     end = end + datetime.timedelta(hours = offset)
     cal.create_event(name=name, start= start, end = end)
-    #cal.create_event(name = name)
+    event = Item(name=name, start= start, end = end)
+    # cal.create_event(name = name)
+    return event
+
 #Defines what occurs when the webpage is opened
 @app.route('/', methods=['GET', 'POST'])
 def index():

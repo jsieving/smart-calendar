@@ -62,8 +62,11 @@ def get_break_prefs(gcal):
 
 
 def make_cost_matrix(cal, events):
+    #soon this will multiply by history matrix
     event_list = []
     cost_matrix = []
     break_prefs = get_break_prefs(cal)
     for event in events:
         event_list.append(event.name)
+        cost_matrix.append(get_break_prefs(cal))
+    return event_list, cost_matrix
