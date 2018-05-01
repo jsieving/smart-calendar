@@ -116,7 +116,7 @@ def main():
     purposes.
     """
     cal = GCal()
-    events = cal.get_events(3, 0)
+    events = cal.get_events(36, 0)
     tempList = events['items']
     tempList = getNonRepeatingEvents(tempList)
     tempList = getListOfItems(tempList)
