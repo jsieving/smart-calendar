@@ -3,24 +3,15 @@
   <head>
     <title>Smart Calendar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link href="static/bootstrap.min.css" rel="stylesheet" media="screen"> -->
+    <link rel="stylesheet" href="static/assets/css/main.css" />
   </head>
   <body>
     <div class="container">
       <h1>Enter a New Event</h1>
-      <form action="" method="post">
-        <h4>Enter a New Event
-        <br>
-        <input type="checkbox" placeholder="New Event" name="event" value="{{
-          request.form.save}}">
-        <br>
-        <br>
-        <h4>Save Today's Schedule<h4>
-        <input type="checkbox" placeholder="Save Tasks" name="save" value="{{
-          request.form.save}}">
-        <br>
-        <input class="btn btn-default" type="submit" value="submit">
-      </form>
+			<ul class="menu">
+				<li><a href="{{ url_for('saveToCal') }}">Save Stuff</a></li>
+				<li><a href="{{ url_for('event') }}">Create Event</a></li>
+		</ul>
     </div>
   </body>
 </html>
