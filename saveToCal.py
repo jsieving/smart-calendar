@@ -1,6 +1,6 @@
 from datetime import datetime
 from gcal import GCal
-from scheduleHelpers import Item
+from scheduleHelpers import Item, Category
 import os
 from pickle import load, dump
 
@@ -38,44 +38,82 @@ def getListOfItems(tempList):
         retList.append(i)
     return retList
 
-def storeListofItems():
+def storeListOfItems(itemList):
     """
-    Checks to see if user file system is present and, if not, will add
-    a file system
+    This function takes a list of items and stores them in the user's history.
+    If the file already exists, it is skipped.
     """
     directory = "userHistory"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    if len(os.listdir(directory)) > 0
+    for item in itemList:
+        exists = False
+        itemTag = item.category
+
+        #Runs through files in user history to find a category that matches
+        #the item category
         for filename in os.listdir(directory):
-            print(filename)
+            loc = directory + '/' + filename
+            f = open(loc, "rb+")
+            category = load(f)
+
+            #Runs through items within a category and adds the new item if
+            #there are no duplicate items found.
+            if itemTag == category.filename:
+                written = False
+                exists = True
+                for i in category.items:
+                    if i.name == item.name:
+                        written = True
+                if not written:
+                    category.addItem(item)
+                    f.seek(0)
+                    dump(category, f)
+                    f.close()
+                    break
+        f.close()
+
+        #Creates a new category file if there is no category that matches the
+        #category of the new item.
+        if not exists:
+            newCategory = Category(filename=itemTag)
+            newCategory.addTag(itemTag)
+            newCategory.addItem(item)
+            f = open(directory + "/" + itemTag, "wb")
+            dump(newCategory, f)
+            f.close()
+
+
+def readHistory():
+    """
+    This function shows all of the saved lists within
+    userHistory for debugging purposes.
+    """
+    directory = 'userHistory'
+    for filename in os.listdir(directory):
+        loc = directory + '/' + filename
+        f = open(loc, "rb+")
+        category = load(f)
+        print(category)
+
 
 def main():
+    """
+    This functions runs a set of commands for debugging
+    purposes.
+    """
     cal = GCal()
-    events = cal.get_events(3, 1)
+    events = cal.get_events(3, 0)
     tempList = events['items']
-    print(tempList)
     tempList = getNonRepeatingEvents(tempList)
     tempList = getListOfItems(tempList)
 
-    print(tempList)
+    storeListOfItems(tempList)
 
     # print(getListOfEventspr)
     # print(listOfItems[0])
 
 if __name__ == "__main__":
-    storeListofItems()
-
-'''
-self, name, start = None, end = None, duration = None,
-            breakable = False, importance = None, category = None, item_type = 'event'):
-
-This file stores on-demand the events that are in google calendar into a person's history.
-
-This file should only store events that were created by the user or the alogrithm.
-
-If the function tries to save the same event, it should spit an error
-
-datetime.datetime(year, month, day[, hour[, minute[, second[, microsecond[, tzinfo]]]]])
-'''
+    main()
+    readHistory()
