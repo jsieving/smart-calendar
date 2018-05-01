@@ -84,6 +84,18 @@ def storeListOfItems(itemList):
             dump(newCategory, f)
             f.close()
 
+def saveToday():
+    """
+    Saves a list of google events in today's schedule
+    """
+    cal = GCal()
+    events = cal.get_events(1,1)
+    tempList = events['items']
+    tempList = getNonRepeatingEvents(tempList)
+    tempList = getListOfItems(tempList)
+
+    storeListOfItems(tempList)
+
 
 def readHistory():
     """
