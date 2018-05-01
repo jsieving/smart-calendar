@@ -18,6 +18,7 @@ import time
 import datetime
 import pytz
 import preferenceScoring
+import scheduleHelpers
 
 
 try:
@@ -199,5 +200,4 @@ if __name__ == '__main__':
     events = cal.get_events(0,1)
     #events = cal.make_event_list(events
     busy = cal.get_busy()
-    print(busy)
-    print(preferenceScoring.get_break_prefs(cal))
+    print(preferenceScoring.make_cost_matrix(cal,events))
