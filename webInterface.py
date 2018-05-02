@@ -25,24 +25,20 @@ def generateEvent(name, startTime, endTime):
     # cal.create_event(name = name)
     return event
 
-#Defines what occurs when the webpage is opened
+#Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        try:
-            request.form['event']==''
-            return redirect("createEvent")
-        except:
-            print('works')
-            return redirect("saveToCal")
-    else:
-        return render_template('index.html')
+    return render_template('index.html')
 
+#Saves today's schedule and renders a
+#html doc
 @app.route('/saveToCal')
 def saveToCal():
     saveToday()
     return render_template('saveToCal.html')
-#Defines what occurs in the createEvent page
+
+
+
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
 def event():
