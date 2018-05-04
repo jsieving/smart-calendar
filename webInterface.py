@@ -42,20 +42,16 @@ def saveToCal():
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
 def event():
+    elements = {'name': '', 'startTime': '0', 'endTime': '0'}
+    print('works', elements['name'])
     if request.method == 'POST':
-        #Finds status of checkbox
-        if len(request.form) < 4:
-            breakable = False
-        else:
-            breakable = True
         #Checks to see if all the boxes are filled
-        if len(request.form['name']) < 1 or len(request.form['startTime']) < 1 or len(request.form['endTime'])<1:
-            return redirect(url_for('index'))
-        #Defines Variables
-        name, startTime, endTime= (request.form['name'],
-                                    request.form['startTime'],request.form['endTime'])
+        for i in elements:
+            if request.form[i] != '':
+                elements[i] = request.form[i]
 
-        event = generateEvent(name, startTime, endTime)
+        print(elements.values())
+        event = generateEvent(elements['name'], elements['startTime'], elements['endTime'])
         print(event)
         make_list(event)
         return redirect(url_for('index'))
