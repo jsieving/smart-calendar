@@ -60,10 +60,11 @@ def get_freq_costs(occurence_data):
     '''Takes a dictionary of occurences and returns a dictionary of activity costs.'''
     costs = {}
     for activity, occur_data in occurence_data.items():
-    activity_costs = []
-    for p in occur_data[:-1]: # looks at the occurences in each block, not the event count
-        c = int((1 - p/occur_data[-1]) * 100) # p is divided by the event count
-        costs.append(c)
+        activity_costs = []
+        for p in occur_data[:-1]: # looks at the occurences in each block, not the event count
+            c = int((1 - p/occur_data[-1]) * 100) # p is divided by the event count
+            activity_costs.append(c)
+        costs[activity] = activity_costs
     return costs
 
 def get_break_prefs(gcal):
@@ -91,6 +92,28 @@ def get_break_prefs(gcal):
     pref_list2.append(pref_list2[:-1])
     return pref_list2
 
+def get_feedback_matrix(reject_events_list):
+    ''' Takes a list of google event objects and creates/updates a matrix of user feedback.'''
+    if exists('testData/feedback_data'):
+        f = open('testData/feedback_data', 'rb+')
+        feedback_data = load(f)
+    else:
+        f = open('testData/feedback_data', 'wb+')
+        feedback_data = {}
+
+    for event in reject_events_list:
+        item = item_from_gcal(event)
+        activity = categorize(item)
+        feedback_list = feedback_data.get(activity, [0 for i in range(1440//15)])
+        for j in range(int(1440 / 15)):
+            t = min_to_dt(j * 15)
+            if item.start <= t <= item.end:
+                pref_list[j] += 1
+        feedback_data[activity] = pref_list
+
+    f.seek(0)
+    dump(feedback_data, f)
+    return feedback_data
 
 def make_cost_matrix(cal, events):
     #soon this will multiply by history matrix
