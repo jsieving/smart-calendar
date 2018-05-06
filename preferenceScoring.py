@@ -128,10 +128,10 @@ def get_timeblock_costs(block_length, freq_costs, break_prefs):
     for activity, cost_list in freq_costs.items():
         overall_costs = []
         for i in range(96):
-            if i % n = 0: # every n blocks, the cost resets
+            if i % n == 0: # every n blocks, the cost resets
                 cost = 0
             cost += cost_list[i] + break_prefs[i] # the cost accumulates for n blocks
-            if i+1 % n = 0: # if this is the last of a set of n blocks, append the cost
+            if i+1 % n == 0: # if this is the last of a set of n blocks, append the cost
                 overall_costs.append(cost)
         costs[activity] = overall_costs
     return costs

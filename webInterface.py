@@ -41,6 +41,7 @@ def generateToDo(name, hours, minutes, break_time):
         breakable = True
         break_num = length / break_time
     event = Item(name=name, duration=length, breakable=breakable, break_time=break_time, break_num=break_num)
+    return event
 
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
@@ -72,6 +73,10 @@ def toDo():
         event = generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
         make_list(event)
     return render_template('toDo.html')
+
+#@app.route('/viewToDo', method=['GET', 'POST'])
+#def getToDo():
+
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens

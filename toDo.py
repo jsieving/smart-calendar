@@ -17,11 +17,10 @@ It also updates the gcal list every time it gets run
 
 # def make_list(item, cal_list)
 def make_list(item):
-    print(item)
     cal_list = main()
     try:
         f = open("testData/listData", "rb+")
-        todo_list = load(f)
+        todo_list = pickle.load(f)
         print("opened in reading mode")
     except (OSError, IOError) as e:
         foo = item
@@ -32,8 +31,8 @@ def make_list(item):
     f.seek(0)
     dump(todo_list, f)
     f.close()
-    print("added to file")
 
+    print("added to file")
     # # check for duplicate calendar events in saved list
     # # add new calendar events to todo_list
     # for i in range(0,len(cal_list)):
@@ -44,7 +43,6 @@ def make_list(item):
     #     if add == True:
     #         todo_list.append(cal_list[i])
     print(todo_list)
-
 def clear_list():
     try:
         f = open("testData/listData", "rb+")
