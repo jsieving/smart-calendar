@@ -31,11 +31,21 @@
               <option value=45>45</option>
             </select>
             <br>
-            <h3>Break Task Up</h3>
-            <input type="checkbox" placeholder="Breakable" name="breakable" value="{{request.form.breakable}}">
-            <br>
+            <h3>Break Task Up Into</h3>
+          </select>
+          Block Size (minutes):
+          <select name="minutes">
+            <option value=0>Don't break task up</option>
+            <option value=15>15</option>
+            <option value=30>30</option>
+            <option value=45>45</option>
+            <option value=45>60</option>
+          </select>
+          <br>
             <input class="btn btn-default" type="submit" value="Submit">
         </form>
+        <class="btn btn-default" button onclick="location.href='/'" >
+     Back</button>
       </div>
     </body>
 </html>

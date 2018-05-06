@@ -1,4 +1,4 @@
-from scipy.optimize import linear_sum_assignment
+    from scipy.optimize import linear_sum_assignment
 import time, numpy, random
 # import matrixManipulator
 from scheduleHelpers import Item
@@ -9,7 +9,7 @@ def getCostMatrix(itemList, timeList):
     Creates a  matrix.
 
     itemList: list of items with same duration
-    timeLsit: list of time blocks
+    timeList: list of time blocks
 
     return: matrix with dimensions len(IL)Xlen(TL)
     """
