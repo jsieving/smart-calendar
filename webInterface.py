@@ -37,7 +37,9 @@ def saveToCal():
     saveToday()
     return render_template('saveToCal.html')
 
-
+@app.route('/toDo')
+def toDo():
+    return render_template('toDo.html')
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens

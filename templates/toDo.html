@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Smart Calendar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="static/assets/css/main.css" />
+    </head>
+    <body>
+      <div class= "container">
+        <h1>Enter a new To Do</h1>
+         <form action="" method = "post">
+           <br>
+           <h3> Task Name</h3>
+           <input type="text" placeholder="Task Name" name="name" value="{{request.form.name}}">
+           <br>
+           <h3>Estimated Time Needed</h3>
+           Hours:
+           <select name="hours">
+              <option value=0>0</option>
+              <option value=1>1</option>
+              <option value=2>2</option>
+              <option value=3>3</option>
+              <option value=4>4</option>
+              <option value=5>5</option>
+              <option value=5>6</option>
+            </select>
+            Minutes:
+            <select name="minutes">
+              <option value=0>0</option>
+              <option value=15>15</option>
+              <option value=30>30</option>
+              <option value=45>45</option>
+            </select>
+            <br>
+            <h3>Break Task Up</h3>
+            <input type="checkbox" placeholder="Breakable" name="breakable" value="{{request.form.breakable}}">
+            <br>
+            <input class="btn btn-default" type="submit" value="Submit">
+        </form>
+      </div>
+    </body>
+</html>
