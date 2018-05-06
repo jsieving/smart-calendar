@@ -1,6 +1,7 @@
 '''Created by Jane Sieving (jsieving) on 4/20/18.'''
 
 from scheduleHelpers import *
+from gcal import *
 from pickle import dump, load
 from datetime import timedelta, datetime, date, time
 import time
@@ -18,6 +19,14 @@ def prefs_from_csv(csv_name):
             recurrence_list.append(event)
     prefs = get_freq_prefs(recurrence_list)
     return prefs
+
+def prefs_from_gcal():
+    events = get_events()['items']
+    event_list = make_event_list(events)
+    activities = extract_activities(event_list)
+    activity_prefs = {}
+    for activity, events in activities.items():
+        activity_prefs[activity] = get_freq_prefs(events)
 
 def get_freq_prefs(recurrence_list):
     '''Takes a list of events and returns a list representing the minutes of the

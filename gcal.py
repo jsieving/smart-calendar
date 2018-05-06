@@ -165,7 +165,7 @@ class GCal:
         eventsResult = self.service.freebusy().query(body = body).execute()
         return eventsResult
 
-    def get_events(self, daysPast, daysFuture):
+    def get_events(self, daysPast = 7, daysFuture = 0):
         """
         Returns a list of event items, in the form of the Google events object
         """
@@ -182,10 +182,10 @@ class GCal:
         """
         Takes a list of Google events and turns it into our (more usable) event type
         """
-        list = []
-        for event in events["items"]:
-            list.append(Item(name = event['summary'], start = event['start']['dateTime'], end = event['end']['dateTime']))
-        return list
+        all_events = []
+        for event in events:
+            all_events.append(Item(name = event['summary'], start = event['start']['dateTime'], end = event['end']['dateTime']))
+        return all_events
 
     def delete_event(self, event):
         """

@@ -5,9 +5,9 @@ from csv import reader, writer
 from pickle import dump, load
 from datetime import timedelta, datetime, date, time
 
-__all__ = ["Item", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
-            "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal",
-            "categorize", "extract_activities"]
+# __all__ = ["Item", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
+#             "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal",
+#             "categorize", "extract_activities"]
 ## Determines which functions are imported by 'import *'. If you add or change functions,
 ## make sure that is reflected here.
 
@@ -190,15 +190,19 @@ def categorize(event):
         name.replace(char, '')
     return name
 
-def extract_activities(calendar):
-    '''Takes a calendar and creates files for each activity. Each file is a pickled
-    list of the events in that activity.'''
-    all_events = []
+def extract_activities(calendar_events):
+    '''Takes a calendar or list of events and creates files for each activity.
+    Each file is a pickled list of the events in that activity.
+    Also returns a dictionary of activity lists.'''
     loc = 'testData/'
-    for date, day in calendar.items():
-        for event in day:
-            event.weekday = date.weekday()
-            all_events.append(event)
+    if calendar_events.isinstance('dict'):
+        all_events = []
+        for date, day in calendar_events.items():
+            for event in day:
+                event.weekday = date.weekday()
+                all_events.append(event)
+    else:
+        all_events = calendar_events
     activities = {}
     for event in all_events:
         act = categorize(event)
@@ -211,6 +215,18 @@ def extract_activities(calendar):
         f.seek(0)
         dump(events, f)
         f.close()
+    return activities
+
+def item_from_gcal(event):
+    '''Takes a GCal event (JSON format) and returns an object of our Item class.'''
+    name = event['summary']
+    start = event['start']['datetime'][0:-6]
+    starttime = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
+    end = event['end']['datetime'][0:-6]
+    endtime = datetime.strptime(end, '%Y-%m-%dT%H:%M:%S')
+    item = Item(name = name, start = starttime, end = endtime)
+    item.category = categorize(item)
+    return item
 
 def event_to_gcal(gcal, name, start, end):
     '''Pushes a simple event to Google Calendar'''
