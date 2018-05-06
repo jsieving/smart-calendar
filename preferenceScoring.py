@@ -57,12 +57,19 @@ def get_occur_data(activities):
     return occur_data
 
 def get_freq_costs(occurence_data):
-    '''Takes a dictionary of occurences and returns a dictionary of activity costs.'''
+    '''Takes a dictionary of occurences, subtracts a dictionary of when events have been rejected,
+    and returns a dictionary of activity costs.'''
+    if exists('testData/feedback_data'):
+        f = open('testData/feedback_data', 'rb+')
+        feedback_data = load(f)
     costs = {}
     for activity, occur_data in occurence_data.items():
         activity_costs = []
-        for p in occur_data[:-1]: # looks at the occurences in each block, not the event count
-            c = int((1 - p/occur_data[-1]) * 100) # p is divided by the event count
+        for n in range(96):
+            entry_count = occur_data[-1]
+            feedback_list = feedback_data.get(activity, [0 for i in range(96)])
+            score = occur_data[n] - feedback_list[n]
+            c = int((1 - score/entry_count) * 100)
             activity_costs.append(c)
         costs[activity] = activity_costs
     return costs
@@ -93,7 +100,8 @@ def get_break_prefs(gcal):
     return pref_list2
 
 def get_feedback_matrix(reject_events_list):
-    ''' Takes a list of google event objects and creates/updates a matrix of user feedback.'''
+    ''' Takes a list of google event objects and creates/updates a matrix of user feedback.
+    These values can be subtracted from the stored occurence data.'''
     if exists('testData/feedback_data'):
         f = open('testData/feedback_data', 'rb+')
         feedback_data = load(f)
@@ -108,8 +116,8 @@ def get_feedback_matrix(reject_events_list):
         for j in range(int(1440 / 15)):
             t = min_to_dt(j * 15)
             if item.start <= t <= item.end:
-                pref_list[j] += 1
-        feedback_data[activity] = pref_list
+                feedback_list[j] += 1
+        feedback_data[activity] = feedback_list
 
     f.seek(0)
     dump(feedback_data, f)
