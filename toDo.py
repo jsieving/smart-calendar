@@ -43,6 +43,10 @@ def make_list(item):
     #     if add == True:
     #         todo_list.append(cal_list[i])
     print(todo_list)
+
+def get_list():
+    f = open("testData/listData", "rb+")
+    return pickle.load(f)
 def clear_list():
     try:
         f = open("testData/listData", "rb+")

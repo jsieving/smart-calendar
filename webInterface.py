@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
 from toDo import make_list
+from toDo import get_list
 from gcal import GCal
 import datetime
 import time
@@ -74,9 +75,9 @@ def toDo():
         make_list(event)
     return render_template('toDo.html')
 
-#@app.route('/viewToDo', method=['GET', 'POST'])
-#def getToDo():
-
+@app.route('/viewToDo')
+def viewToDo():
+    return render_template('viewToDo.html', todo_list = get_list())
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
