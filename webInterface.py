@@ -25,6 +25,21 @@ def generateEvent(name, startTime, endTime):
     # cal.create_event(name = name)
     return event
 
+def generateToDo(name, hours, minutes, break_time):
+    # length should be the total number of 15 minute segments
+    # eventually, add the events to the to do list the appropriate num of
+    # times for the breaks - e.g. 60 minute event in 30 minute segments
+    # should make 2 events in to do lists
+    length_hours = hours * 4 # 15 minute segments worth of hours
+    length_mins = minutes / 15 # 15 minute segments worth of minutes
+    length = length_hours + length_mins # total num segments
+    if break_time == 0:
+        breakable = False
+    elif break_time > 0:
+        breakable = True
+    num_breaks = length / break_time
+    event = Item(name=name, duration=lenth, breakable=breakable, break_time=break_time, break_num=break_num)
+
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -37,9 +52,22 @@ def saveToCal():
     saveToday()
     return render_template('saveToCal.html')
 
-@app.route('/toDo')
+@app.route('/toDo', methods=['GET', 'POST'])
 def toDo():
+    print('HIIIII')
     return render_template('toDo.html')
+    elements = {'name': '', 'hours': '0', 'minutes': '0', 'break_time': '0'}
+    if request.method == 'GET':
+        print('yes it was GET')
+        #Checks to see if all the boxes are filled
+        for i in elements:
+            if request.form[i] != '':
+                elements[i] = request.form[i]
+
+        print(elements.values())
+        event = generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['break_time'])
+        print(event)
+        make_list(event)
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
@@ -58,11 +86,9 @@ def event():
         make_list(event)
         return redirect(url_for('index'))
 
-
     #Defines what html page runs when page is opened
     return render_template('event.html')
 
 if __name__ == '__main__':
     cal = GCal()
-
     app.run()
