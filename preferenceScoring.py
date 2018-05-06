@@ -75,10 +75,7 @@ def get_freq_costs(occurence_data):
     return costs
 
 def get_break_prefs(gcal):
-    pref_list = []
-    for i in range(24 *4):
-        #this makes an array of costs for one day split by 15 minute increments
-        pref_list.append(0)
+    pref_list = [0 for n in range(96)]
     busy = gcal.get_busy()["calendars"][gcal.mainID]["busy"]
     for time in busy:
          start = datetime.strptime(time["start"], '%Y-%m-%dT%H:%M:%SZ')
@@ -123,12 +120,29 @@ def get_feedback_matrix(reject_events_list):
     dump(feedback_data, f)
     return feedback_data
 
-def make_cost_matrix(cal, events):
-    #soon this will multiply by history matrix
-    event_list = []
-    cost_matrix = []
-    break_prefs = get_break_prefs(cal)
-    for event in events:
-        event_list.append(event.name)
-        cost_matrix.append(get_break_prefs(cal))
-    return event_list, cost_matrix
+def get_timeblock_costs(block_length, freq_costs, break_prefs):
+    '''Given a timeblock length, a dictionary of frequency costs, and a dictionary of break
+    preferences, returns a dictionary of overall costs for intervals of the specified length.'''
+    n = block_length // 15 # number of block costs to add together
+    costs = {}
+    for activity, cost_list in freq_costs.items():
+        overall_costs = []
+        for i in range(96):
+            if i % n = 0: # every n blocks, the cost resets
+                cost = 0
+            cost += cost_list[i] + break_prefs[i] # the cost accumulates for n blocks
+            if i+1 % n = 0: # if this is the last of a set of n blocks, append the cost
+                overall_costs.append(cost)
+        costs[activity] = overall_costs
+    return costs
+
+
+# def make_cost_matrix(cal, events):
+#     #soon this will multiply by history matrix
+#     event_list = []
+#     cost_matrix = []
+#     break_prefs = get_break_prefs(cal)
+#     for event in events:
+#         event_list.append(event.name)
+#         cost_matrix.append(get_break_prefs(cal))
+#     return event_list, cost_matrix
