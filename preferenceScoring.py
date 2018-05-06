@@ -4,7 +4,9 @@ from scheduleHelpers import *
 from gcal import *
 from pickle import dump, load
 from datetime import timedelta, datetime, date, time
+from os.path import exists
 import time
+
 offset = time.gmtime().tm_hour - time.localtime().tm_hour
 
 def prefs_from_csv(csv_name):
@@ -21,26 +23,46 @@ def prefs_from_csv(csv_name):
     return prefs
 
 def prefs_from_gcal():
+    '''Gets events from GCal and returns a dictionary of preference vectors for each activity.'''
     events = get_events()['items']
     event_list = make_event_list(events)
     activities = extract_activities(event_list)
-    activity_prefs = {}
-    for activity, events in activities.items():
-        activity_prefs[activity] = get_freq_prefs(events)
+    occurence_data = get_occur_data(activities)
+    freq_cost_vectors = get_freq_costs(occurence_data)
+    return freq_cost_vectors
 
-def get_freq_prefs(recurrence_list):
-    '''Takes a list of events and returns a list representing the minutes of the
-    week and the likelihood that an activity will occur in each minute.'''
-    pref_list = []
-    costs = []
-    for j in range(int(1440 / 15)):
-        pref_list.append(0)
-        t = min_to_dt(j * 15)
-        for e in recurrence_list:
-            if e.start <= t <= e.end:
-                pref_list[j] += 1
-    for p in pref_list:
-        c = int((1 - p/len(recurrence_list)) * 100)
+def get_occur_data(activities):
+    '''Takes a dictionary of 'activity':[event_list] and saves a dictionary of occurence_data
+    such as <('activity1': [0, 1, 2, 0], 'activity2': [0, 1, 1, 2])>
+    '''
+    if exists('testData/occurence_data'):
+        f = open('testData/occurence_data', 'rb+')
+        occur_data = load(f)
+    else:
+        f = open('testData/occurence_data', 'wb+')
+        occur_data = {}
+
+    for activity, event_list in activities.items():
+        pref_list = occur_data.get(activity, [0 for i in range(1440//15 + 1)]) # the +1 is to store the total event count
+        for j in range(int(1440 / 15)):
+            t = min_to_dt(j * 15)
+            for e in event_list:
+                if e.start <= t <= e.end:
+                    pref_list[j] += 1
+            pref_list[-1] += len(event_list)
+        occur_data[activity] = pref_list
+
+    f.seek(0)
+    dump(occur_data, f)
+    return occur_data
+
+def get_freq_costs(occurence_data):
+    '''Takes a dictionary of occurences and returns a dictionary of activity costs.'''
+    costs = {}
+    for activity, occur_data in occurence_data.items():
+    activity_costs = []
+    for p in occur_data[:-1]: # looks at the occurences in each block, not the event count
+        c = int((1 - p/occur_data[-1]) * 100) # p is divided by the event count
         costs.append(c)
     return costs
 
