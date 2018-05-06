@@ -34,11 +34,13 @@ def generateToDo(name, hours, minutes, break_time):
     length_mins = minutes / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments
     if break_time == 0:
+        print('yes')
         breakable = False
+        break_num = 0
     elif break_time > 0:
         breakable = True
-    num_breaks = length / break_time
-    event = Item(name=name, duration=lenth, breakable=breakable, break_time=break_time, break_num=break_num)
+        break_num = length / break_time
+    event = Item(name=name, duration=length, breakable=breakable, break_time=break_time, break_num=break_num)
 
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
@@ -61,7 +63,12 @@ def toDo():
         print(request.form['breakSize'])
         for i in elements:
             if request.form[i] != '':
-                elements[i] = request.form[i]
+                try:
+                     elements[i] = int(request.form[i])
+                except:
+                     elements[i] = request.form[i]
+        print(elements.values())
+
         event = generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
         make_list(event)
     return render_template('toDo.html')
