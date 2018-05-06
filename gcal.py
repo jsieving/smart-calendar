@@ -19,6 +19,7 @@ import datetime
 import pytz
 import preferenceScoring
 import scheduleHelpers
+from pprint import pprint
 
 
 try:
@@ -46,6 +47,7 @@ class GCal:
         self.service = discovery.build('calendar', 'v3', http= self.http)
         self.now = datetime.datetime.utcnow()
         self.mainID = mainID
+        self.tempID = None
         self.timeZone = timeZone
 
     def get_credentials(self):
@@ -81,6 +83,7 @@ class GCal:
         if (days != ""):
             rule.append("BYDAY=" + days)
         rule.append("INTERVAL=" + interval)
+
     def create_event(self, name ="event", location ='', description ='',
                     start=datetime.datetime.utcnow() + datetime.timedelta(days = 1),
                      end=datetime.datetime.utcnow() + datetime.timedelta(days=2), repeat='FREQ=HOURLY;UNTIL=19901212', notification=[]):
@@ -137,7 +140,7 @@ class GCal:
 
         }
 
-        event = self.service.events().insert(calendarId= self.mainID, body=event).execute()
+        event = self.service.events().insert(calendarId= self.tempID, body=event).execute()
 
     def get_busy(self, time_min =  datetime.datetime.utcnow(),
                 time_max = ( datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
@@ -175,7 +178,6 @@ class GCal:
         #events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1.isoformat() + 'Z', timeMax = time2.isoformat() + "Z").execute()
         return events
 
-
     def make_event_list(self, events):
         """
         Takes a list of Google events and turns it into our (more usable) event type
@@ -191,6 +193,72 @@ class GCal:
         """
         self.service.events().delete(calendarId='primary', eventId= event['id']).execute()
 
+    def make_temp_cal(self):
+        """
+        Checks whether a temp calendar exists, and if not, makes one. If a temporary
+        calendar exists, it is set as the calendar to add temporary events to.
+        """
+        if not self.get_tempID(requireID = False):
+            data = {'summary': 'Temporary', 'timeZone': 'America/Los_Angeles'}
+            temp_cal = self.service.calendars().insert(body=data).execute()
+            self.tempID = temp_cal['id']
+        else:
+            print("A temporary calendar already existed and is now being used.")
+
+    def clear_temp_cal(self):
+        """
+        Checks if a temporary calendar exists, and if it does, clears it.
+        """
+        if self.get_tempID(requireID = False):
+            self.service.calendars().clear(calendarId = self.tempID).execute()
+        else:
+            print("No temporary calendar to clear.")
+
+    def delete_temp_cal(self):
+        """
+        Checks if a temporary calendar exists, and if it does, deletes it.
+        """
+        if self.get_tempID(requireID = False):
+            self.service.calendars().delete(calendarId = self.tempID).execute()
+            self.tempID = None
+        else:
+            print("No temporary calendar to delete.")
+
+    def migrate_events(self):
+        """
+        Removes each event from the temp calendar and adds it to the main calendar.
+        """
+        if self.get_tempID(requireID = False):
+            events_data = self.service.events().list(calendarId = self.tempID, pageToken=None, timeMin = None, timeMax = None).execute()
+            events = events_data['items']
+            for event in events:
+                # self.service.events().move(calendarId= self.mainID, eventId= event['id'], destination = self.tempID).execute()
+                self.service.events().insert(calendarId= self.mainID, body=event).execute()
+                self.service.events().delete(calendarId= self.tempID, eventId= event['id']).execute()
+        else:
+            print("No temporary calendar to migrate events from.")
+
+    def print_cal_data(self):
+        """
+        Prints all calendars in a google calendar account.
+        """
+        pprint(self.service.calendarList().list().execute())
+
+    def get_tempID(self, requireID = True):
+        """
+        Attempts to find a temporary calendar in the user's list of google calendars.
+        If none is found, it will make one if requireID is True.
+        """
+        cal_data = self.service.calendarList().list().execute()
+        for n in range(len(cal_data['items'])):
+            if cal_data['items'][n]['summary'] == 'Temporary':
+                temp_cal_ID = cal_data['items'][n]['id']
+                self.tempID = temp_cal_ID
+                break
+        if requireID and self.tempID == None:
+            print("No temporary calendar was found. Creating one for you...")
+            self.make_temp_cal()
+        return self.tempID
 
 if __name__ == '__main__':
     cal = GCal()
