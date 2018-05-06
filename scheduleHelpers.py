@@ -35,6 +35,7 @@ class Item:
         self.category = category # may be replaced with tags?
         self.item_type = item_type
         self.break_time = break_time
+        self.break_num = break_num
 
     def __str__(self):
         return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())

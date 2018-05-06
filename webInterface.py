@@ -31,7 +31,7 @@ def generateToDo(name, hours, minutes, break_time):
     # times for the breaks - e.g. 60 minute event in 30 minute segments
     # should make 2 events in to do lists
     length_hours = hours * 4 # 15 minute segments worth of hours
-    length_mins = minutes / 15 # 15 minute segments worth of minutes
+    length_mins = str(minutes) / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments
     if break_time == 0:
         breakable = False
@@ -55,19 +55,22 @@ def saveToCal():
 @app.route('/toDo', methods=['GET', 'POST'])
 def toDo():
     print('HIIIII')
-    return render_template('toDo.html')
     elements = {'name': '', 'hours': '0', 'minutes': '0', 'break_time': '0'}
-    if request.method == 'GET':
-        print('yes it was GET')
+    if request.method == 'POST':
+        print('yes it was POST')
         #Checks to see if all the boxes are filled
+        print(len(elements))
         for i in elements:
             if request.form[i] != '':
                 elements[i] = request.form[i]
+                print('added to dictionary')
 
+        print('made it out of loop')
         print(elements.values())
         event = generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['break_time'])
         print(event)
         make_list(event)
+    return render_template('toDo.html')
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
