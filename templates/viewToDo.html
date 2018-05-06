@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title>Smart Calendar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="static/assets/css/main.css" />
+    </head>
+    <body>
+      {% for event in todo_list %}
+      <h1>{{ event.name }} </h1>
+      {% endfor %}
+    </body>
+</html>

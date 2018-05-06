@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
 from toDo import make_list
+from toDo import get_list
 from gcal import GCal
 import datetime
 import time
@@ -41,7 +42,11 @@ def generateToDo(name, hours, minutes, break_time):
         breakable = True
         break_num = length / break_time
     event = Item(name=name, duration=length, breakable=breakable, break_time=break_time, break_num=break_num)
+<<<<<<< HEAD
     make_list(event)
+=======
+    return event
+>>>>>>> 7c6e01ee27aed2edbe076d3ec36396777e25088c
 
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
@@ -72,6 +77,10 @@ def toDo():
 
         event = generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
     return render_template('toDo.html')
+
+@app.route('/viewToDo')
+def viewToDo():
+    return render_template('viewToDo.html', todo_list = get_list())
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens

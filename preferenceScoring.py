@@ -57,21 +57,25 @@ def get_occur_data(activities):
     return occur_data
 
 def get_freq_costs(occurence_data):
-    '''Takes a dictionary of occurences and returns a dictionary of activity costs.'''
+    '''Takes a dictionary of occurences, subtracts a dictionary of when events have been rejected,
+    and returns a dictionary of activity costs.'''
+    if exists('testData/feedback_data'):
+        f = open('testData/feedback_data', 'rb+')
+        feedback_data = load(f)
     costs = {}
     for activity, occur_data in occurence_data.items():
         activity_costs = []
-        for p in occur_data[:-1]: # looks at the occurences in each block, not the event count
-            c = int((1 - p/occur_data[-1]) * 100) # p is divided by the event count
+        for n in range(96):
+            entry_count = occur_data[-1]
+            feedback_list = feedback_data.get(activity, [0 for i in range(96)])
+            score = occur_data[n] - feedback_list[n]
+            c = int((1 - score/entry_count) * 100)
             activity_costs.append(c)
         costs[activity] = activity_costs
     return costs
 
 def get_break_prefs(gcal):
-    pref_list = []
-    for i in range(24 *4):
-        #this makes an array of costs for one day split by 15 minute increments
-        pref_list.append(0)
+    pref_list = [0 for n in range(96)]
     busy = gcal.get_busy()["calendars"][gcal.mainID]["busy"]
     for time in busy:
          start = datetime.strptime(time["start"], '%Y-%m-%dT%H:%M:%SZ')
@@ -93,7 +97,8 @@ def get_break_prefs(gcal):
     return pref_list2
 
 def get_feedback_matrix(reject_events_list):
-    ''' Takes a list of google event objects and creates/updates a matrix of user feedback.'''
+    ''' Takes a list of google event objects and creates/updates a matrix of user feedback.
+    These values can be subtracted from the stored occurence data.'''
     if exists('testData/feedback_data'):
         f = open('testData/feedback_data', 'rb+')
         feedback_data = load(f)
@@ -108,19 +113,36 @@ def get_feedback_matrix(reject_events_list):
         for j in range(int(1440 / 15)):
             t = min_to_dt(j * 15)
             if item.start <= t <= item.end:
-                pref_list[j] += 1
-        feedback_data[activity] = pref_list
+                feedback_list[j] += 1
+        feedback_data[activity] = feedback_list
 
     f.seek(0)
     dump(feedback_data, f)
     return feedback_data
 
-def make_cost_matrix(cal, events):
-    #soon this will multiply by history matrix
-    event_list = []
-    cost_matrix = []
-    break_prefs = get_break_prefs(cal)
-    for event in events:
-        event_list.append(event.name)
-        cost_matrix.append(get_break_prefs(cal))
-    return event_list, cost_matrix
+def get_timeblock_costs(block_length, freq_costs, break_prefs):
+    '''Given a timeblock length, a dictionary of frequency costs, and a dictionary of break
+    preferences, returns a dictionary of overall costs for intervals of the specified length.'''
+    n = block_length // 15 # number of block costs to add together
+    costs = {}
+    for activity, cost_list in freq_costs.items():
+        overall_costs = []
+        for i in range(96):
+            if i % n == 0: # every n blocks, the cost resets
+                cost = 0
+            cost += cost_list[i] + break_prefs[i] # the cost accumulates for n blocks
+            if i+1 % n == 0: # if this is the last of a set of n blocks, append the cost
+                overall_costs.append(cost)
+        costs[activity] = overall_costs
+    return costs
+
+
+# def make_cost_matrix(cal, events):
+#     #soon this will multiply by history matrix
+#     event_list = []
+#     cost_matrix = []
+#     break_prefs = get_break_prefs(cal)
+#     for event in events:
+#         event_list.append(event.name)
+#         cost_matrix.append(get_break_prefs(cal))
+#     return event_list, cost_matrix

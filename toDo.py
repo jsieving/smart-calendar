@@ -30,38 +30,47 @@ def add_item(item):
         raise Exception("Invalid submission. Item:  {} \n Is not a valid item. Please resubmit".format(item))
 
 
-def make_list(item):
-    """
-    This function checks to see if there is a to-do list, create one, and will
-    add events from google calendars.
-    """
-    #Check to see if the toDo file is present and add file if not
-    fileLoc = "official_todo_list"
-    if not os.path.exists(fileLoc):
-        f = open(fileLoc, 'rb+')
-        todoList = []
-        dump(todo_List, f)
-        f.close()
-
-
-
-
-    #
+# def make_list(item):
+#         """
+#         This function checks to see if there is a to-do list, create one, and will
+#         add events from google calendars.
+#         """
+#         #Check to see if the toDo file is present and add file if not
+#         fileLoc = "official_todo_list"
+#         if not os.path.exists(fileLoc):
+#             f = open(fileLoc, 'rb+')
+#             todoList = []
+#             dump(todo_List, f)
+#             f.close()
+#
+#
+#
+#
+#         #
+#         cal_list = main()
+#         f = open(fileLoc,  "rb+")
+#         todo_list = load(f)
+#         print("opened in reading mode")
+#         # except (OSError, IOError) as e:
+#         #     foo = item
+#         #     dump(foo, open("testData/listData", "wb"))
+#         #     print("threw exception")
     cal_list = main()
-    f = open(fileLoc,  "rb+")
-    todo_list = load(f)
-    print("opened in reading mode")
-    # except (OSError, IOError) as e:
-    #     foo = item
-    #     dump(foo, open("testData/listData", "wb"))
-    #     print("threw exception")
+    try:
+        f = open("testData/listData", "rb+")
+        todo_list = pickle.load(f)
+        print("opened in reading mode")
+    except (OSError, IOError) as e:
+        foo = item
+        dump(foo, open("testData/listData", "wb"))
+        print("threw exception")
 
     todo_list.append(item)
     f.seek(0)
     dump(todo_list, f)
     f.close()
-    print("added to file")
 
+    print("added to file")
     # # check for duplicate calendar events in saved list
     # # add new calendar events to todo_list
     # for i in range(0,len(cal_list)):
@@ -73,6 +82,9 @@ def make_list(item):
     #         todo_list.append(cal_list[i])
     print(todo_list)
 
+def get_list():
+    f = open("testData/listData", "rb+")
+    return pickle.load(f)
 def clear_list():
     try:
         f = open("testData/listData", "rb+")
