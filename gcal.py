@@ -48,7 +48,9 @@ class GCal:
         self.now = datetime.datetime.utcnow()
         self.mainID = mainID
         self.tempID = None
+        self.tempID = self.get_tempID()
         self.timeZone = timeZone
+
 
     def get_credentials(self):
         """Gets valid user credentials from storage.
@@ -77,6 +79,9 @@ class GCal:
                 self.credentials = tools.run(flow, store)
             print('Storing credentials to ' + credential_path)
         return self.credentials
+
+        #from stackoverflow: https://stackoverflow.com/questions/19473250/how-to-get-user-email-after-oauth-with-google-api-python-client
+
 
     def create_RRULE(freq = 'WEEKLY', days = "", interval = 1):
         rule = "FREQ=" + freq
@@ -205,14 +210,14 @@ class GCal:
         else:
             print("A temporary calendar already existed and is now being used.")
 
+    """
+    this doesn't work!
     def clear_temp_cal(self):
-        """
         Checks if a temporary calendar exists, and if it does, clears it.
-        """
         if self.get_tempID(requireID = False):
             self.service.calendars().clear(calendarId = self.tempID).execute()
         else:
-            print("No temporary calendar to clear.")
+            print("No temporary calendar to clear.")"""
 
     def delete_temp_cal(self):
         """
@@ -262,10 +267,11 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    cal.get_events(0,1)
+    #cal.get_events(0,1)
      # {'method': 'popup', 'minutes': 10}])
     #print(cal.get_busy())
-    events = cal.get_events(0,1)
+    #events = cal.get_events(0,1)
     #events = cal.make_event_list(events
-    busy = cal.get_busy()
-    print(preferenceScoring.make_cost_matrix(cal,events))
+    #busy = cal.get_busy()
+    #print(preferenceScoring.make_cost_matrix(cal,events))
+    cal.delete_temp_cal()
