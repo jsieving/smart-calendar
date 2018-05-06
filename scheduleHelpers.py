@@ -23,7 +23,8 @@ class Item:
     item_type: str 'todo' or 'event'
     '''
     def __init__(self, name, start = None, end = None, duration = None,\
-                breakable = False, importance = None, category = None, item_type = 'event'):
+                breakable = False, importance = None, category = None, item_type = 'event',
+                break_time = None, break_num = None):
         self.name = name
         self.start = start
         self.end = end
@@ -33,6 +34,7 @@ class Item:
         self.importance = importance
         self.category = category # may be replaced with tags?
         self.item_type = item_type
+        self.break_time = break_time
 
     def __str__(self):
         return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
