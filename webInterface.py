@@ -55,19 +55,16 @@ def saveToCal():
 @app.route('/toDo', methods=['GET', 'POST'])
 def toDo():
     print('HIIIII')
-    return render_template('toDo.html')
-    elements = {'name': '', 'hours': '0', 'minutes': '0', 'break_time': '0'}
-    if request.method == 'GET':
-        print('yes it was GET')
+    elements = {'name': '', 'hours': '0', 'minutes': '0', 'breakSize': '0'}
+    if request.method == 'POST':
         #Checks to see if all the boxes are filled
+        print(request.form['breakSize'])
         for i in elements:
             if request.form[i] != '':
                 elements[i] = request.form[i]
-
-        print(elements.values())
-        event = generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['break_time'])
-        print(event)
+        event = generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
         make_list(event)
+    return render_template('toDo.html')
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
