@@ -79,6 +79,7 @@
   <head>
     <title>Smart Calendar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="30">
     <link rel="stylesheet" href="static/assets/css/main.css" />
   </head>
   <body>
@@ -86,11 +87,11 @@
       <h1> Please delete unwanted scheduling </h1>
       <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src={{id1}}&amp;color=%230F4B38&amp\" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
       <br>
-        <form action="/viewToDo" method="post">
+        <form action="/viewCal" method="post">
 
           {% for event in tempList %}
           <label class="container">{{ event.category }}:   {{event.start}}
-            <input type="checkbox" name={{event.name}} value={{event.duration}}>
+            <input type="checkbox" name={{event.name}} value={{event.category}}>
             <span class="checkmark"></span>
           </label>
           {% endfor %}

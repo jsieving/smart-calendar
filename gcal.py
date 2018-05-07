@@ -208,11 +208,18 @@ class GCal:
             all_events.append(item)
         return all_events
 
-    def delete_event(self, event):
+    def delete_event(self, calendar, eventID):
         """
         takes an event object and deletes it from google calendar
         """
-        self.service.events().delete(calendarId='primary', eventId= event['id']).execute()
+        print('just started')
+        if calendar == 'main':
+            cal_ID = self.mainID
+        else:
+            cal_ID = self.tempID
+
+        print('almost done deleting')
+        self.service.events().delete(calendarId=cal_ID, eventId=eventID).execute()
 
     def make_temp_cal(self):
         """

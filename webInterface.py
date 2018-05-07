@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
-from toDo import add_item, get_list, remove_from_list
+from toDo import add_item, get_list, remove_from_list, make_list
 from gcal import GCal
 import datetime
 import time
@@ -75,6 +75,7 @@ def generateToDo(name, hours, minutes, break_time):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     #GCal().migrate_events()
+    make_list()
     return render_template('index.html')
 
 #Saves today's schedule and renders a
@@ -142,6 +143,14 @@ def viewCal():
 
     if request.method == 'POST':
         print(request.form)
+        for i in tempList:
+            ID = i.name
+            try:
+                temp = request.form[ID]
+                print('deleting')
+                GCal().delete_event('temp',ID)
+            except:
+                pass
 
     return render_template('viewCal.html', id1 = id1, tempList=tempList)
 
