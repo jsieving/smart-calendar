@@ -34,6 +34,7 @@ def add_item(item):
     f = open(FILE_LOCATION, 'rb+')
     todo_list = load(f)
     todo_list.append(item)
+    print('updated to do list: ' + str(todo_list))
     f.seek(0)
     dump(todo_list, f)
     f.close()
