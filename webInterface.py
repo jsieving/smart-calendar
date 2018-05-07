@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
-from toDo import add_item, get_list
-from toDo import get_list
+from toDo import add_item, get_list, remove_from_list
 from gcal import GCal
 import datetime
 import time
@@ -75,8 +74,20 @@ def toDo():
         generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
     return render_template('toDo.html')
 
-@app.route('/viewToDo')
+@app.route('/viewToDo', methods=['GET', 'POST'])
 def viewToDo():
+    print(get_list())
+    elements = {}
+    if request.method == 'POST':
+        events = request.form
+        print(events)
+        for event in events:
+            if (event != "submit"):
+                remove_from_list(event)
+                print(event)
+    #Deletes all checked
+
+
     return render_template('viewToDo.html', todo_list = get_list())
 
 @app.route('/createEvent', methods=['GET', 'POST'])
