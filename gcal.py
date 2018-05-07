@@ -175,7 +175,7 @@ class GCal:
         # time1 = datetime.utcnow()
         # time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0)
         # time2 = (time1 + timedelta(days = 1))
-        if calendar = 'main':
+        if calendar == 'main':
             cal_ID = self.mainID
         else:
             cal_ID = self.tempID

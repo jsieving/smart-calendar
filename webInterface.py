@@ -111,9 +111,8 @@ def viewToDo():
         for event in events:
             if (event != "submit"):
                 remove_from_list(event)
-                print(event)
+                print('deleted event: ' + str(event))
     #Deletes all checked
-
 
     return render_template('viewToDo2.html', todo_list = get_list())
 
