@@ -74,14 +74,13 @@ def remove_from_list(name, duration):
 
     if len(todo_list) < 2: # if this is the only one event left, delete it
         for item in range (len(todo_list)):
-            print('item num: ' + str(item))
             if todo_list[item].name == name:
                 todo_list.pop(item)
                 print(todo_list)
     else: # if there are multiple events, find the event and delete it
         for item in range (len(todo_list) - 1):
-            print('item num: ' + str(item))
             if todo_list[item].name == name and todo_list[item].duration == duration:
+                print('this is the one!')
                 todo_list.pop(item)
                 print(todo_list)
 
@@ -90,7 +89,6 @@ def remove_from_list(name, duration):
         f.seek(0)
         dump(todo_list, f)
         f.close()
-
 
 if __name__ == "__main__":
     make_list(None)

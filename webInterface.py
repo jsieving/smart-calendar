@@ -102,17 +102,34 @@ def toDo():
         generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
     return render_template('toDo.html')
 
+# @app.route('/viewToDo', methods=['GET', 'POST'])
+# def viewToDo():
+#     print('list: ' + str(get_list()))
+#     elements = {}
+#     if request.method == 'POST':
+#         events = request.form
+#         print('events: ', events)
+#         print(request.form[event])
+#         for event in events:
+#             print('event: ', event)
+#             if (event != "submit"):
+#                 remove_from_list(event, events())
+#     #Deletes all checked
+
 @app.route('/viewToDo', methods=['GET', 'POST'])
 def viewToDo():
-    print('list: ' + str(get_list()))
+    # print('list: ' + str(get_list()))
     elements = {}
     if request.method == 'POST':
         events = request.form
+        print('events: ', events)
         for event in events:
+            thing = event
+            duration = request.form[thing]
+            print('request form: ', request.form[thing])
             print('event: ', event)
             if (event != "submit"):
                 remove_from_list(event, duration)
-                print('deleted event: ' + str(event))
     #Deletes all checked
 
     return render_template('viewToDo2.html', todo_list = get_list())
