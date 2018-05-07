@@ -246,6 +246,7 @@ class GCal:
             events_data = self.service.events().list(calendarId = self.tempID, pageToken=None, timeMin = None, timeMax = None).execute()
             events = events_data['items']
             for event in events:
+                print(event)
                 # self.service.events().move(calendarId= self.mainID, eventId= event['id'], destination = self.tempID).execute()
                 self.service.events().insert(calendarId= self.mainID, body=event).execute()
                 self.service.events().delete(calendarId= self.tempID, eventId= event['id']).execute()

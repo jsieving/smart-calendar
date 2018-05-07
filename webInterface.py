@@ -74,7 +74,8 @@ def generateToDo(name, hours, minutes, break_time):
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    GCal().migrate_events()
+    if request.method == 'POST':
+        GCal().migrate_events()
     return render_template('index.html')
 
 #Saves today's schedule and renders a
