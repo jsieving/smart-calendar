@@ -88,14 +88,14 @@ def get_break_prefs(gcal):
          for i in range(end - start):
              pref_list[start + i] = 100
     pref_list2 = []
-    for i in range (len(pref_list) - 2):
+    for i in range(len(pref_list) - 2):
         if(pref_list[i] == 100):
             pref_list2.append(1000)
         else:
             avg = (pref_list[i] + pref_list[i + 1] + pref_list[i + 2])/3
             pref_list2.append(avg)
-    pref_list2.append(pref_list2[:-1])
-    pref_list2.append(pref_list2[:-1])
+    pref_list2.append(pref_list[-1]) # adds on last element of first list, since there's nothing to average
+    pref_list2.append(pref_list[-1]) # again, since it averages over 3
     return pref_list2
 
 def get_feedback_matrix(reject_events_list):
