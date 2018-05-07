@@ -80,7 +80,7 @@
       <form action="/viewToDo" method="post">
 
         {% for event in todo_list %}
-        <label class="container">{{ event.name }}:   {{event.duration}} hours
+        <label class="container">{{ event.name }}:   {{event.duration}} minutes
           <input type="checkbox" name="{{event.name}}" value="{{event.name}}">
           <span class="checkmark"></span>
         </label>
