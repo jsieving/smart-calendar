@@ -4,7 +4,7 @@ from toDo import add_item, get_list, remove_from_list
 from gcal import GCal
 import datetime
 import time
-from saveFromCal import saveToday
+from saveFromCal import saveToday,getListOfItems
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
@@ -74,7 +74,7 @@ def generateToDo(name, hours, minutes, break_time):
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    GCal().migrate_events()
+    #GCal().migrate_events()
     return render_template('index.html')
 
 #Saves today's schedule and renders a
@@ -122,8 +122,12 @@ def viewToDo():
 def viewCal():
     GCal()
     id1 = GCal().tempID
-    id2 = GCal().tempID
-    return render_template('viewCal.html', id1 = id1, id2 = id2)
+    tempList = getListOfItems('temp',0,7)
+
+    if request.method == 'POST':
+        print(request.form)
+
+    return render_template('viewCal.html', id1 = id1, tempList=tempList)
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
