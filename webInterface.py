@@ -4,7 +4,7 @@ from toDo import add_item, get_list, remove_from_list
 from gcal import GCal
 import datetime
 import time
-from saveFromCal import saveToday
+# from saveFromCal import saveToday
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
