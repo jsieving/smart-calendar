@@ -9,7 +9,7 @@
       <form action="/viewToDo" method="post">
         {% for event in todo_list %}
         <h3>{{ event.name }}:        {{event.duration / 4}} hours </h3>
-        <input type="checkbox" name={{event}} value={{event}}>
+        <input type="checkbox" name="{{event.name}}" value="{{event.name}}">
         {% endfor %}
         <br>
         <input type="submit" value="Delete" name="submit">

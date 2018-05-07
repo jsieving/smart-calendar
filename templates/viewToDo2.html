@@ -80,13 +80,15 @@
       <form action="/viewToDo" method="post">
 
         {% for event in todo_list %}
-        <label class="container">{{ event.name }}
-          <input type="checkbox" name={{event}}>
+        <label class="container">{{ event.name }}:   {{event.duration}} hours
+          <input type="checkbox" name="{{event.name}}" value="{{event.name}}">
           <span class="checkmark"></span>
         </label>
         {% endfor %}
-        <input type="submit" value="submit">
+        <input type="submit" value="Delete" name="submit">
 
       </form>
+      <a href="/"> Back </a>
+
     </body>
 </html>
