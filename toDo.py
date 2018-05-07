@@ -72,7 +72,6 @@ def remove_from_list(name, duration):
         print('item duration: ', todo_list[item].duration)
         print('duration: ', duration)
         if todo_list[item].name == name and str(todo_list[item].duration) == str(duration):
-
             todo_list.pop(item)
             print(todo_list)
             break

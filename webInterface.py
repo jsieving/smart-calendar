@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
-from toDo import add_item, get_list, remove_from_list
+from toDo import add_item, get_list, remove_from_list, make_list
 from gcal import GCal
 import datetime
 import time
@@ -25,25 +25,24 @@ def generateEvent(name, startTime, endTime):
     # cal.create_event(name = name)
     return event
 
-# def generateToDo(name, hours, minutes, break_time):
-#     # length should be the total number of 15 minute segments
-#     # eventually, add the events to the to do list the appropriate num of
-#     # times for the breaks - e.g. 60 minute event in 30 minute segments
-#     # should make 2 events in to do lists
-#     hours_to_mins = int(hours) * 60 # convert hours to minutes
-#     length_mins = int(hours_to_mins) + int(minutes) # total num minutes
-#
-#     # print('total minutes')
-#     # print(length_mins)
-#
-#     durs = []
-#
-#     if break_time == 0 or length_mins - break_time < 0: # case where not breakable
-#         # print('no breaks')
-#         breakable = False
-#         break_num = 1
-#         durs.append(length_mins)
-#
+def segmentEvent(event):
+
+    print(event.name)
+    # # length should be the total number of 15 minute segments
+    # # eventually, add the events to the to do list the appropriate num of
+    # # times for the breaks - e.g. 60 minute event in 30 minute segments
+    # # should make 2 events in to do lists
+    hours_to_mins = int(event.hours) * 60 # convert hours to minutes
+    length_mins = int(hours_to_mins) + int(event.minutes) # total num minutes
+
+    durs = []
+
+    if event.break_time == 0 or length_mins - break_time < 0: # case where not breakable
+        # print('no breaks')
+        breakable = False
+        break_num = 1
+        durs.append(length_mins)
+
 #     elif (length_mins) % break_time == 0: # if duration is divisible by break size
 #         breakable = True
 #         break_num = int(length_mins / break_time)
@@ -90,11 +89,11 @@ def generateToDo(name, hours, minutes, break_time):
     add_item(event)
     return event
 
-
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
     #GCal().migrate_events()
+    make_list()
     return render_template('index.html')
 
 #Saves today's schedule and renders a
@@ -162,6 +161,14 @@ def viewCal():
 
     if request.method == 'POST':
         print(request.form)
+        for i in tempList:
+            ID = i.name
+            try:
+                temp = request.form[ID]
+                print('deleting')
+                GCal().delete_event('temp',ID)
+            except:
+                pass
 
     return render_template('viewCal.html', id1 = id1, tempList=tempList)
 
