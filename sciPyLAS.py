@@ -61,6 +61,7 @@ class LAS:
         return workingList
 
     def makeCostDict(self):
+        print('Getting break times...')
         break_prefs = get_break_prefs(self.calendarSource)
         costs = get_timeblock_costs(self.blockLength, self.freq_costs, break_prefs)
         return costs
@@ -74,7 +75,7 @@ class LAS:
         blockLength: length of each time block.
         return: list of time blocks.
         """
-        day = 1440
+        day = 2880
         if day % self.blockLength != 0:
             divisions = int(day/self.blockLength)
             self.timeList = numpy.linspace(0, self.blockLength*(divisions), divisions+1)
@@ -101,19 +102,18 @@ class LAS:
             activity = item.category
             scores = costDict.get(activity, [0 for j in range(TL)])
             for y in range(TL):
-                print(y)
                 matrix[x][y] = scores[y]
         return matrix
 
     def run(self, matrix):
         return linear_sum_assignment(matrix)
 
-    def postTempEvents(self, timeArray, itemArray, itemList):
+    def postTempEvents(self, itemArray, timeArray, workingList):
         for n in range(len(itemArray)):
             item = workingList[itemArray[n]]
             time = self.timeList[timeArray[n]]
-            item.start = min_to_dt(time)
-            item.end = start + item.duration
+            item.start = min_to_dt(time, d = date(2018, 5, 8))
+            item.end = item.start + item.duration
             self.calendarSource.create_event(name = item.name, start = item.start, end = item.end)
 
 
@@ -122,40 +122,14 @@ if __name__ == "__main__":
     testList = csv_to_tasklist('toDoList')
 
     solver = LAS(testList)
-    solver.getLongestBlock()
-    solver.getTimeList()
-    workingList = solver.getTaskList()
-    costDict = solver.makeCostDict()
-    costMatrix = solver.populateMatrix(workingList, costDict)
-    results, results2 = solver.run(costMatrix)
-    print(results)
-    print(results2)
+    solver.calendarSource.make_temp_cal()
 
-    # runSorter()
-    #
-    # print(len(testList))
-    #
-    # while(len(testList) > 0):
-    #     print(len(testList))
-    #     longestBlock = getLongestBlock(testList)
-    #     taskList = getTaskList(longestBlock, testList)
-    #     timeList = getListofTime(longestBlock, 0)
-    #     print('Task List=', taskList)
-    #     print('Time List=', timeList)
-    #
-    #     matrix = getCostMatrix(taskList, timeList)
-    #     print('matrix=', matrix)
-    #
-    #     retList = testList[:]
-    #     print('length of retList=', len(retList))
-    #     print('length of testList=', len(testList))
-    #
-    #     for i in testList:
-    #         if i.duration.total_seconds()/60 == longestBlock:
-    #             retList.remove(i)
-    #     testList = retList[:]
-    #
-    # print(getListofTime(4000))
-    # for i in testList:
-    #     print(i)
-# Dictionary of days, each day refers to a list of events
+    while solver.itemList:
+        solver.getLongestBlock()
+        solver.getTimeList()
+        workingList = solver.getTaskList()
+        costDict = solver.makeCostDict()
+        costMatrix = solver.populateMatrix(workingList, costDict)
+        itemArray, timeArray = solver.run(costMatrix)
+        solver.postTempEvents(itemArray, timeArray, workingList)
+        print('Events posted...')
