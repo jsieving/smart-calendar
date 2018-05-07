@@ -269,6 +269,13 @@ class GCal:
             print("No temporary calendar was found. Creating one for you...")
             self.make_temp_cal()
         return self.tempID
+    def get_mainID(self):
+        cal_data = self.service.calendarList().list().execute()
+        for n in range(len(cal_data['items'])):
+            if 'primary' in cal_data['items'][n]:
+                cal_ID = cal_data['items'][n]['id']
+                self.mainID = cal_ID
+        return cal_ID
 
 if __name__ == '__main__':
     cal = GCal()
