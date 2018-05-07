@@ -30,18 +30,44 @@ def generateToDo(name, hours, minutes, break_time):
     # eventually, add the events to the to do list the appropriate num of
     # times for the breaks - e.g. 60 minute event in 30 minute segments
     # should make 2 events in to do lists
-    length_hours = hours * 4 # 15 minute segments worth of hours
-    length_mins = (minutes) / 15 # 15 minute segments worth of minutes
-    length = length_hours + length_mins # total num segments
-    if break_time == 0:
-        print('yes')
+    hours_to_mins = int(hours) * 60 # convert hours to minutes
+    length_mins = int(hours_to_mins) + int(minutes) # total num minutes
+
+    print('total minutes')
+    print(length_mins)
+
+    if break_time == 0: # case where not breakable
         breakable = False
         break_num = 0
-    elif break_time > 0:
+        durs[0] = length_mins
+
+    elif (length_mins) % break_time == 0: # if duration is divisible by break size
         breakable = True
-        break_num = length / break_time
-    event = Item(name=name, duration=length, breakable=breakable, break_time=break_time, break_num=break_num)
-    add_item(event)
+        break_num = int(length_mins / break_time)
+        print('break_num: ' + str(break_num))
+        durs = []
+        for i in range(0, break_num):
+            durs.append(break_time)
+        print('list of durations: ' + str(durs))
+
+    else: # if duration not divisible by break size
+        breakable = True
+        remains = length_mins % break_time
+        print('remains: ' + str(remains))
+        new_length_mins = int(length_mins - remains)
+        print('new_length_mins: ' + str(new_length_mins))
+        break_num = int(new_length_mins / break_time)
+        print('break num: ' + str(break_num))
+        durs = []
+        for i in range(0, break_num):
+            if i == 0:
+                durs.append(break_time + remains)
+            else:
+                durs.append(break_time)
+    print('durations list: ' + str(durs))
+    for i in range (0, break_num):
+        event = Item(name=name, duration=durs[i], breakable=breakable, break_num=1)
+        add_item(event)
     return event
 
 #Renders an html doc for our home page
