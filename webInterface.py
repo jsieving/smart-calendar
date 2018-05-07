@@ -74,6 +74,7 @@ def generateToDo(name, hours, minutes, break_time):
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    GCal().migrate_events()
     return render_template('index.html')
 
 #Saves today's schedule and renders a
@@ -119,10 +120,10 @@ def viewToDo():
 
 @app.route('/viewCal', methods=['GET', 'POST'])
 def viewCal():
-    url = GCal().get_mainID()
-    if request.method == 'GET':
-        GCal().migrate_events()
-    return render_template('viewCal.html', url = url)
+    GCal()
+    id1 = GCal().tempID
+    id2 = GCal().tempID
+    return render_template('viewCal.html', id1 = id1, id2 = id2)
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
