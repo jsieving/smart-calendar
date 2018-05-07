@@ -94,13 +94,14 @@ class LAS:
         return: matrix with manipulated values
         """
         IL = len(itemList)
-        TL = len(self.timeList)
+        TL = len(self.timeList) - 1
         matrix = [[0 for i in range(TL)] for j in range(IL)]
 
         for x, item in enumerate(itemList):
             activity = item.category
             scores = costDict.get(activity, [0 for j in range(TL)])
             for y in range(TL):
+                print(y)
                 matrix[x][y] = scores[y]
         return matrix
 
