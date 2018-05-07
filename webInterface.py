@@ -111,7 +111,7 @@ def viewToDo():
         for event in events:
             print('event: ', event)
             if (event != "submit"):
-                remove_from_list(event,duration)
+                remove_from_list(event,event.duration)
                 print('deleted event: ' + str(event))
     #Deletes all checked
 
