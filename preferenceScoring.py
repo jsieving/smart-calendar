@@ -44,7 +44,7 @@ def get_occur_data(activities):
         occur_data = {}
 
     for activity, event_list in activities.items():
-        pref_list = occur_data.get(activity, [0 for i in range(1440//15 + 1)]) # the +1 is to store the total event count
+        pref_list = occur_data.get(activity, [0 for i in range(96 + 1)]) # the +1 is to store the total event count
         for j in range(96):
             H, M = divmod(j * 15, 60)
             t = time(hour = H, minute = M)
@@ -80,7 +80,10 @@ def get_freq_costs(occurence_data):
 
 def get_break_prefs(gcal):
     pref_list = [0 for n in range(96)]
-    busy = gcal.get_busy()["calendars"][gcal.mainID]["busy"]
+    busy1 = gcal.get_busy(calendar = 'main')["calendars"][gcal.mainID]["busy"]
+    busy2 = gcal.get_busy(calendar = 'temp')["calendars"][gcal.tempID]["busy"]
+    pprint(busy2)
+    busy = busy1 + busy2
     for time in busy:
          start = datetime.strptime(time["start"], '%Y-%m-%dT%H:%M:%SZ')
          #this converts the start time to the index of the array, separated by 15 minute increments
@@ -88,17 +91,17 @@ def get_break_prefs(gcal):
          end = datetime.strptime(time["end"], '%Y-%m-%dT%H:%M:%SZ')
          end = int(end.hour * 4 + end.minute / 15)# - (offset * 4)
          for i in range(end - start):
-             pref_list[start + i] = 100
-    pref_list2 = []
-    for i in range(len(pref_list) - 2):
-        if(pref_list[i] == 100):
-            pref_list2.append(1000)
-        else:
-            avg = (pref_list[i] + pref_list[i + 1] + pref_list[i + 2])/3
-            pref_list2.append(avg)
-    pref_list2.append(pref_list[-1]) # adds on last element of first list, since there's nothing to average
-    pref_list2.append(pref_list[-1]) # again, since it averages over 3
-    return pref_list2
+             pref_list[start + i] = 1000
+    # pref_list2 = []
+    # for i in range(len(pref_list) - 2):
+    #     if(pref_list[i] == 100):
+    #         pref_list2.append(1000)
+    #     else:
+    #         avg = (pref_list[i] + pref_list[i + 1] + pref_list[i + 2])/3
+    #         pref_list2.append(avg)
+    # pref_list2.append(pref_list[-1]) # adds on last element of first list, since there's nothing to average
+    # pref_list2.append(pref_list[-1]) # again, since it averages over 3
+    return pref_list
 
 def get_feedback_matrix(reject_events_list):
     ''' Takes a list of google event objects and creates/updates a matrix of user feedback.
@@ -113,8 +116,8 @@ def get_feedback_matrix(reject_events_list):
     for event in reject_events_list:
         item = item_from_gcal(event)
         activity = categorize(item)
-        feedback_list = feedback_data.get(activity, [0 for i in range(1440//15)])
-        for j in range(int(1440 / 15)):
+        feedback_list = feedback_data.get(activity, [0 for i in range(96)])
+        for j in range(int(96)):
             t = min_to_dt(j * 15)
             if item.start <= t <= item.end:
                 feedback_list[j] += 1
@@ -144,6 +147,4 @@ if __name__ == '__main__':
     gcal = GCal()
     freq_costs = prefs_from_gcal(gcal)
     break_prefs = get_break_prefs(gcal)
-    print(break_prefs)
     costs = get_timeblock_costs(195, freq_costs, break_prefs)
-    print(costs)
