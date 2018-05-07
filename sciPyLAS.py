@@ -107,6 +107,15 @@ class LAS:
     def run(self, matrix):
         return linear_sum_assignment(matrix)
 
+    def postTempEvents(self, timeArray, itemArray, itemList):
+        for n in range(len(itemArray)):
+            item = workingList[itemArray[n]]
+            time = self.timeList[timeArray[n]]
+            item.start = min_to_dt(time)
+            item.end = start + item.duration
+            self.calendarSource.create_event(name = item.name, start = item.start, end = item.end)
+
+
 
 if __name__ == "__main__":
     testList = csv_to_tasklist('toDoList')
