@@ -81,7 +81,7 @@
 
         {% for event in todo_list %}
         <label class="container">{{ event.name }}:   {{event.duration}} minutes
-          <input type="checkbox" name="{{event.name}}" value="{{event.name}}">
+          <input type="checkbox" name={{event.name}} value={{event.duration}}>
           <span class="checkmark"></span>
         </label>
         {% endfor %}
