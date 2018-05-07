@@ -168,16 +168,20 @@ class GCal:
         eventsResult = self.service.freebusy().query(body = body).execute()
         return eventsResult
 
-    def get_events(self, daysPast = 7, daysFuture = 0):
+    def get_events(self, calendar = 'main', daysPast = 7, daysFuture = 0):
         """
         Returns a list of event items, in the form of the Google events object
         """
         # time1 = datetime.utcnow()
         # time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0)
         # time2 = (time1 + timedelta(days = 1))
+        if calendar == 'main':
+            cal_ID = self.mainID
+        else:
+            cal_ID = self.tempID
         time1 = (datetime.now() - timedelta(days = daysPast)).isoformat() + 'Z'
         time2 = (datetime.now() + timedelta(days = daysFuture)).isoformat() + 'Z'
-        events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1, timeMax = time2).execute()
+        events = self.service.events().list(calendarId=cal_ID, pageToken=None, timeMin = time1, timeMax = time2).execute()
         #events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1.isoformat() + 'Z', timeMax = time2.isoformat() + "Z").execute()
         return events
 
