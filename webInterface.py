@@ -1,7 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
-from toDo import add_item, get_list
-from toDo import get_list
+from toDo import add_item, get_list, remove_from_list
 from gcal import GCal
 import datetime
 import time
@@ -32,7 +31,7 @@ def generateToDo(name, hours, minutes, break_time):
     # times for the breaks - e.g. 60 minute event in 30 minute segments
     # should make 2 events in to do lists
     length_hours = hours * 4 # 15 minute segments worth of hours
-    length_mins = minutes / 15 # 15 minute segments worth of minutes
+    length_mins = str(minutes) / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments
     if break_time == 0:
         print('yes')
@@ -77,11 +76,19 @@ def toDo():
 
 @app.route('/viewToDo', methods=['GET', 'POST'])
 def viewToDo():
-    if request.method == 'POST':
-        print('yes')
-        print(request.form)
     print(get_list())
-    return render_template('viewToDo2.html', todo_list = get_list())
+    elements = {}
+    if request.method == 'POST':
+        events = request.form
+        print(events)
+        for event in events:
+            if (event != "submit"):
+                remove_from_list(event)
+                print(event)
+    #Deletes all checked
+
+
+    return render_template('viewToDo.html', todo_list = get_list())
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
