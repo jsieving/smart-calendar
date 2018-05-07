@@ -17,7 +17,7 @@ from oauth2client.file import Storage
 import time
 from datetime import timedelta, datetime #, date, time
 import pytz
-from scheduleHelpers import Item
+from scheduleHelpers import Item, categorize
 from pprint import pprint
 
 try:
@@ -193,7 +193,7 @@ class GCal:
             end = event['end']['dateTime'][0:-6]
             endtime = datetime.strptime(end, '%Y-%m-%dT%H:%M:%S')
             item = Item(name = name, start = starttime, end = endtime)
-            # item.category = categorize(item)
+            item.category = categorize(item)
             all_events.append(item)
         return all_events
 

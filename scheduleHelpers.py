@@ -158,6 +158,25 @@ def csv_to_cal(cal_name):
     dump(cal, f)
     f.close()
 
+def csv_to_tasklist(file_name):
+    '''Takes a csv file formatted as a weekly log and creates a calendar object
+    from it, then saves the calendar to a file.'''
+    loc = 'testData/'
+    csvfile = open('%s%s.csv' % (loc, file_name))
+    data = reader(csvfile)
+    tasklist = []
+    for r, row in enumerate(data):
+        if r == 0:
+            continue
+        name = row[0]
+        H, M = row[1].split(':')
+        duration = timedelta(hours = int(H), minutes = int(M))
+        item = Item(name = name, start = None, end = None, duration = duration)
+        item.category = categorize(item)
+        tasklist.append(item)
+    csvfile.close()
+    return tasklist
+
 def partition(task, avail_time):
     '''Takes a breakable task and a span of time and returns a portion of the task
     that will fit in the time.'''
