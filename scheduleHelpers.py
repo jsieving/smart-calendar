@@ -38,10 +38,10 @@ class Item:
         self.break_num = break_num
 
     def __str__(self):
-        return "%s for %s" % (self.name, self.duration)
+        return "%s from %s to %s for %s" % (self.name, self.start, self.end, self.duration)
 
     def __repr__(self):
-        return "%s for %s" % (self.name, self.duration)
+        return "%s from %s to %s for %s" % (self.name, self.start, self.end, self.duration)
 
 class Category:
     """
@@ -210,7 +210,6 @@ def extract_activities(calendar_events):
     '''Takes a calendar or list of events and creates files for each activity.
     Each file is a pickled list of the events in that activity.
     Also returns a dictionary of activity lists.'''
-    loc = 'testData/'
     if isinstance(calendar_events, dict):
         all_events = []
         for date, day in calendar_events.items():
@@ -226,11 +225,10 @@ def extract_activities(calendar_events):
             activities[act].append(event)
         else:
             activities[act] = [event]
-    for act, events in activities.items():
-        f = open(loc + act, 'wb+')
-        f.seek(0)
-        dump(events, f)
-        f.close()
+    f = open('testData/activity_data', 'wb+')
+    f.seek(0)
+    dump(activities, f)
+    f.close()
     return activities
 
 def item_from_gcal(event):

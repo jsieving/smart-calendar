@@ -168,7 +168,7 @@ class GCal:
         eventsResult = self.service.freebusy().query(body = body).execute()
         return eventsResult
 
-    def get_events(self, calendar = 'main', daysPast = 7, daysFuture = 0):
+    def get_events(self, calendar = 'main', daysPast = 100, daysFuture = 0):
         """
         Returns a list of event items, in the form of the Google events object
         """
@@ -191,12 +191,15 @@ class GCal:
         """
         all_events = []
         for event in events:
+            if 'date' in event['start']:
+                continue
             name = event['summary']
             start = event['start']['dateTime'][0:-6]
             starttime = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
             end = event['end']['dateTime'][0:-6]
             endtime = datetime.strptime(end, '%Y-%m-%dT%H:%M:%S')
-            item = Item(name = name, start = starttime, end = endtime)
+            duration = endtime - starttime
+            item = Item(name = name, start = starttime, end = endtime, duration = duration)
             item.category = categorize(item)
             all_events.append(item)
         return all_events

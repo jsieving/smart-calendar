@@ -5,9 +5,10 @@ from gcal import *
 from pickle import dump, load
 from datetime import timedelta, datetime, date, time
 from os.path import exists
-import time
+from pprint import pprint
+# import time
 
-offset = time.gmtime().tm_hour - time.localtime().tm_hour
+# offset = time.gmtime().tm_hour - time.localtime().tm_hour
 
 def prefs_from_csv(csv_name):
     '''Converts a csv file into a calendar, then creates a cost
@@ -44,12 +45,13 @@ def get_occur_data(activities):
 
     for activity, event_list in activities.items():
         pref_list = occur_data.get(activity, [0 for i in range(1440//15 + 1)]) # the +1 is to store the total event count
-        for j in range(int(1440 / 15)):
-            t = min_to_dt(j * 15)
+        for j in range(96):
+            H, M = divmod(j * 15, 60)
+            t = time(hour = H, minute = M)
             for e in event_list:
-                if e.start <= t <= e.end:
+                if e.start.time() <= t <= e.end.time():
                     pref_list[j] += 1
-            pref_list[-1] += len(event_list)
+        pref_list[-1] += len(event_list)
         occur_data[activity] = pref_list
 
     f.seek(0)
@@ -82,9 +84,9 @@ def get_break_prefs(gcal):
     for time in busy:
          start = datetime.strptime(time["start"], '%Y-%m-%dT%H:%M:%SZ')
          #this converts the start time to the index of the array, separated by 15 minute increments
-         start = int(start.hour * 4 + start.minute / 15) - (offset * 4)
+         start = int(start.hour * 4 + start.minute / 15)# - (offset * 4)
          end = datetime.strptime(time["end"], '%Y-%m-%dT%H:%M:%SZ')
-         end = int(end.hour * 4 + end.minute / 15) - (offset * 4)
+         end = int(end.hour * 4 + end.minute / 15)# - (offset * 4)
          for i in range(end - start):
              pref_list[start + i] = 100
     pref_list2 = []
@@ -133,18 +135,15 @@ def get_timeblock_costs(block_length, freq_costs, break_prefs):
             if i % n == 0: # every n blocks, the cost resets
                 cost = 0
             cost += cost_list[i] + break_prefs[i] # the cost accumulates for n blocks
-            if i+1 % n == 0: # if this is the last of a set of n blocks, append the cost
+            if (i+1) % n == 0: # if this is the last of a set of n blocks, append the cost
                 overall_costs.append(cost)
         costs[activity] = overall_costs
     return costs
 
-
-# def make_cost_matrix(cal, events):
-#     #soon this will multiply by history matrix
-#     event_list = []
-#     cost_matrix = []
-#     break_prefs = get_break_prefs(cal)
-#     for event in events:
-#         event_list.append(event.name)
-#         cost_matrix.append(get_break_prefs(cal))
-#     return event_list, cost_matrix
+if __name__ == '__main__':
+    gcal = GCal()
+    freq_costs = prefs_from_gcal(gcal)
+    break_prefs = get_break_prefs(gcal)
+    print(break_prefs)
+    costs = get_timeblock_costs(195, freq_costs, break_prefs)
+    print(costs)
