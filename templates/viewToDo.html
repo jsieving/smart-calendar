@@ -2,17 +2,18 @@
   <head>
     <title>Smart Calendar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="static/assets/css/main.css" />
+        <!-- <link rel="stylesheet" href="static/assets/css/main.css" /> -->
     </head>
     <body>
       <h1>To Do:</h1>
-      <form action="/viewToDo" method="get">
+      <form action="/viewToDo" method="post">
+
         {% for event in todo_list %}
         <h3>{{ event.name }}:        {{event.duration / 4}} hours </h3>
-        <input type="checkbox" name="deleting" value=event>
+        <input type="checkbox" name={{event.name}} value={{event.name}}>
         {% endfor %}
         <br>
-        <input type="submit" value="Delete Checked">
+        <input type="submit" value="submit">
 
       </form>
       <a href="/"> Back </a>
