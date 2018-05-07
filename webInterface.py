@@ -75,9 +75,13 @@ def toDo():
         generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
     return render_template('toDo.html')
 
-@app.route('/viewToDo')
+@app.route('/viewToDo', methods=['GET', 'POST'])
 def viewToDo():
-    return render_template('viewToDo.html', todo_list = get_list())
+    if request.method == 'POST':
+        print('yes')
+        print(request.form)
+    print(get_list())
+    return render_template('viewToDo2.html', todo_list = get_list())
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
