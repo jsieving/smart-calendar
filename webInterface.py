@@ -31,7 +31,7 @@ def generateToDo(name, hours, minutes, break_time):
     # times for the breaks - e.g. 60 minute event in 30 minute segments
     # should make 2 events in to do lists
     length_hours = hours * 4 # 15 minute segments worth of hours
-    length_mins = minutes / 15 # 15 minute segments worth of minutes
+    length_mins = str(minutes) / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments
     if break_time == 0:
         print('yes')
