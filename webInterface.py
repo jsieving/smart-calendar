@@ -25,51 +25,71 @@ def generateEvent(name, startTime, endTime):
     # cal.create_event(name = name)
     return event
 
+# def generateToDo(name, hours, minutes, break_time):
+#     # length should be the total number of 15 minute segments
+#     # eventually, add the events to the to do list the appropriate num of
+#     # times for the breaks - e.g. 60 minute event in 30 minute segments
+#     # should make 2 events in to do lists
+#     hours_to_mins = int(hours) * 60 # convert hours to minutes
+#     length_mins = int(hours_to_mins) + int(minutes) # total num minutes
+#
+#     # print('total minutes')
+#     # print(length_mins)
+#
+#     durs = []
+#
+#     if break_time == 0 or length_mins - break_time < 0: # case where not breakable
+#         # print('no breaks')
+#         breakable = False
+#         break_num = 1
+#         durs.append(length_mins)
+#
+#     elif (length_mins) % break_time == 0: # if duration is divisible by break size
+#         breakable = True
+#         break_num = int(length_mins / break_time)
+#         # print('break_num: ' + str(break_num))
+#         for i in range(0, break_num):
+#             durs.append(break_time)
+#         # print('list of durations: ' + str(durs))
+#
+#     else: # if duration not divisible by break size
+#         breakable = True
+#         remains = length_mins % break_time
+#         # print('remains: ' + str(remains))
+#         new_length_mins = int(length_mins - remains)
+#         # print('new_length_mins: ' + str(new_length_mins))
+#         break_num = int(new_length_mins / break_time)
+#         # print('break num: ' + str(break_num))
+#         for i in range(0, break_num):
+#             if i == 0:
+#                 durs.append(break_time + remains)
+#             else:
+#                 durs.append(break_time)
+#     # print('durations list: ' + str(durs))
+#     for i in range (0, break_num):
+#         event = Item(name=name, duration=durs[i], breakable=breakable, break_num=break_num)
+#         add_item(event)
+#     return event
+
 def generateToDo(name, hours, minutes, break_time):
     # length should be the total number of 15 minute segments
     # eventually, add the events to the to do list the appropriate num of
     # times for the breaks - e.g. 60 minute event in 30 minute segments
     # should make 2 events in to do lists
-    hours_to_mins = int(hours) * 60 # convert hours to minutes
-    length_mins = int(hours_to_mins) + int(minutes) # total num minutes
-
-    # print('total minutes')
-    # print(length_mins)
-
-    durs = []
-
-    if break_time == 0 or length_mins - break_time < 0: # case where not breakable
-        # print('no breaks')
+    length_hours = hours * 4 # 15 minute segments worth of hours
+    length_mins = int(minutes) / 15 # 15 minute segments worth of minutes
+    length = length_hours + length_mins # total num segments
+    if break_time == 0:
+        print('yes')
         breakable = False
-        break_num = 1
-        durs.append(length_mins)
-
-    elif (length_mins) % break_time == 0: # if duration is divisible by break size
+        break_num = 0
+    elif break_time > 0:
         breakable = True
-        break_num = int(length_mins / break_time)
-        # print('break_num: ' + str(break_num))
-        for i in range(0, break_num):
-            durs.append(break_time)
-        # print('list of durations: ' + str(durs))
-
-    else: # if duration not divisible by break size
-        breakable = True
-        remains = length_mins % break_time
-        # print('remains: ' + str(remains))
-        new_length_mins = int(length_mins - remains)
-        # print('new_length_mins: ' + str(new_length_mins))
-        break_num = int(new_length_mins / break_time)
-        # print('break num: ' + str(break_num))
-        for i in range(0, break_num):
-            if i == 0:
-                durs.append(break_time + remains)
-            else:
-                durs.append(break_time)
-    # print('durations list: ' + str(durs))
-    for i in range (0, break_num):
-        event = Item(name=name, duration=durs[i], breakable=breakable, break_num=break_num)
-        add_item(event)
+        break_num = length / break_time
+    event = Item(name=name, duration=length, breakable=breakable, break_time=break_time, break_num=break_num)
+    add_item(event)
     return event
+
 
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
