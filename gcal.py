@@ -145,13 +145,17 @@ class GCal:
 
         event = self.service.events().insert(calendarId= self.tempID, body=event).execute()
 
-    def get_busy(self, time_min =  datetime.utcnow(),
+    def get_busy(self, calendar = 'main', time_min =  datetime.utcnow(),
                 time_max = ( datetime.utcnow() + timedelta(days = 7))):
         offset = time.gmtime().tm_hour - time.localtime().tm_hour
 
         time1 = datetime.utcnow()
         time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0) + timedelta(days= 1, hours = offset)
         time2 = (time1 + timedelta(days = 1))
+        if calendar == 'main':
+            cal_ID = self.mainID
+        else:
+            cal_ID = self.tempID
         """
         returns an array of dateTime tuples that give start and end of busy blocks
         time_min is the start of the search, and time_max is the end (as datetime objects)
@@ -161,7 +165,7 @@ class GCal:
       "timeMax": time2.isoformat() + 'Z',
       "items": [
         {
-          "id": self.mainID
+          "id": cal_ID
         }
       ]
     }
@@ -283,6 +287,7 @@ class GCal:
             print("No temporary calendar was found. Creating one for you...")
             self.make_temp_cal()
         return self.tempID
+
     def get_email(self):
         cal_data = self.service.calendarList().list().execute()
         for n in range(len(cal_data['items'])):
@@ -292,7 +297,7 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    #cal.get_events(0,1)
+    print(cal.get_events(calendar = 'temp'))
      # {'method': 'popup', 'minutes': 10}])
     #print(cal.get_busy())
     #events = cal.get_events(0,1)

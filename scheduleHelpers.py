@@ -82,7 +82,7 @@ def min_to_dt(minutes, d = date(1, 1, 1)):
     '''Converts a number of minutes and a day to a time in that day, as a datetime object'''
     if minutes == 1440: # Prevents an issue when events end at midnight
         minutes -= 1
-    hours, minutes = divmod(minutes, 60)
+    hours, minutes = divmod(int(minutes), 60)
     t = time(hours, minutes)
     dt = datetime.combine(d, t)
     return dt
