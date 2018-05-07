@@ -1,10 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request
 from scheduleHelpers import Item
-from toDo import make_list
+from toDo import add_item, get_list
+from toDo import get_list
 from gcal import GCal
 import datetime
 import time
-from saveToCal import saveToday
+from saveFromCal import saveToday
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
@@ -34,11 +35,15 @@ def generateToDo(name, hours, minutes, break_time):
     length_mins = str(minutes) / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments
     if break_time == 0:
+        print('yes')
         breakable = False
+        break_num = 0
     elif break_time > 0:
         breakable = True
-    num_breaks = length / break_time
-    event = Item(name=name, duration=lenth, breakable=breakable, break_time=break_time, break_num=break_num)
+        break_num = length / break_time
+    event = Item(name=name, duration=length, breakable=breakable, break_time=break_time, break_num=break_num)
+    add_item(event)
+    return event
 
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
@@ -55,22 +60,24 @@ def saveToCal():
 @app.route('/toDo', methods=['GET', 'POST'])
 def toDo():
     print('HIIIII')
-    elements = {'name': '', 'hours': '0', 'minutes': '0', 'break_time': '0'}
+    elements = {'name': '', 'hours': '0', 'minutes': '0', 'breakSize': '0'}
     if request.method == 'POST':
-        print('yes it was POST')
         #Checks to see if all the boxes are filled
-        print(len(elements))
+        print(request.form['breakSize'])
         for i in elements:
             if request.form[i] != '':
-                elements[i] = request.form[i]
-                print('added to dictionary')
-
-        print('made it out of loop')
+                try:
+                     elements[i] = int(request.form[i])
+                except:
+                     elements[i] = request.form[i]
         print(elements.values())
-        event = generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['break_time'])
-        print(event)
-        make_list(event)
+
+        generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
     return render_template('toDo.html')
+
+@app.route('/viewToDo')
+def viewToDo():
+    return render_template('viewToDo.html', todo_list = get_list())
 
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
@@ -86,7 +93,7 @@ def event():
         print(elements.values())
         event = generateEvent(elements['name'], elements['startTime'], elements['endTime'])
         print(event)
-        make_list(event)
+        add_item(event)
         return redirect(url_for('index'))
 
     #Defines what html page runs when page is opened

@@ -4,20 +4,24 @@ from scheduleHelpers import Item, Category
 import os
 from pickle import load, dump
 
-def getNonRepeatingEvents(tempList):
+def getNonRepeatingEvents(daysPast, daysFuture):
     """
     This function returns a list of events that are not repeatable.
     """
+    tempList = getListOfItems(daysPast, daysFuture)
     retList = []
     for i in tempList:
         if 'recurrence' not in i.keys():
             retList.append(i)
     return retList
 
-def getListOfItems(tempList):
+def getListOfItems(daysPast, daysFuture):
     """
     Converts a list of google event objects to Item event objects.
     """
+    cal = GCal()
+    events = cal.get_events(daysPast,daysFuture)
+    tempList = events['items']
     retList = []
     for i in tempList:
         #assign google variables to local variables
@@ -88,14 +92,9 @@ def saveToday():
     """
     Saves a list of google events in today's schedule
     """
-    cal = GCal()
-    events = cal.get_events(1,0)
-    tempList = events['items']
-    tempList = getNonRepeatingEvents(tempList)
-    tempList = getListOfItems(tempList)
+    tempList = getNonRepeatingEvents(1, 0)
 
-    storeListOfItems(tempList)
-
+    return temp
 
 def readHistory():
     """
@@ -106,26 +105,22 @@ def readHistory():
     for filename in os.listdir(directory):
         loc = directory + '/' + filename
         f = open(loc, "rb+")
+        f.seek(0)
         category = load(f)
         print(category)
+        f.close()
 
-
-def main():
+def main(daysPast, daysFuture):
     """
     This functions runs a set of commands for debugging
     purposes.
     """
-    cal = GCal()
-    events = cal.get_events(36, 0)
-    tempList = events['items']
-    tempList = getNonRepeatingEvents(tempList)
-    tempList = getListOfItems(tempList)
-
+    tempList = getNonRepeatingEvents(daysPast, daysFuture)
     storeListOfItems(tempList)
 
     # print(getListOfEventspr)
     # print(listOfItems[0])
 
 if __name__ == "__main__":
-    main()
+    main(1, 0)
     readHistory()

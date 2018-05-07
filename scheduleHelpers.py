@@ -38,11 +38,10 @@ class Item:
         self.break_num = break_num
 
     def __str__(self):
-        return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
+        return "%s for %s" % (self.name, self.duration)
 
     def __repr__(self):
-        return "%s from %s to %s" % (self.name, self.start.time(), self.end.time())
-
+        return "%s for %s" % (self.name, self.duration)
 def create_dummy_events():
     events = []
     events.append(Item(name = "Party"))
