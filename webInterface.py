@@ -77,10 +77,6 @@ def toDo():
 
 @app.route('/viewToDo')
 def viewToDo():
-    print('yes')
-    todo_list = get_list()
-    print('yesser')
-    print(todo_list)
     return render_template('viewToDo.html', todo_list = get_list())
 
 @app.route('/createEvent', methods=['GET', 'POST'])
