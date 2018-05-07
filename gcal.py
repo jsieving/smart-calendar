@@ -15,12 +15,10 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 import time
-import datetime
+from datetime import timedelta, datetime #, date, time
 import pytz
-import preferenceScoring
-import scheduleHelpers
+from scheduleHelpers import Item
 from pprint import pprint
-
 
 try:
     import argparse
@@ -45,7 +43,7 @@ class GCal:
         self.credentials = self.get_credentials()
         self.http = self.credentials.authorize(httplib2.Http())
         self.service = discovery.build('calendar', 'v3', http= self.http)
-        self.now = datetime.datetime.utcnow()
+        self.now = datetime.utcnow()
         self.mainID = mainID
         self.tempID = None
         self.tempID = self.get_tempID()
@@ -90,8 +88,8 @@ class GCal:
         rule.append("INTERVAL=" + interval)
 
     def create_event(self, name ="event", location ='', description ='',
-                    start=datetime.datetime.utcnow() + datetime.timedelta(days = 1),
-                     end=datetime.datetime.utcnow() + datetime.timedelta(days=2), repeat='FREQ=HOURLY;UNTIL=19901212', notification=[]):
+                    start=datetime.utcnow() + timedelta(days = 1),
+                     end=datetime.utcnow() + timedelta(days=2), repeat='FREQ=HOURLY;UNTIL=19901212', notification=[]):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
@@ -147,13 +145,13 @@ class GCal:
 
         event = self.service.events().insert(calendarId= self.tempID, body=event).execute()
 
-    def get_busy(self, time_min =  datetime.datetime.utcnow(),
-                time_max = ( datetime.datetime.utcnow() + datetime.timedelta(days = 7))):
+    def get_busy(self, time_min =  datetime.utcnow(),
+                time_max = ( datetime.utcnow() + timedelta(days = 7))):
         offset = time.gmtime().tm_hour - time.localtime().tm_hour
 
-        time1 = datetime.datetime.utcnow()
-        time1 = datetime.datetime(time1.year, time1.month, time1.day, 0, 0, 0) + datetime.timedelta(days= 1, hours = offset)
-        time2 = (time1 + datetime.timedelta(days = 1))
+        time1 = datetime.utcnow()
+        time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0) + timedelta(days= 1, hours = offset)
+        time2 = (time1 + timedelta(days = 1))
         """
         returns an array of dateTime tuples that give start and end of busy blocks
         time_min is the start of the search, and time_max is the end (as datetime objects)
@@ -174,11 +172,11 @@ class GCal:
         """
         Returns a list of event items, in the form of the Google events object
         """
-        # time1 = datetime.datetime.utcnow()
-        # time1 = datetime.datetime(time1.year, time1.month, time1.day, 0, 0, 0)
-        # time2 = (time1 + datetime.timedelta(days = 1))
-        time1 = (datetime.datetime.now() - datetime.timedelta(days = daysPast)).isoformat() + 'Z'
-        time2 = (datetime.datetime.now() + datetime.timedelta(days = daysFuture)).isoformat() + 'Z'
+        # time1 = datetime.utcnow()
+        # time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0)
+        # time2 = (time1 + timedelta(days = 1))
+        time1 = (datetime.now() - timedelta(days = daysPast)).isoformat() + 'Z'
+        time2 = (datetime.now() + timedelta(days = daysFuture)).isoformat() + 'Z'
         events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1, timeMax = time2).execute()
         #events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1.isoformat() + 'Z', timeMax = time2.isoformat() + "Z").execute()
         return events
@@ -189,7 +187,14 @@ class GCal:
         """
         all_events = []
         for event in events:
-            all_events.append(Item(name = event['summary'], start = event['start']['dateTime'], end = event['end']['dateTime']))
+            name = event['summary']
+            start = event['start']['dateTime'][0:-6]
+            starttime = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
+            end = event['end']['dateTime'][0:-6]
+            endtime = datetime.strptime(end, '%Y-%m-%dT%H:%M:%S')
+            item = Item(name = name, start = starttime, end = endtime)
+            # item.category = categorize(item)
+            all_events.append(item)
         return all_events
 
     def delete_event(self, event):
@@ -274,4 +279,4 @@ if __name__ == '__main__':
     #events = cal.make_event_list(events
     #busy = cal.get_busy()
     #print(preferenceScoring.make_cost_matrix(cal,events))
-    cal.delete_temp_cal()
+    # cal.delete_temp_cal()
