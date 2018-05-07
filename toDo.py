@@ -69,21 +69,19 @@ def clear_list():
     f.close()
     print("deleted items from list")
 
-def remove_from_list(name):
+def remove_from_list(name, duration):
     todo_list = get_list()
 
-    if len(todo_list) < 2:
+    if len(todo_list) < 2: # if this is the only one event left, delete it
         for item in range (len(todo_list)):
             print('item num: ' + str(item))
             if todo_list[item].name == name:
-                print("cool!!!")
                 todo_list.pop(item)
                 print(todo_list)
-    else:
+    else: # if there are multiple events, find the event and delete it
         for item in range (len(todo_list) - 1):
             print('item num: ' + str(item))
-            if todo_list[item].name == name:
-                print("cool!!!")
+            if todo_list[item].name == name and todo_list[item].duration == duration:
                 todo_list.pop(item)
                 print(todo_list)
 
