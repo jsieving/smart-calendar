@@ -90,6 +90,14 @@ def viewToDo():
 
     return render_template('viewToDo2.html', todo_list = get_list())
 
+@app.route('/viewCal', methods=['GET', 'post'])
+def viewCal():
+    url = GCal().get_tempID()
+    if request.method == 'POST':
+        GCal().migrate_events()
+        print("lol")
+    return render_template('viewCal.html', url = url)
+
 @app.route('/createEvent', methods=['GET', 'POST'])
 #Function that runs when page opens
 def event():
