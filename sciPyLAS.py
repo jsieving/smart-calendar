@@ -1,6 +1,5 @@
 from scipy.optimize import linear_sum_assignment
-import time, numpy, random
-# import matrixManipulator
+import numpy
 from scheduleHelpers import Item, csv_to_tasklist
 from pickle import load, dump
 from copy import copy, deepcopy
@@ -110,10 +109,6 @@ class LAS:
 
 
 if __name__ == "__main__":
-    # tempFile = open('testData/willslife', 'rb')
-    # testCal  = load(tempFile)
-    # testList = getItemList(testCal)
-
     testList = csv_to_tasklist('toDoList')
 
     solver = LAS(testList)

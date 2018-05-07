@@ -36,16 +36,18 @@ def generateToDo(name, hours, minutes, break_time):
     print('total minutes')
     print(length_mins)
 
-    if break_time == 0: # case where not breakable
+    durs = []
+
+    if break_time == 0 or length_mins - break_time < 0: # case where not breakable
+        print('no breaks')
         breakable = False
-        break_num = 0
-        durs[0] = length_mins
+        break_num = 1
+        durs.append(length_mins)
 
     elif (length_mins) % break_time == 0: # if duration is divisible by break size
         breakable = True
         break_num = int(length_mins / break_time)
         print('break_num: ' + str(break_num))
-        durs = []
         for i in range(0, break_num):
             durs.append(break_time)
         print('list of durations: ' + str(durs))
@@ -58,7 +60,6 @@ def generateToDo(name, hours, minutes, break_time):
         print('new_length_mins: ' + str(new_length_mins))
         break_num = int(new_length_mins / break_time)
         print('break num: ' + str(break_num))
-        durs = []
         for i in range(0, break_num):
             if i == 0:
                 durs.append(break_time + remains)
@@ -66,7 +67,7 @@ def generateToDo(name, hours, minutes, break_time):
                 durs.append(break_time)
     print('durations list: ' + str(durs))
     for i in range (0, break_num):
-        event = Item(name=name, duration=durs[i], breakable=breakable, break_num=1)
+        event = Item(name=name, duration=durs[i], breakable=breakable, break_num=break_num)
         add_item(event)
     return event
 
