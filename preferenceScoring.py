@@ -22,10 +22,10 @@ def prefs_from_csv(csv_name):
     prefs = get_freq_prefs(recurrence_list)
     return prefs
 
-def prefs_from_gcal():
+def prefs_from_gcal(gcal):
     '''Gets events from GCal and returns a dictionary of preference vectors for each activity.'''
-    events = get_events()['items']
-    event_list = make_event_list(events)
+    events = gcal.get_events()['items']
+    event_list = gcal.make_event_list(events)
     activities = extract_activities(event_list)
     occurence_data = get_occur_data(activities)
     freq_cost_vectors = get_freq_costs(occurence_data)
@@ -62,6 +62,8 @@ def get_freq_costs(occurence_data):
     if exists('testData/feedback_data'):
         f = open('testData/feedback_data', 'rb+')
         feedback_data = load(f)
+    else:
+        feedback_data = {}
     costs = {}
     for activity, occur_data in occurence_data.items():
         activity_costs = []

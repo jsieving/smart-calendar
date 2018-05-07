@@ -197,7 +197,7 @@ def extract_activities(calendar_events):
     Each file is a pickled list of the events in that activity.
     Also returns a dictionary of activity lists.'''
     loc = 'testData/'
-    if calendar_events.isinstance('dict'):
+    if isinstance(calendar_events, dict):
         all_events = []
         for date, day in calendar_events.items():
             for event in day:
@@ -222,9 +222,9 @@ def extract_activities(calendar_events):
 def item_from_gcal(event):
     '''Takes a GCal event (JSON format) and returns an object of our Item class.'''
     name = event['summary']
-    start = event['start']['datetime'][0:-6]
+    start = event['start']['dateTime'][0:-6]
     starttime = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
-    end = event['end']['datetime'][0:-6]
+    end = event['end']['dateTime'][0:-6]
     endtime = datetime.strptime(end, '%Y-%m-%dT%H:%M:%S')
     item = Item(name = name, start = starttime, end = endtime)
     item.category = categorize(item)
