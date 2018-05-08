@@ -5,3 +5,7 @@
 client_secret.json
 /userHistory
 /official_todo_list
+/segmentedList
+/testData/activity_data
+/testData/occurence_data
+/testData/toDoList.csv
