@@ -113,9 +113,6 @@ def viewToDo():
     #Deletes all checked
     todo_list = get_list()
     print(todo_list)
-    # for item in todo_list:
-    #     print(item.duration)
-    #     item.duration *= 15
 
     return render_template('viewToDo2.html', todo_list = todo_list)
 
