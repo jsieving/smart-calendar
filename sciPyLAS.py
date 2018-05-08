@@ -36,10 +36,10 @@ class LAS:
         itemList: list of events that need to be scheduled
         return: integer representing the number of seconds in the longest event
         """
-        longestBlock = 15
+        longestBlock = 1
         for event in self.itemList:
-            if event.duration * 15 > longestBlock:
-                longestBlock = event.duration * 15
+            if event.duration > longestBlock:
+                longestBlock = event.duration
         self.blockLength = longestBlock
 
     def getTaskList(self):
@@ -53,7 +53,7 @@ class LAS:
         leftoverItems = []
         workingList = []
         for item in self.itemList:
-            duration = item.duration * 15
+            duration = item.duration
             if duration == self.blockLength:
                 workingList.append(item)
             else:
@@ -62,7 +62,6 @@ class LAS:
         return workingList
 
     def makeCostDict(self):
-        print('\nGetting break times...')
         break_prefs = get_break_prefs(self.calendarSource)
         costs = get_timeblock_costs(self.blockLength, self.freq_costs, break_prefs)
         return costs
@@ -121,11 +120,14 @@ class LAS:
 def run():
     f = open('segmentedList', 'rb+')
     segList = load(f)
+    f.seek(0)
+    dump('', f)
+    f.close()
 
     solver = LAS(segList)
-    solver.calendarSource.make_temp_cal()
 
     while solver.itemList:
+        print(solver.itemList)
         solver.getLongestBlock()
         solver.getTimeList()
         workingList = solver.getTaskList()

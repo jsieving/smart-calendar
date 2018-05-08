@@ -152,12 +152,13 @@ def viewToDo():
 
 @app.route('/viewCal', methods=['GET', 'POST'])
 def viewCal():
-    GCal()
-    id1 = GCal().tempID
+    gcal = GCal()
+    id1 = gcal.get_tempID()
     tempList = []# getListOfItems('temp',0,7)
     if request.method == 'GET':
         sciPyLAS.run()
     if request.method == 'POST':
+        gcal.migrate_events()
         print(request.form)
         for i in tempList:
             ID = i.name
