@@ -27,16 +27,14 @@ def generateEvent(name, startTime, endTime):
 
 def segmentEvent(event):
     name = event.name
-    hours = event.hours
-    mins = event.minutes
+    length_mins = event.duration
+
     break_time = event.break_time
 
     # # length should be the total number of 15 minute segments
     # # eventually, add the events to the to do list the appropriate num of
     # # times for the breaks - e.g. 60 minute event in 30 minute segments
     # # should make 2 events in to do lists
-    hours_to_mins = int(hours) * 60 # convert hours to minutes
-    length_mins = int(hours_to_mins) + int(mins) # total num minutes
 
     durs = []
 
@@ -67,8 +65,7 @@ def segmentEvent(event):
     make_list('segmentedList')
     for i in range (0, break_num):
         event = Item(name=name, duration=durs[i], breakable=breakable, break_num=break_num)
-        add_item(event)
-    return event
+        add_item(event, 'segmentedList')
 
 def generateToDo(name, hours, minutes, break_time):
     # length should be the total number of 15 minute segments
@@ -87,6 +84,7 @@ def generateToDo(name, hours, minutes, break_time):
         break_num = length / break_time
     event = Item(name=name, duration=length, breakable=breakable, break_time=break_time, break_num=break_num)
     add_item(event)
+    segmentEvent(event)
     return event
 
 #Renders an html doc for our home page
