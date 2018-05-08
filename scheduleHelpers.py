@@ -43,41 +43,6 @@ class Item:
     def __repr__(self):
         return "%s from %s to %s for %s" % (self.name, self.start, self.end, self.duration)
 
-class Category:
-    """
-    A class that is formatted to store a group of items within the same category
-    filename: name of the pickled file
-    tags: names that are associated with the category
-    items: list of past items within the category
-    """
-    def __init__(self, filename, tags=None, items=None):
-        self.filename= filename
-        if tags == None:
-            self.tags= []
-        if items == None:
-            self.items= []
-
-    def __str__(self):
-        return "acceptable names= {}\nitems= {}".format(self.tags, self.items)
-
-    def addTag(self, newTag):
-        self.tags.append(newTag)
-
-    def addItem(self, newItem):
-        self.items.append(newItem)
-
-    def showStartTimes(self):
-        retList = []
-        for i in self.items:
-            retList.append(i.start)
-        return retList
-
-    def showEndTimes(self):
-        retList = []
-        for i in self.items:
-            retList.append(i.end)
-        return retList
-
 def min_to_dt(minutes, d = date(1, 1, 1)):
     '''Converts a number of minutes and a day to a time in that day, as a datetime object'''
     days, minutes = divmod(int(minutes), 1440)

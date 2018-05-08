@@ -1,11 +1,10 @@
 #Files to ignore
-/Google_Cal_Stuff/client_secret.json
 /__pycache__
-/testData/listData
+/listData
 client_secret.json
 /userHistory
 /official_todo_list
 /segmentedList
-/testData/activity_data
-/testData/occurence_data
-/testData/toDoList.csv
+/activity_data
+/occurence_data
+/toDoList.csv
