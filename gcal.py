@@ -34,7 +34,7 @@ APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
 class GCal:
-    def __init__(self, mainID = "primary", timeZone = 'America/Los_Angeles'):
+    def __init__(self, mainID = "primary", timeZone = 'America/New_York'):
         """
         mainID is the id of the calendar that events are pulled from and created into
         All users of google calendar have a default calendar with the id of "primary"
@@ -87,9 +87,8 @@ class GCal:
             rule.append("BYDAY=" + days)
         rule.append("INTERVAL=" + interval)
 
-    def create_event(self, name ="event", location ='', description ='',
-                    start=datetime.utcnow() + timedelta(days = 1),
-                     end=datetime.utcnow() + timedelta(days=2), repeat='FREQ=HOURLY;UNTIL=19901212', notification=[]):
+    def create_event(self, name ="event", start=datetime.utcnow(),
+                     end=datetime.utcnow() + timedelta(hours = 1)):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
@@ -125,33 +124,34 @@ class GCal:
         end_str = end.isoformat() + 'Z'
         event = {
           'summary': name,
-          'location': location,
-          'description': description,
+          'location': '',
+          'description': '',
           'start': {
             'dateTime': start_str,
           },
           'end': {
             'dateTime': end_str,
           },
-           #'recurrence': [
-           #repeat
-          # ],
            'reminders': {
            'useDefault': False,
-           'overrides': notification,
+           'overrides': [],
            }
 
         }
 
         event = self.service.events().insert(calendarId= self.tempID, body=event).execute()
 
-    def get_busy(self, time_min =  datetime.utcnow(),
+    def get_busy(self, calendar = 'main', time_min =  datetime.utcnow(),
                 time_max = ( datetime.utcnow() + timedelta(days = 7))):
         offset = time.gmtime().tm_hour - time.localtime().tm_hour
 
         time1 = datetime.utcnow()
-        time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0) + timedelta(days= 1, hours = offset)
-        time2 = (time1 + timedelta(days = 1))
+        # time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0) + timedelta(days= 1, hours = offset)
+        time2 = (time1 + timedelta(days = 2))
+        if calendar == 'main':
+            cal_ID = self.mainID
+        else:
+            cal_ID = self.tempID
         """
         returns an array of dateTime tuples that give start and end of busy blocks
         time_min is the start of the search, and time_max is the end (as datetime objects)
@@ -161,7 +161,7 @@ class GCal:
       "timeMax": time2.isoformat() + 'Z',
       "items": [
         {
-          "id": self.mainID
+          "id": cal_ID
         }
       ]
     }
@@ -223,7 +223,7 @@ class GCal:
         calendar exists, it is set as the calendar to add temporary events to.
         """
         if not self.get_tempID(requireID = False):
-            data = {'summary': 'Temporary', 'timeZone': 'America/Los_Angeles'}
+            data = {'summary': 'Temporary', 'timeZone': 'America/New_York'}
             temp_cal = self.service.calendars().insert(body=data).execute()
             self.tempID = temp_cal['id']
         else:
@@ -284,6 +284,7 @@ class GCal:
             print("No temporary calendar was found. Creating one for you...")
             self.make_temp_cal()
         return self.tempID
+
     def get_email(self):
         cal_data = self.service.calendarList().list().execute()
         for n in range(len(cal_data['items'])):
@@ -293,7 +294,7 @@ class GCal:
 
 if __name__ == '__main__':
     cal = GCal()
-    #cal.get_events(0,1)
+    print(cal.get_events(calendar = 'temp'))
      # {'method': 'popup', 'minutes': 10}])
     #print(cal.get_busy())
     #events = cal.get_events(0,1)

@@ -12,13 +12,8 @@ It also updates the gcal list every time it gets run
 
 
 FILE_LOCATION = "official_todo_list"
-# # for setup and testing purposes
-# my_event = Item('hw')
-# foo = []
-# dump(foo, open("testData/listData", "wb"))
-# print("tested")
 
-# def make_list(item, cal_list)
+
 def add_item(item):
     """
     This function adds an item to the to-do list.
@@ -72,17 +67,14 @@ def clear_list():
 def remove_from_list(name, duration):
     todo_list = get_list()
 
-    if len(todo_list) < 2: # if this is the only one event left, delete it
-        for item in range (len(todo_list)):
-            if todo_list[item].name == name:
-                todo_list.pop(item)
-                print(todo_list)
-    else: # if there are multiple events, find the event and delete it
-        for item in range (len(todo_list) - 1):
-            if todo_list[item].name == name and todo_list[item].duration == duration:
-                print('this is the one!')
-                todo_list.pop(item)
-                print(todo_list)
+    for item in range (len(todo_list)):
+        print('item num: ' + str(item))
+        print('item duration: ', todo_list[item].duration)
+        print('duration: ', duration)
+        if todo_list[item].name == name and str(todo_list[item].duration) == str(duration):
+            todo_list.pop(item)
+            print(todo_list)
+            break
 
     if os.path.exists(FILE_LOCATION):
         f = open(FILE_LOCATION, 'wb')
