@@ -105,7 +105,7 @@ class LAS:
                 matrix[x][y] = scores[y]
         return matrix
 
-    def run(self, matrix):
+    def runSolver(self, matrix):
         return linear_sum_assignment(matrix)
 
     def postTempEvents(self, itemArray, timeArray, workingList):
@@ -117,11 +117,7 @@ class LAS:
             print('Posted', item)
             self.calendarSource.create_event(name = item.name, start = item.start, end = item.end)
 
-
-
-if __name__ == "__main__":
-    # testList = csv_to_tasklist('toDoList')
-
+def run():
     f = open('segmentedList', 'rb+')
     segList = load(f)
 
@@ -134,5 +130,9 @@ if __name__ == "__main__":
         workingList = solver.getTaskList()
         costDict = solver.makeCostDict()
         costMatrix = solver.populateMatrix(workingList, costDict)
-        itemArray, timeArray = solver.run(costMatrix)
+        itemArray, timeArray = solver.runSolver(costMatrix)
         solver.postTempEvents(itemArray, timeArray, workingList)
+
+
+# if __name__ == "__main__":
+    # testList = csv_to_tasklist('toDoList')

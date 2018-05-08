@@ -4,7 +4,7 @@ from pickle import dump, load
 from scheduleHelpers import Item
 import os
 from gcal import GCal
-import saveFromCal
+# import saveFromCal
 
 """ Call the make_list function to add an event object to a list and adds list to file
 It also updates the gcal list every time it gets run

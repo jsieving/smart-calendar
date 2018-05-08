@@ -4,7 +4,7 @@ from toDo import add_item, get_list, remove_from_list, make_list
 from gcal import GCal
 import datetime
 import time
-# from saveFromCal import saveToday, getListOfItems
+import sciPyLAS
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
@@ -95,10 +95,10 @@ def index():
 
 #Saves today's schedule and renders a
 #html doc
-@app.route('/saveToCal')
-def saveToCal():
-    saveToday()
-    return render_template('saveToCal.html')
+# @app.route('/saveToCal')
+# def saveToCal():
+#     saveToday()
+#     return render_template('saveToCal.html')
 
 @app.route('/toDo', methods=['GET', 'POST'])
 def toDo():
@@ -154,8 +154,9 @@ def viewToDo():
 def viewCal():
     GCal()
     id1 = GCal().tempID
-    tempList = getListOfItems('temp',0,7)
-
+    tempList = []# getListOfItems('temp',0,7)
+    if request.method == 'GET':
+        sciPyLAS.run()
     if request.method == 'POST':
         print(request.form)
         for i in tempList:
