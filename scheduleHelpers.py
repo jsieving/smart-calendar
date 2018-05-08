@@ -109,7 +109,7 @@ def busy_to_free(busy_times):
 
 def cal_to_csv(calendar):
     '''Takes a calendar object and creates a csv file of all the events in it'''
-    loc = 'testData/'
+    loc = ''
     csvfile = open('%s%s.csv' % (loc, calendar.name), 'w')
     writer_ = writer(csvfile)
     headers = ['date', 'name', 'start', 'end', 'duration', 'breakable']
@@ -123,7 +123,7 @@ def cal_to_csv(calendar):
 def csv_to_cal(cal_name):
     '''Takes a csv file formatted as a weekly log and creates a calendar object
     from it, then saves the calendar to a file.'''
-    loc = 'testData/'
+    loc = ''
     csvfile = open('%s%s.csv' % (loc, cal_name))
     data = reader(csvfile)
     cal = {}
@@ -155,7 +155,7 @@ def csv_to_cal(cal_name):
 def csv_to_tasklist(file_name):
     '''Takes a csv file formatted as a weekly log and creates a calendar object
     from it, then saves the calendar to a file.'''
-    loc = 'testData/'
+    loc = ''
     csvfile = open('%s%s.csv' % (loc, file_name))
     data = reader(csvfile)
     tasklist = []
@@ -224,7 +224,7 @@ def extract_activities(calendar_events):
             activities[act].append(event)
         else:
             activities[act] = [event]
-    f = open('testData/activity_data', 'wb+')
+    f = open('activity_data', 'wb+')
     f.seek(0)
     dump(activities, f)
     f.close()

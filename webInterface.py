@@ -61,6 +61,7 @@ def generateToDo(name, hours, minutes, break_time):
     length_hours = hours * 4 # 15 minute segments worth of hours
     length_mins = int(minutes) / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments
+    print('Length:', length)
     if break_time == 0:
         print('yes')
         breakable = False
@@ -110,14 +111,19 @@ def viewToDo():
             if (event != "submit"):
                 remove_from_list(event, duration)
     #Deletes all checked
+    todo_list = get_list()
+    print(todo_list)
+    # for item in todo_list:
+    #     print(item.duration)
+    #     item.duration *= 15
 
-    return render_template('viewToDo2.html', todo_list = get_list())
+    return render_template('viewToDo2.html', todo_list = todo_list)
 
 @app.route('/viewCal', methods=['GET', 'POST'])
 def viewCal():
     gcal = GCal()
     id1 = gcal.get_tempID()
-    oldEvents = get_events(calendar = 'temp', daysPast = 2, daysFuture = 7)
+    oldEvents = gcal.get_events(calendar = 'temp', daysPast = 2, daysFuture = 7)
     gcal.delete_multiple('main', oldEvents)
     if request.method == 'GET':
         sciPyLAS.run()
@@ -150,7 +156,6 @@ def event():
         print(elements.values())
         event = generateEvent(elements['name'], elements['startTime'], elements['endTime'])
         print(event)
-        add_item(event)
         return redirect(url_for('index'))
 
     #Defines what html page runs when page is opened

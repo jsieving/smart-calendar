@@ -10,19 +10,6 @@ from pprint import pprint
 
 # offset = time.gmtime().tm_hour - time.localtime().tm_hour
 
-def prefs_from_csv(csv_name):
-    '''Converts a csv file into a calendar, then creates a cost
-    list from the contained events.'''
-    csv_to_cal(csv_name)
-    f = open('testData/' + csv_name, 'rb+')
-    calendar = load(f)
-    recurrence_list = []
-    for day in calendar.values():
-        for event in day:
-            recurrence_list.append(event)
-    prefs = get_freq_prefs(recurrence_list)
-    return prefs
-
 def prefs_from_gcal(gcal):
     '''Gets events from GCal and returns a dictionary of preference vectors for each activity.'''
     events = gcal.get_events()['items']
@@ -36,11 +23,11 @@ def get_occur_data(activities):
     '''Takes a dictionary of 'activity':[event_list] and saves a dictionary of occurence_data
     such as <('activity1': [0, 1, 2, 0], 'activity2': [0, 1, 1, 2])>
     '''
-    if exists('testData/occurence_data'):
-        f = open('testData/occurence_data', 'rb+')
+    if exists('occurence_data'):
+        f = open('occurence_data', 'rb+')
         occur_data = load(f)
     else:
-        f = open('testData/occurence_data', 'wb+')
+        f = open('occurence_data', 'wb+')
         occur_data = {}
 
     for activity, event_list in activities.items():
@@ -61,8 +48,8 @@ def get_occur_data(activities):
 def get_freq_costs(occurence_data):
     '''Takes a dictionary of occurences, subtracts a dictionary of when events have been rejected,
     and returns a dictionary of activity costs.'''
-    if exists('testData/feedback_data'):
-        f = open('testData/feedback_data', 'rb+')
+    if exists('feedback_data'):
+        f = open('feedback_data', 'rb+')
         feedback_data = load(f)
     else:
         feedback_data = {}
@@ -105,11 +92,11 @@ def get_break_prefs(gcal, days = 7):
 def get_feedback_matrix(reject_events_list):
     ''' Takes a list of google event objects and creates/updates a matrix of user feedback.
     These values can be subtracted from the stored occurence data.'''
-    if exists('testData/feedback_data'):
-        f = open('testData/feedback_data', 'rb+')
+    if exists('feedback_data'):
+        f = open('feedback_data', 'rb+')
         feedback_data = load(f)
     else:
-        f = open('testData/feedback_data', 'wb+')
+        f = open('feedback_data', 'wb+')
         feedback_data = {}
 
     for event in reject_events_list:
