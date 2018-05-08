@@ -7,11 +7,8 @@ import time
 import sciPyLAS
 app = Flask(__name__)
 
-# TODO fix how web html is parsed into python
-# send that data to Google calendar
-
 def generateEvent(name, startTime, endTime):
-
+    '''This function creates event objects that can be sceduled to Google calendar'''
     submission = Item(name, startTime, endTime)
     start = datetime.datetime.strptime(startTime, '%Y-%m-%dT%H:%M')
     end = datetime.datetime.strptime(endTime, '%Y-%m-%dT%H:%M')
@@ -23,13 +20,17 @@ def generateEvent(name, startTime, endTime):
     return event
 
 def segmentEvent(event):
+    '''
+    Takes an event with attributes duration and minimum break size
+    and then breaks the event into duplicate events of minimum size
+    to be passed into scheduling algorithm
+    '''
     name = event.name
     length_mins = event.duration
     break_time = event.break_time
     durs = []
 
     if break_time == 0 or length_mins - break_time < 0: # case where not breakable
-        # print('no breaks')
         breakable = False
         break_num = 1
         durs.append(length_mins)
@@ -37,7 +38,6 @@ def segmentEvent(event):
     elif (length_mins) % break_time == 0: # if duration is divisible by break size
         breakable = True
         break_num = int(length_mins / break_time)
-        # print('break_num: ' + str(break_num))
         for i in range(0, break_num):
             durs.append(break_time)
 
@@ -58,12 +58,14 @@ def segmentEvent(event):
         add_item(event, 'segmentedList')
 
 def generateToDo(name, hours, minutes, break_time):
+    '''
+    Generates the to do list that created on the "Add to do "
+    web page and displayed on the "View to do" web page
+    '''
     length_hours = hours * 4 # 15 minute segments worth of hours
     length_mins = int(minutes) / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments
-    print('Length:', length)
     if break_time == 0:
-        print('yes')
         breakable = False
         break_num = 0
     elif break_time > 0:
@@ -77,13 +79,11 @@ def generateToDo(name, hours, minutes, break_time):
 #Renders an html doc for our home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    #GCal().migrate_events()
     make_list()
     return render_template('index.html')
 
 @app.route('/toDo', methods=['GET', 'POST'])
 def toDo():
-    # print('HIIIII')
     elements = {'name': '', 'hours': '0', 'minutes': '0', 'breakSize': '0'}
     if request.method == 'POST':
         #Checks to see if all the boxes are filled
@@ -102,17 +102,13 @@ def viewToDo():
     elements = {}
     if request.method == 'POST':
         events = request.form
-        print('events: ', events)
         for event in events:
             thing = event
             duration = request.form[thing]
-            print('request form: ', request.form[thing])
-            print('event: ', event)
             if (event != "submit"):
                 remove_from_list(event, duration)
     #Deletes all checked
     todo_list = get_list()
-    print(todo_list)
 
     return render_template('viewToDo2.html', todo_list = todo_list)
 
@@ -127,12 +123,10 @@ def viewCal():
         tempList = gcal.get_events(calendar = 'temp', daysPast = 0, daysFuture = 7)
     if request.method == 'POST':
         gcal.migrate_events()
-        print(request.form)
         for i in tempList:
             ID = i.name
             try:
                 temp = request.form[ID]
-                print('deleting')
                 gcal.delete_event('temp',ID)
             except:
                 pass
@@ -143,16 +137,13 @@ def viewCal():
 #Function that runs when page opens
 def event():
     elements = {'name': '', 'startTime': '0', 'endTime': '0'}
-    print('works', elements['name'])
     if request.method == 'POST':
         #Checks to see if all the boxes are filled
         for i in elements:
             if request.form[i] != '':
                 elements[i] = request.form[i]
 
-        print(elements.values())
         event = generateEvent(elements['name'], elements['startTime'], elements['endTime'])
-        print(event)
         return redirect(url_for('index'))
 
     #Defines what html page runs when page is opened
