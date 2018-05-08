@@ -13,8 +13,6 @@ app = Flask(__name__)
 def generateEvent(name, startTime, endTime):
 
     submission = Item(name, startTime, endTime)
-    #print(submission)
-    # print(startTime)
     start = datetime.datetime.strptime(startTime, '%Y-%m-%dT%H:%M')
     end = datetime.datetime.strptime(endTime, '%Y-%m-%dT%H:%M')
     offset = time.gmtime().tm_hour - time.localtime().tm_hour
@@ -27,14 +25,7 @@ def generateEvent(name, startTime, endTime):
 def segmentEvent(event):
     name = event.name
     length_mins = event.duration
-
     break_time = event.break_time
-
-    # # length should be the total number of 15 minute segments
-    # # eventually, add the events to the to do list the appropriate num of
-    # # times for the breaks - e.g. 60 minute event in 30 minute segments
-    # # should make 2 events in to do lists
-
     durs = []
 
     if break_time == 0 or length_mins - break_time < 0: # case where not breakable
@@ -67,10 +58,6 @@ def segmentEvent(event):
         add_item(event, 'segmentedList')
 
 def generateToDo(name, hours, minutes, break_time):
-    # length should be the total number of 15 minute segments
-    # eventually, add the events to the to do list the appropriate num of
-    # times for the breaks - e.g. 60 minute event in 30 minute segments
-    # should make 2 events in to do lists
     length_hours = hours * 4 # 15 minute segments worth of hours
     length_mins = int(minutes) / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments
@@ -93,48 +80,24 @@ def index():
     make_list()
     return render_template('index.html')
 
-#Saves today's schedule and renders a
-#html doc
-# @app.route('/saveToCal')
-# def saveToCal():
-#     saveToday()
-#     return render_template('saveToCal.html')
-
 @app.route('/toDo', methods=['GET', 'POST'])
 def toDo():
     # print('HIIIII')
     elements = {'name': '', 'hours': '0', 'minutes': '0', 'breakSize': '0'}
     if request.method == 'POST':
         #Checks to see if all the boxes are filled
-        # print(request.form['breakSize'])
         for i in elements:
             if request.form[i] != '':
                 try:
                      elements[i] = int(request.form[i])
                 except:
                      elements[i] = request.form[i]
-        # print(elements.values())
 
         generateToDo(elements['name'], elements['hours'], elements['minutes'], elements['breakSize'])
     return render_template('toDo.html')
 
-# @app.route('/viewToDo', methods=['GET', 'POST'])
-# def viewToDo():
-#     print('list: ' + str(get_list()))
-#     elements = {}
-#     if request.method == 'POST':
-#         events = request.form
-#         print('events: ', events)
-#         print(request.form[event])
-#         for event in events:
-#             print('event: ', event)
-#             if (event != "submit"):
-#                 remove_from_list(event, events())
-#     #Deletes all checked
-
 @app.route('/viewToDo', methods=['GET', 'POST'])
 def viewToDo():
-    # print('list: ' + str(get_list()))
     elements = {}
     if request.method == 'POST':
         events = request.form
@@ -154,9 +117,11 @@ def viewToDo():
 def viewCal():
     gcal = GCal()
     id1 = gcal.get_tempID()
-    tempList = []# getListOfItems('temp',0,7)
+    oldEvents = get_events(calendar = 'temp', daysPast = 2, daysFuture = 7)
+    gcal.delete_multiple('main', oldEvents)
     if request.method == 'GET':
         sciPyLAS.run()
+        tempList = get_events(calendar = 'temp', daysPast = 0, daysFuture = 7)
     if request.method == 'POST':
         gcal.migrate_events()
         print(request.form)
@@ -165,7 +130,7 @@ def viewCal():
             try:
                 temp = request.form[ID]
                 print('deleting')
-                GCal().delete_event('temp',ID)
+                gcal.delete_event('temp',ID)
             except:
                 pass
 

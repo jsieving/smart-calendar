@@ -80,38 +80,11 @@ class GCal:
 
         #from stackoverflow: https://stackoverflow.com/questions/19473250/how-to-get-user-email-after-oauth-with-google-api-python-client
 
-
-    def create_RRULE(freq = 'WEEKLY', days = "", interval = 1):
-        rule = "FREQ=" + freq
-        if (days != ""):
-            rule.append("BYDAY=" + days)
-        rule.append("INTERVAL=" + interval)
-
     def create_event(self, name ="event", start=datetime.utcnow(),
                      end=datetime.utcnow() + timedelta(hours = 1), calendar = 'temp'):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
-
-        pass in repetition as a string in the following format:
-        RRULE:FREQ=WEEKLY;INTERVAL=2;COUNT=10;WKST=SU;BYDAY=TU,TH
-        means every other week for 10 weeks on Tuesday and Thursdays
-        use any rules you want to have represented
-        with list:
-                        ( "FREQ" "=" freq ) (HOURLY,DAILY, WEEKLY, MONTHLY, YEARLY)
-                       / ( "UNTIL" "=" enddate )
-                       / ( "COUNT" "=" 1*DIGIT ) (how many to create)
-                       / ( "INTERVAL" "=" 1*DIGIT ) (ex. 2 would be every other)
-                       / ( "BYSECOND" "=" byseclist )
-                       / ( "BYMINUTE" "=" byminlist )
-                       / ( "BYHOUR" "=" byhrlist )
-                       / ( "BYDAY" "=" bywdaylist )
-                       / ( "BYMONTHDAY" "=" bymodaylist )
-                       / ( "BYYEARDAY" "=" byyrdaylist )
-                       / ( "BYWEEKNO" "=" bywknolist )
-                       / ( "BYMONTH" "=" bymolist )
-                       / ( "BYSETPOS" "=" bysplist )
-                       / ( "WKST" "=" weekday )
 
         notifications take the form of an array:
         [{'method': 'email', 'minutes': 24 * 60},
@@ -148,7 +121,6 @@ class GCal:
     def get_busy(self, calendar = 'main', time_min =  datetime.utcnow(),
                 time_max = ( datetime.utcnow() + timedelta(days = 7))):
         offset = time.gmtime().tm_hour - time.localtime().tm_hour
-
         time1 = datetime.utcnow()
         # time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0) + timedelta(days= 1, hours = offset)
         time2 = (time1 + timedelta(days = 2))
@@ -176,9 +148,6 @@ class GCal:
         """
         Returns a list of event items, in the form of the Google events object
         """
-        # time1 = datetime.utcnow()
-        # time1 = datetime(time1.year, time1.month, time1.day, 0, 0, 0)
-        # time2 = (time1 + timedelta(days = 1))
         if calendar == 'main':
             cal_ID = self.mainID
         else:
@@ -186,7 +155,6 @@ class GCal:
         time1 = (datetime.now() - timedelta(days = daysPast)).isoformat() + 'Z'
         time2 = (datetime.now() + timedelta(days = daysFuture)).isoformat() + 'Z'
         events = self.service.events().list(calendarId=cal_ID, pageToken=None, timeMin = time1, timeMax = time2).execute()
-        #events = self.service.events().list(calendarId=self.mainID, pageToken=None, timeMin = time1.isoformat() + 'Z', timeMax = time2.isoformat() + "Z").execute()
         return events
 
     def make_event_list(self, events):
@@ -212,14 +180,23 @@ class GCal:
         """
         takes an event object and deletes it from google calendar
         """
-        print('just started')
         if calendar == 'main':
             cal_ID = self.mainID
         else:
             cal_ID = self.tempID
-
-        print('almost done deleting')
         self.service.events().delete(calendarId=cal_ID, eventId=eventID).execute()
+
+    def delete_multiple(self, calendar, events):
+        """
+        takes an event object and deletes it from google calendar
+        """
+        if calendar == 'main':
+            cal_ID = self.mainID
+        else:
+            cal_ID = self.tempID
+        for event in events['items']:
+            eventID = event['id']
+            self.service.events().delete(calendarId=cal_ID, eventId=eventID).execute()
 
     def make_temp_cal(self):
         """
@@ -232,15 +209,6 @@ class GCal:
             self.tempID = temp_cal['id']
         else:
             print("A temporary calendar already existed and is now being used.")
-
-    """
-    this doesn't work!
-    def clear_temp_cal(self):
-        Checks if a temporary calendar exists, and if it does, clears it.
-        if self.get_tempID(requireID = False):
-            self.service.calendars().clear(calendarId = self.tempID).execute()
-        else:
-            print("No temporary calendar to clear.")"""
 
     def delete_temp_cal(self):
         """
@@ -295,14 +263,3 @@ class GCal:
             if 'primary' in cal_data['items'][n]:
                 cal_ID = cal_data['items'][n]['id']
         return cal_ID
-
-if __name__ == '__main__':
-    cal = GCal()
-    print(cal.get_events(calendar = 'temp'))
-     # {'method': 'popup', 'minutes': 10}])
-    #print(cal.get_busy())
-    #events = cal.get_events(0,1)
-    #events = cal.make_event_list(events
-    #busy = cal.get_busy()
-    #print(preferenceScoring.make_cost_matrix(cal,events))
-    # cal.delete_temp_cal()
