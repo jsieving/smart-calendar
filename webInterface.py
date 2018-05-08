@@ -4,7 +4,7 @@ from toDo import add_item, get_list, remove_from_list, make_list
 from gcal import GCal
 import datetime
 import time
-from saveFromCal import saveToday,getListOfItems
+# from saveFromCal import saveToday, getListOfItems
 app = Flask(__name__)
 
 # TODO fix how web html is parsed into python
@@ -20,9 +20,8 @@ def generateEvent(name, startTime, endTime):
     offset = time.gmtime().tm_hour - time.localtime().tm_hour
     start = start + datetime.timedelta(hours = offset)
     end = end + datetime.timedelta(hours = offset)
-    cal.create_event(name=name, start= start, end = end)
+    cal.create_event(name=name, start= start, end = end, calendar = 'main')
     event = Item(name=name, start= start, end = end)
-    # cal.create_event(name = name)
     return event
 
 def segmentEvent(event):
