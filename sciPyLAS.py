@@ -4,6 +4,7 @@ from scheduleHelpers import Item, csv_to_tasklist
 from pickle import load, dump
 from copy import copy, deepcopy
 from preferenceScoring import *
+from datetime import timedelta
 from gcal import *
 
 #This function is used a temporary placeholder for the to-do list code
@@ -37,8 +38,8 @@ class LAS:
         """
         longestBlock = 15
         for event in self.itemList:
-            if event.duration.total_seconds()/60 > longestBlock:
-                longestBlock = event.duration.total_seconds()/60
+            if event.duration * 15 > longestBlock:
+                longestBlock = event.duration * 15
         self.blockLength = longestBlock
 
     def getTaskList(self):
@@ -52,7 +53,7 @@ class LAS:
         leftoverItems = []
         workingList = []
         for item in self.itemList:
-            duration = item.duration.total_seconds()/60
+            duration = item.duration * 15
             if duration == self.blockLength:
                 workingList.append(item)
             else:
@@ -113,7 +114,7 @@ class LAS:
             item = workingList[itemArray[n]]
             time = self.timeList[timeArray[n]]
             item.start = min_to_dt(time, d = date(2018, 5, 8))
-            item.end = item.start + item.duration
+            item.end = item.start + timedelta(minutes = item.duration)
             print('Posted', item)
             self.calendarSource.create_event(name = item.name, start = item.start, end = item.end)
 
