@@ -78,8 +78,8 @@ def get_freq_costs(occurence_data):
         costs[activity] = activity_costs
     return costs
 
-def get_break_prefs(gcal):
-    pref_list = [0 for n in range(96)]
+def get_break_prefs(gcal, days = 7):
+    pref_list = [0 for n in range(96 * days)]
     busy1 = gcal.get_busy(calendar = 'main')["calendars"][gcal.mainID]["busy"]
     busy2 = gcal.get_busy(calendar = 'temp')["calendars"][gcal.tempID]["busy"]
     pprint(busy2)
@@ -117,7 +117,7 @@ def get_feedback_matrix(reject_events_list):
         item = item_from_gcal(event)
         activity = categorize(item)
         feedback_list = feedback_data.get(activity, [0 for i in range(96)])
-        for j in range(int(96)):
+        for j in range(96):
             t = min_to_dt(j * 15)
             if item.start <= t <= item.end:
                 feedback_list[j] += 1
@@ -134,10 +134,10 @@ def get_timeblock_costs(block_length, freq_costs, break_prefs):
     costs = {}
     for activity, cost_list in freq_costs.items():
         overall_costs = []
-        for i in range(96):
+        for i in range(len(break_prefs)):
             if i % n == 0: # every n blocks, the cost resets
                 cost = 0
-            cost += cost_list[i] + break_prefs[i] # the cost accumulates for n blocks
+            cost += cost_list[i % 96] + break_prefs[i] # the cost accumulates for n blocks
             if (i+1) % n == 0: # if this is the last of a set of n blocks, append the cost
                 overall_costs.append(cost)
         costs[activity] = overall_costs
