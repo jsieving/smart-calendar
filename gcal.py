@@ -18,7 +18,6 @@ import time
 from datetime import timedelta, datetime #, date, time
 import pytz
 from scheduleHelpers import Item, categorize
-from pprint import pprint
 
 try:
     import argparse
@@ -229,17 +228,10 @@ class GCal:
             events = events_data['items']
             for event in events:
                 print(event)
-                # self.service.events().move(calendarId= self.mainID, eventId= event['id'], destination = self.tempID).execute()
                 self.service.events().insert(calendarId= self.mainID, body=event).execute()
                 self.service.events().delete(calendarId= self.tempID, eventId= event['id']).execute()
         else:
             print("No temporary calendar to migrate events from.")
-
-    def print_cal_data(self):
-        """
-        Prints all calendars in a google calendar account.
-        """
-        pprint(self.service.calendarList().list().execute())
 
     def get_tempID(self, requireID = True):
         """

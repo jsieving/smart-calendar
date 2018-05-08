@@ -1,22 +1,11 @@
 from scipy.optimize import linear_sum_assignment
 import numpy
-from scheduleHelpers import Item, csv_to_tasklist
+from scheduleHelpers import Item
 from pickle import load, dump
 from copy import copy, deepcopy
 from preferenceScoring import *
 from datetime import timedelta
 from gcal import *
-
-#This function is used a temporary placeholder for the to-do list code
-def getItemList(cal):
-    """
-    Reads a test calendar and creates a list of events
-    """
-    itemList = []
-    for day in cal.values():
-        for event in day:
-            itemList.append(event)
-    return itemList
 
 class LAS:
     '''A linear assignment solver which takes a list of events and finds the
@@ -75,13 +64,12 @@ class LAS:
         blockLength: length of each time block.
         return: list of time blocks.
         """
-        day = 2880
-        if day % self.blockLength != 0:
-            divisions = int(day/self.blockLength)
+        minutes = 1440 * 7
+        if minutes % self.blockLength != 0:
+            divisions = int(minutes/self.blockLength)
             self.timeList = numpy.linspace(0, self.blockLength*(divisions), divisions+1)
-            #raise ValueError('Please enter a time that can divide into {} evenly'.format(day))
         else:
-            self.timeList = numpy.linspace(0, day-self.blockLength, day/self.blockLength)
+            self.timeList = numpy.linspace(0, minutes-self.blockLength, minutes/self.blockLength)
 
     def populateMatrix(self, itemList, costDict):
         """
@@ -135,7 +123,3 @@ def run():
         costMatrix = solver.populateMatrix(workingList, costDict)
         itemArray, timeArray = solver.runSolver(costMatrix)
         solver.postTempEvents(itemArray, timeArray, workingList)
-
-
-# if __name__ == "__main__":
-    # testList = csv_to_tasklist('toDoList')

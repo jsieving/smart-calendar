@@ -4,15 +4,12 @@ from pickle import dump, load
 from scheduleHelpers import Item
 import os
 from gcal import GCal
-# import saveFromCal
 
 """ Call the make_list function to add an event object to a list and adds list to file
 It also updates the gcal list every time it gets run
 """
 
-
 FILE_LOCATION = "official_todo_list"
-
 
 def add_item(item, fileName = FILE_LOCATION):
     """
@@ -84,5 +81,3 @@ def remove_from_list(name, duration):
 
 if __name__ == "__main__":
     make_list(None)
-
-# clear_list()
