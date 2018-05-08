@@ -11,7 +11,7 @@ app = Flask(__name__)
 # send that data to Google calendar
 
 def generateEvent(name, startTime, endTime):
-
+    '''This function creates event objects that can be sceduled to Google calendar'''
     submission = Item(name, startTime, endTime)
     start = datetime.datetime.strptime(startTime, '%Y-%m-%dT%H:%M')
     end = datetime.datetime.strptime(endTime, '%Y-%m-%dT%H:%M')
@@ -23,6 +23,11 @@ def generateEvent(name, startTime, endTime):
     return event
 
 def segmentEvent(event):
+    '''
+    Takes an event with attributes duration and minimum break size
+    and then breaks the event into duplicate events of minimum size
+    to be passed into scheduling algorithm
+    '''
     name = event.name
     length_mins = event.duration
     break_time = event.break_time
@@ -58,6 +63,10 @@ def segmentEvent(event):
         add_item(event, 'segmentedList')
 
 def generateToDo(name, hours, minutes, break_time):
+    '''
+    Generates the to do list that created on the "Add to do "
+    web page and displayed on the "View to do" web page
+    '''
     length_hours = hours * 4 # 15 minute segments worth of hours
     length_mins = int(minutes) / 15 # 15 minute segments worth of minutes
     length = length_hours + length_mins # total num segments

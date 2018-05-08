@@ -65,6 +65,9 @@ def clear_list():
     print("deleted items from list")
 
 def remove_from_list(name, duration):
+    '''
+    This function removes the specified event from the to do list
+    '''
     todo_list = get_list()
 
     for item in range (len(todo_list)):
