@@ -82,7 +82,6 @@ def get_break_prefs(gcal, days = 7):
     pref_list = [0 for n in range(96 * days)]
     busy1 = gcal.get_busy(calendar = 'main')["calendars"][gcal.mainID]["busy"]
     busy2 = gcal.get_busy(calendar = 'temp')["calendars"][gcal.tempID]["busy"]
-    pprint(busy2)
     busy = busy1 + busy2
     for time in busy:
          start = datetime.strptime(time["start"], '%Y-%m-%dT%H:%M:%SZ')
@@ -130,7 +129,7 @@ def get_feedback_matrix(reject_events_list):
 def get_timeblock_costs(block_length, freq_costs, break_prefs):
     '''Given a timeblock length, a dictionary of frequency costs, and a dictionary of break
     preferences, returns a dictionary of overall costs for intervals of the specified length.'''
-    n = block_length // 15 # number of block costs to add together
+    n = block_length # number of block costs to add together
     costs = {}
     for activity, cost_list in freq_costs.items():
         overall_costs = []

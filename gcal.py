@@ -88,7 +88,7 @@ class GCal:
         rule.append("INTERVAL=" + interval)
 
     def create_event(self, name ="event", start=datetime.utcnow(),
-                     end=datetime.utcnow() + timedelta(hours = 1)):
+                     end=datetime.utcnow() + timedelta(hours = 1), calendar = 'temp'):
         """
         Takes all parameters google can take with easy defaults
         Time is passed as a datetime object in UTC
@@ -120,6 +120,10 @@ class GCal:
         with possible methods: 'email', 'popup'
         maximum number of notifications is 5
         """
+        if calendar == 'temp':
+            cal_ID = self.tempID
+        else:
+            cal_ID = self.mainID
         start_str = start.isoformat() + 'Z'
         end_str = end.isoformat() + 'Z'
         event = {
@@ -139,7 +143,7 @@ class GCal:
 
         }
 
-        event = self.service.events().insert(calendarId= self.tempID, body=event).execute()
+        event = self.service.events().insert(calendarId= cal_ID, body=event).execute()
 
     def get_busy(self, calendar = 'main', time_min =  datetime.utcnow(),
                 time_max = ( datetime.utcnow() + timedelta(days = 7))):
@@ -256,6 +260,7 @@ class GCal:
             events_data = self.service.events().list(calendarId = self.tempID, pageToken=None, timeMin = None, timeMax = None).execute()
             events = events_data['items']
             for event in events:
+                print(event)
                 # self.service.events().move(calendarId= self.mainID, eventId= event['id'], destination = self.tempID).execute()
                 self.service.events().insert(calendarId= self.mainID, body=event).execute()
                 self.service.events().delete(calendarId= self.tempID, eventId= event['id']).execute()

@@ -4,6 +4,7 @@ from scheduleHelpers import Item, csv_to_tasklist
 from pickle import load, dump
 from copy import copy, deepcopy
 from preferenceScoring import *
+from datetime import timedelta
 from gcal import *
 
 #This function is used a temporary placeholder for the to-do list code
@@ -35,10 +36,10 @@ class LAS:
         itemList: list of events that need to be scheduled
         return: integer representing the number of seconds in the longest event
         """
-        longestBlock = 15
+        longestBlock = 1
         for event in self.itemList:
-            if event.duration.total_seconds()/60 > longestBlock:
-                longestBlock = event.duration.total_seconds()/60
+            if event.duration > longestBlock:
+                longestBlock = event.duration
         self.blockLength = longestBlock
 
     def getTaskList(self):
@@ -52,7 +53,7 @@ class LAS:
         leftoverItems = []
         workingList = []
         for item in self.itemList:
-            duration = item.duration.total_seconds()/60
+            duration = item.duration
             if duration == self.blockLength:
                 workingList.append(item)
             else:
@@ -61,7 +62,6 @@ class LAS:
         return workingList
 
     def makeCostDict(self):
-        print('\nGetting break times...')
         break_prefs = get_break_prefs(self.calendarSource)
         costs = get_timeblock_costs(self.blockLength, self.freq_costs, break_prefs)
         return costs
@@ -105,7 +105,7 @@ class LAS:
                 matrix[x][y] = scores[y]
         return matrix
 
-    def run(self, matrix):
+    def runSolver(self, matrix):
         return linear_sum_assignment(matrix)
 
     def postTempEvents(self, itemArray, timeArray, workingList):
@@ -113,25 +113,29 @@ class LAS:
             item = workingList[itemArray[n]]
             time = self.timeList[timeArray[n]]
             item.start = min_to_dt(time, d = date(2018, 5, 8))
-            item.end = item.start + item.duration
+            item.end = item.start + timedelta(minutes = item.duration)
             print('Posted', item)
             self.calendarSource.create_event(name = item.name, start = item.start, end = item.end)
 
+def run():
+    f = open('segmentedList', 'rb+')
+    segList = load(f)
+    f.seek(0)
+    dump('', f)
+    f.close()
 
-
-if __name__ == "__main__":
-    # testList = csv_to_tasklist('toDoList')
-    f = open('official_todo_list', 'rb+')
-    toDoList = load(f)
-
-    solver = LAS(toDoList)
-    solver.calendarSource.make_temp_cal()
+    solver = LAS(segList)
 
     while solver.itemList:
+        print(solver.itemList)
         solver.getLongestBlock()
         solver.getTimeList()
         workingList = solver.getTaskList()
         costDict = solver.makeCostDict()
         costMatrix = solver.populateMatrix(workingList, costDict)
-        itemArray, timeArray = solver.run(costMatrix)
+        itemArray, timeArray = solver.runSolver(costMatrix)
         solver.postTempEvents(itemArray, timeArray, workingList)
+
+
+# if __name__ == "__main__":
+    # testList = csv_to_tasklist('toDoList')
