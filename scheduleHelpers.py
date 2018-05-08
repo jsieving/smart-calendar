@@ -5,12 +5,6 @@ from csv import reader, writer
 from pickle import dump, load
 from datetime import timedelta, datetime, date, time
 
-# __all__ = ["Item", "min_to_dt", "min_to_timedelta", "min_from_dt", "busy_to_free",
-#             "cal_to_csv", "csv_to_cal", "partition", "add_item", "add_event", "event_to_gcal", "busy_from_gcal",
-#             "categorize", "extract_activities"]
-## Determines which functions are imported by 'import *'. If you add or change functions,
-## make sure that is reflected here.
-
 class Item:
     '''An event created with or without scheduling information.
     name: str
@@ -30,9 +24,8 @@ class Item:
         self.end = end
         self.duration = duration
         self.breakable = breakable
-        # self.due = due
         self.importance = importance
-        self.category = category # may be replaced with tags?
+        self.category = category
         self.item_type = item_type
         self.break_time = break_time
         self.break_num = break_num
@@ -53,8 +46,9 @@ def min_to_dt(minutes, d = date(1, 1, 1)):
 
 def min_to_timedelta(minutes):
     '''Converts a number of minutes to a timedelta object'''
+    days, minutes = divmod(int(minutes), 1440)
     hours, minutes = divmod(minutes, 60)
-    return timedelta(hours = hours, minutes = minutes)
+    return timedelta(days = days, hours = hours, minutes = minutes)
 
 def min_from_dt(dt):
     '''Converts a datetime to the number of minutes since the start of the day'''

@@ -23,7 +23,7 @@ class LAS:
         longest time duration.
 
         itemList: list of events that need to be scheduled
-        return: integer representing the number of seconds in the longest event
+        return: integer representing the number of minutes in the longest event
         """
         longestBlock = 1
         for event in self.itemList:
@@ -51,7 +51,11 @@ class LAS:
         return workingList
 
     def makeCostDict(self):
-        break_prefs = get_break_prefs(self.calendarSource)
+        """
+        For the block length of the current batch of items, makes an <(activity: [costs])> dictionary
+        where each cost is the sum of the preference costs and break costs for the entire time block.
+        """
+        break_prefs = get_break_prefs(self.calendarSource) # Recalculate busy/break times based on previously scheduled batch of events
         costs = get_timeblock_costs(self.blockLength, self.freq_costs, break_prefs)
         return costs
 
@@ -60,6 +64,9 @@ class LAS:
         Creates a list of time steps with a set duration. If the time blocks do not
         divide into the day evenly, the last item is a collection of the remaining
         time.
+
+        The offset parameter allows costs to be calculated with events starting at different offsets.
+        For example, offset = 0 tries scheduling events on the hour, offset = 30 tries scheduling events on the half hour.
 
         blockLength: length of each time block.
         return: list of time blocks.
@@ -94,9 +101,16 @@ class LAS:
         return matrix
 
     def runSolver(self, matrix):
+        """
+        Wrapper function a la ModSimPy. Runs the SciPy linear assignment solver on our event X timeslot matrix.
+        """
         return linear_sum_assignment(matrix)
 
     def postTempEvents(self, itemArray, timeArray, workingList):
+        """
+        For each batch of events with the same duration, schedules events at the lowest-cost time according to the LAS results.
+        Events are posted to the Temporary calendar.
+        """
         for n in range(len(itemArray)):
             item = workingList[itemArray[n]]
             time = self.timeList[timeArray[n]]
@@ -106,20 +120,18 @@ class LAS:
             self.calendarSource.create_event(name = item.name, start = item.start, end = item.end)
 
 def run():
-    f = open('segmentedList', 'rb+')
+    f = open('segmentedList', 'rb+') # Open the list of split-up todo items
     segList = load(f)
-    f.seek(0)
-    dump('', f)
     f.close()
 
-    solver = LAS(segList)
+    solver = LAS(segList) # Initialize a solver with the list of events that need to get done
 
-    while solver.itemList:
+    while solver.itemList: # Repeat for each block length, while there are events to schedule
         print(solver.itemList)
-        solver.getLongestBlock()
-        solver.getTimeList()
-        workingList = solver.getTaskList()
-        costDict = solver.makeCostDict()
-        costMatrix = solver.populateMatrix(workingList, costDict)
-        itemArray, timeArray = solver.runSolver(costMatrix)
-        solver.postTempEvents(itemArray, timeArray, workingList)
+        solver.getLongestBlock() # Find the longest event
+        solver.getTimeList() # Split up the available time into slots the length of the longest event
+        workingList = solver.getTaskList() # Find the items to be scheduled in this batch (the ones with the same length)
+        costDict = solver.makeCostDict() # Sum up the costs for each activity for the time slots
+        costMatrix = solver.populateMatrix(workingList, costDict) # populate a cost matrix for the events in the working list
+        itemArray, timeArray = solver.runSolver(costMatrix) # Solve for which event should go in which time slot
+        solver.postTempEvents(itemArray, timeArray, workingList) # Post this batch of events to the temporary calendar
