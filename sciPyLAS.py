@@ -120,9 +120,11 @@ class LAS:
 
 
 if __name__ == "__main__":
-    testList = csv_to_tasklist('toDoList')
+    # testList = csv_to_tasklist('toDoList')
+    f = open('official_todo_list', 'rb+')
+    toDoList = load(f)
 
-    solver = LAS(testList)
+    solver = LAS(toDoList)
     solver.calendarSource.make_temp_cal()
 
     while solver.itemList:
