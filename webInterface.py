@@ -127,7 +127,7 @@ def viewCal():
     gcal.delete_multiple('main', oldEvents)
     if request.method == 'GET':
         sciPyLAS.run()
-        tempList = get_events(calendar = 'temp', daysPast = 0, daysFuture = 7)
+        tempList = gcal.get_events(calendar = 'temp', daysPast = 0, daysFuture = 7)
     if request.method == 'POST':
         gcal.migrate_events()
         print(request.form)
