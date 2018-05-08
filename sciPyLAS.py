@@ -61,7 +61,7 @@ class LAS:
         return workingList
 
     def makeCostDict(self):
-        print('Getting break times...')
+        print('\nGetting break times...')
         break_prefs = get_break_prefs(self.calendarSource)
         costs = get_timeblock_costs(self.blockLength, self.freq_costs, break_prefs)
         return costs
@@ -114,6 +114,7 @@ class LAS:
             time = self.timeList[timeArray[n]]
             item.start = min_to_dt(time, d = date(2018, 5, 8))
             item.end = item.start + item.duration
+            print('Posted', item)
             self.calendarSource.create_event(name = item.name, start = item.start, end = item.end)
 
 
@@ -132,4 +133,3 @@ if __name__ == "__main__":
         costMatrix = solver.populateMatrix(workingList, costDict)
         itemArray, timeArray = solver.run(costMatrix)
         solver.postTempEvents(itemArray, timeArray, workingList)
-        print('Events posted...')
