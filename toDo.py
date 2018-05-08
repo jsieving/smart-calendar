@@ -14,19 +14,19 @@ It also updates the gcal list every time it gets run
 FILE_LOCATION = "official_todo_list"
 
 
-def add_item(item):
+def add_item(item, fileName = FILE_LOCATION):
     """
     This function adds an item to the to-do list.
     """
     #Check to see if the toDo file is present and add file if not
-    if not os.path.exists(FILE_LOCATION):
-        make_list()
+    if not os.path.exists(fileName):
+        make_list(fileName)
 
     #Checks if item is valid (Handles people accidentally hitting submit button)
     if item == None:
         raise Exception("Invalid submission. Item:  {} \n Is not a valid item. Please resubmit".format(item))
 
-    f = open(FILE_LOCATION, 'rb+')
+    f = open(fileName, 'rb+')
     todo_list = load(f)
     todo_list.append(item)
     print('updated to do list: ' + str(todo_list))
@@ -34,15 +34,15 @@ def add_item(item):
     dump(todo_list, f)
     f.close()
 
-def make_list():
+def make_list(fileName = FILE_LOCATION):
         """
         This function checks to see if there is a to-do list, create one, and will
         add events from google calendars.
         """
         #Check to see if the toDo file is present and add file if not
-        fileLoc = "official_todo_list"
-        if not os.path.exists(FILE_LOCATION):
-            f = open(FILE_LOCATION, 'wb')
+        fileLoc = fileName
+        if not os.path.exists(fileName):
+            f = open(fileName, 'wb')
             todo_list = []
             dump(todo_list, f)
             f.close()
